@@ -30,7 +30,7 @@ int weighHighHand(int * hand, int handsize) {
     return 0;
 }
 
-int weighLowHand(int * hand, int handsize) {
+int weighLowHand(char ** hand, int handsize) {
     for (int i = 0; i < handsize; i++) {
     }
     return 0;
@@ -40,6 +40,10 @@ char ** mergeCards() {
     return ;
 }
 
+int getBestHand(char ** fullHand, int fullHandSize) {
+
+}
+
 int main(void) {
     int players;
     char gamemode[10];
@@ -47,11 +51,16 @@ int main(void) {
     scanf("%s", gamemode);
     if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
         char ** communityCards = readCommunityCards(5);
-    } else {
+        mergeCards();
+        return weighHighHand(,7);
+    }
+    if (strcmp(gamemode, "razz") || strcmp(gamemode,"omaha-hilo")) {
+        int lowHand = weighLowHand(,7);
+        return lowHand;
+    }
+    for(int i = 0; i < players; i++) {
 
     }
-
-
 
 
     return 0;
