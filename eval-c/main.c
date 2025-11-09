@@ -1,10 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int weigh_hand(int * hand, int handsize) {
-    int * suits_freq = (int *)calloc(4, sizeof(int));
-    int * color_freq = (int *)calloc(2, sizeof(int));
-    int * values_freq = (int *)calloc(14, sizeof(int));
+char ** readCommunityCards(int communityCards) {
+    char ** cards = calloc(5, sizeof(char *));
+
+    for (int i = 0; i < communityCards; i++) {
+        cards[i] = calloc(1, sizeof(char));
+        scanf("%s", cards[i]);
+    }
+    for (int i = 0; i < communityCards; i++) {
+        printf("%s", cards[i]);
+        printf("%s", "\n");
+    }
+    return cards;
+}
+
+
+int weighHighHand(int * hand, int handsize) {
+    int * suits_freq = calloc(4, sizeof(int));
+    int * color_freq = calloc(2, sizeof(int));
+    int * values_freq = calloc(14, sizeof(int));
     for (int i = 0; i < handsize; i++) {
 
     }
@@ -14,8 +30,28 @@ int weigh_hand(int * hand, int handsize) {
     return 0;
 }
 
+int weighLowHand(int * hand, int handsize) {
+    for (int i = 0; i < handsize; i++) {
+    }
+    return 0;
+}
+
+char ** mergeCards() {
+    return ;
+}
+
 int main(void) {
-    printf("Hello, World!\n");
+    int players;
+    char gamemode[10];
+    scanf("%d", &players);
+    scanf("%s", gamemode);
+    if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
+        char ** communityCards = readCommunityCards(5);
+    } else {
+
+    }
+
+
 
 
     return 0;
