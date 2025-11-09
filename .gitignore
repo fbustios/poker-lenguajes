@@ -1,0 +1,19 @@
+# Java
+target/
+*.class
+*.jar
+*.war
+*.iml
+
+# C
+*.o
+*.out
+*.exe
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Sistema
+.DS_Store
