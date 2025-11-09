@@ -12,7 +12,7 @@ target/
 
 # IDEs
 .vscode/
-client-java/.idea/
+.idea/
 *.swp
 
 # Sistema
