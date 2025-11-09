@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="013bdd5b-0786-4a00-a559-88cde89f0c64" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="013bdd5b-0786-4a00-a559-88cde89f0c64" name="Changes" comment="client settings">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +45,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/java-client" />
       <recent name="$PROJECT_DIR$/client-java" />
     </key>
   </component>
@@ -63,12 +64,41 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1762662799007</updated>
-      <workItem from="1762662800568" duration="408000" />
+      <workItem from="1762662800568" duration="765000" />
     </task>
+    <task id="LOCAL-00001" summary="client settings">
+      <option name="closed" value="true" />
+      <created>1762663429273</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762663429273</updated>
+    </task>
+    <task id="LOCAL-00002" summary="client settings">
+      <option name="closed" value="true" />
+      <created>1762663510948</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762663510948</updated>
+    </task>
+    <task id="LOCAL-00003" summary="client settings">
+      <option name="closed" value="true" />
+      <created>1762663515906</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762663515906</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="client settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="client settings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
