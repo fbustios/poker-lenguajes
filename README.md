@@ -35,58 +35,42 @@
 ## servidor -> cliente  
   
 ```json
-{  
-	event: "PLAYER_ACTION",
-	game_mode: "Omaha",  
-	player: "aaron",  
-	next_player: "franco",  
-	action: "raise",  
-	dealer: "p1",  
-	pot: 800,  
-}  
-	  
-{  
-	event: "ROUND_OVER",  
-	gamemode: "holdem",  
-	next_round: "show",  
-	pot: 500  
+{
+	"event": "PLAYER_ACTION",
+	"game_mode": "Omaha",
+	"player": "aaron",
+	"next_player": "franco",
+	"action": "raise",
+	"dealer": "p1",
+	"pot": 800
 }
-
-{ 
-	event: "GAME_STARTED",
-	players: [
-		{
-			player: "aaron",
-			index: 0
-		},
-		{
-			player: "franco",
-			index: 1
-		},
-		{
-			player: "daniel",
-			index: 2
-		},
-		{
-			player: "sergio",
-			index: 3
-		}
-	 ],  
-	game_mode: "holdem",  
-	next_player: "aaron",  
-	dealer: "Daniel",  
-	small_blind : "sergio",  
-	big_blind: "aaron"  
+{
+	"event": "ROUND_OVER",
+	"game_mode": "Holdem",
+	"next_round": "show",
+	"pot": 500
 }
-  
-  
-{  
-	event: "GAME_ENDED",  
-	game_mode: "holdem",  
-	winners: [
-		{ 
-			player: "sergio",
-			pot: 300
+{
+	"event": "GAME_STARTED",
+	"players": [
+		{ "player": "aaron", "index": 0 },
+		{ "player": "franco", "index": 1 },
+		{ "player": "daniel", "index": 2 },
+		{ "player": "sergio", "index": 3 }
+	],
+	"game_mode": "Holdem",
+	"next_player": "aaron",
+	"dealer": "Daniel",
+	"small_blind": "sergio",
+	"big_blind": "aaron"
+}
+{
+	"event": "GAME_ENDED",
+	"game_mode": "Holdem",
+	"winners": [
+		{
+			"player": "sergio",
+			"pot": 300
 		}
 	]
 }
