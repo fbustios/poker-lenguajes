@@ -17,7 +17,7 @@ char ** readCommunityCards(int communityCards) {
 }
 
 
-int weighHighHand(int * hand, int handsize) {
+int weighHighHand(char ** hand, int handsize) {
     int * suits_freq = calloc(4, sizeof(int));
     int * color_freq = calloc(2, sizeof(int));
     int * values_freq = calloc(14, sizeof(int));
@@ -41,6 +41,16 @@ char ** mergeCards() {
 }
 
 int getBestHand(char ** fullHand, int fullHandSize) {
+
+}
+
+char ** getBestHandAux(char ** fullHand, char ** currentHand, int fullHandSize, int currentHandSize, int currentIndex) {
+    if (currentHandSize == fullHandSize) return currentHand;
+
+    if (fullHandSize - currentHandSize == fullHandSize - currentIndex) {}
+    char ** takingOption = getBestHandAux(fullHand, currentHand[currentIndex] = fullHand[currentIndex], fullHandSize, currentHandSize++, currentIndex++);
+    char ** skippingOption = getBestHandAux(fullHand, currentHand, fullHandSize, currentHandSize,currentIndex++);
+    return weighHighHand() > weighHighHand() ? takingOption : skippingOption;
 
 }
 
