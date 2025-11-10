@@ -2,20 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-char ** readCommunityCards(int communityCards) {
-    char ** cards = calloc(5, sizeof(char *));
-
-    for (int i = 0; i < communityCards; i++) {
-        cards[i] = calloc(1, sizeof(char));
-        scanf("%s", cards[i]);
+char ** readDeck(int size) {
+    char ** deck = malloc(size * sizeof(char *));
+    for (int i = 0; i < size; i++) {
+        deck[i] = malloc(sizeof(char *));
+        scanf("%s", deck[i]);
     }
-    for (int i = 0; i < communityCards; i++) {
-        printf("%s", cards[i]);
-        printf("%s", "\n");
-    }
-    return cards;
+    return deck;
 }
-
 
 int weighHighHand(char ** hand, int handsize) {
     int * suits_freq = calloc(4, sizeof(int));
@@ -30,46 +24,69 @@ int weighHighHand(char ** hand, int handsize) {
     return 0;
 }
 
-int weighLowHand(char ** hand, int handsize) {
-    for (int i = 0; i < handsize; i++) {
+int isLowHand(char ** hand, int handSize) {
+
+}
+int weighLowHand(char ** hand, int handSize) {
+    int handWeight = 0;
+    for (int i = 0; i < handSize; i++) {
+        char cardNumber = hand[i][3];
+        int cardValue = cardNumber - '0';
+        handWeight -= cardValue;
     }
-    return 0;
+    return handWeight;
 }
 
 char ** mergeCards() {
-    return ;
+    return 0;
 }
 
-int getBestHand(char ** fullHand, int fullHandSize) {
+
+char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, int currentHandSize, int currentIndex) {
+    if (currentHandSize == targetSize) return currentHand;
+
+    if (targetSize - currentHandSize == targetSize - currentIndex) {
+        for (int i = currentIndex; i < targetSize ; i++) {
+            currentHand[i] = fullHand[i];
+        }
+        return currentHand;
+    }
+    char ** takingOption = getBestHandAux(fullHand, currentHand[currentIndex] = fullHand[currentIndex], targetSize, currentHandSize++, currentIndex++);
+    char ** skippingOption = getBestHandAux(fullHand, currentHand, targetSize, currentHandSize,currentIndex++);
+    //return weighHighHand() > weighHighHand() ? takingOption : skippingOption;
+    return skippingOption;
 
 }
 
-char ** getBestHandAux(char ** fullHand, char ** currentHand, int fullHandSize, int currentHandSize, int currentIndex) {
-    if (currentHandSize == fullHandSize) return currentHand;
-
-    if (fullHandSize - currentHandSize == fullHandSize - currentIndex) {}
-    char ** takingOption = getBestHandAux(fullHand, currentHand[currentIndex] = fullHand[currentIndex], fullHandSize, currentHandSize++, currentIndex++);
-    char ** skippingOption = getBestHandAux(fullHand, currentHand, fullHandSize, currentHandSize,currentIndex++);
-    return weighHighHand() > weighHighHand() ? takingOption : skippingOption;
-
+char ** getBestHand(char ** fullHand, int targetSize) {
+    char ** currentHand = calloc(targetSize, sizeof(char *));
+    for (int i = 0; i < targetSize; i++) {
+        currentHand[i] = calloc(1, sizeof(char));
+    }
+    return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
 }
 
 int main(void) {
     int players;
     char gamemode[10];
+    int deckSize;
     scanf("%d", &players);
+    scanf("%d", &deckSize);
     scanf("%s", gamemode);
-    if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
-        char ** communityCards = readCommunityCards(5);
-        mergeCards();
-        return weighHighHand(,7);
-    }
-    if (strcmp(gamemode, "razz") || strcmp(gamemode,"omaha-hilo")) {
-        int lowHand = weighLowHand(,7);
-        return lowHand;
-    }
+    char ** communityCards = readDeck(5);
+    free(communityCards);
     for(int i = 0; i < players; i++) {
+        char ** playerDeck = readDeck(deckSize);
+        if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
+            //char ** communityCards = readCommunityCards(5);
+            mergeCards();
 
+            //return weighHighHand(,7);
+        }
+        if (strcmp(gamemode, "razz") || strcmp(gamemode,"omaha-hilo")) {
+            //int lowHand = weighLowHand(,7);
+            //return lowHand;
+        }
     }
 
 
