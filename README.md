@@ -2,45 +2,32 @@
 
 ```json
 {
-	event: "JOIN_GAME",
-	game_mode: "Holdem",
-	player_name: "pepe",
+	"event": "JOIN_GAME",
+	"game_mode": "Holdem",
+	"player_name": "pepe"
 }
-
 {
-	event: "PLACE_BET",
-	current_player: 0,
-	game_mode: "Omaha",
-	bet: 5000,
-}
-
-// FIX
+	"event": "PLACE_BET",
+	"current_player": 0,
+	"game_mode": "Omaha",
+	"bet": 5000
+},
 {
-	event: "PLAY_CARD",
-	game_mode: "Holdem",	
-	current_player: 0,
-	card: {
-		value: 2,
-		suit: "hearts"
+	"event": "PLAY_CARD",
+	"game_mode": "Holdem",
+	"current_player": 0,
+	"card": {
+		"value": 2,
+		"suit": "hearts"
 	}
-}
-
+},
 {
-	event: "CHANGE_CARTS",
-	current_player: 0,
-	cards: [
-		{
-			value: 3,
-			suit: "hearts"
-		},
-		{
-			value: 4,
-			suit: "hearts"
-		},
-		{
-			value: 5,
-			suit: "hearts"
-		}
+	"event": "CHANGE_CARTS",
+	"current_player": 0,
+	"cards": [
+		{ "value": 3, "suit": "hearts" },
+		{ "value": 4, "suit": "hearts" },
+		{ "value": 5, "suit": "hearts" }
 	]
 }
 ```
