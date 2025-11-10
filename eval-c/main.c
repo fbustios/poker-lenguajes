@@ -5,21 +5,23 @@
 char ** readDeck(int size) {
     char ** deck = malloc(size * sizeof(char *));
     for (int i = 0; i < size; i++) {
-        deck[i] = malloc(sizeof(char *));
-        scanf("%s", deck[i]);
+        deck[i] = malloc(3 * sizeof(char));
+        scanf("%3s", deck[i]);
     }
     return deck;
 }
 
-int weighHighHand(char ** hand, int handsize) {
+int getCardValue(char c) {
+
+}
+
+int weighHighHand(char ** hand, int handSize) {
     int * suits_freq = calloc(4, sizeof(int));
-    int * color_freq = calloc(2, sizeof(int));
     int * values_freq = calloc(14, sizeof(int));
-    for (int i = 0; i < handsize; i++) {
+    for (int i = 0; i < handSize; i++) {
 
     }
     free(suits_freq);
-    free(color_freq);
     free(values_freq);
     return 0;
 }
@@ -30,7 +32,7 @@ int isLowHand(char ** hand, int handSize) {
 int weighLowHand(char ** hand, int handSize) {
     int handWeight = 0;
     for (int i = 0; i < handSize; i++) {
-        char cardNumber = hand[i][3];
+        char cardNumber = hand[i][1];
         int cardValue = cardNumber - '0';
         handWeight -= cardValue;
     }
@@ -61,7 +63,7 @@ char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, in
 char ** getBestHand(char ** fullHand, int targetSize) {
     char ** currentHand = calloc(targetSize, sizeof(char *));
     for (int i = 0; i < targetSize; i++) {
-        currentHand[i] = calloc(1, sizeof(char));
+        currentHand[i] = calloc(2, sizeof(char));
     }
     return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
 }
