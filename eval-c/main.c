@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char ** readDeck(int size) {
+char ** readHand(int size) {
     char ** deck = malloc(size * sizeof(char *));
     for (int i = 0; i < size; i++) {
         deck[i] = malloc(3 * sizeof(char));
@@ -11,8 +11,22 @@ char ** readDeck(int size) {
     return deck;
 }
 
-int getCardValue(char c) {
-
+int getCardValue(char c, int low) {
+    if (c <= '9' && c >= '0') return c - '0';
+    switch (c) {
+        case 'T' :
+            return 10;
+        case 'J' :
+            return 11;
+        case 'Q' :
+            return 12;
+        case 'K' :
+            return 13;
+        case 'A' :
+            return low ? 1 : 14;
+        default:
+            return -777;
+    }
 }
 
 int weighHighHand(char ** hand, int handSize) {
@@ -37,6 +51,15 @@ int weighLowHand(char ** hand, int handSize) {
         handWeight -= cardValue;
     }
     return handWeight;
+}
+
+char ** copyHand(char ** originalHand, int size) {
+    char ** copy = malloc(size * sizeof(char *));
+    for (int i = 0; i < size; i++) {
+        copy[i] = malloc(3 * sizeof(char));
+        copy[i] = originalHand[i];
+    }
+    return copy;
 }
 
 char ** mergeCards() {
@@ -75,10 +98,10 @@ int main(void) {
     scanf("%d", &players);
     scanf("%d", &deckSize);
     scanf("%s", gamemode);
-    char ** communityCards = readDeck(5);
+    char ** communityCards = readHand(5);
     free(communityCards);
     for(int i = 0; i < players; i++) {
-        char ** playerDeck = readDeck(deckSize);
+        char ** playerDeck = readHand(deckSize);
         if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
             //char ** communityCards = readCommunityCards(5);
             mergeCards();
