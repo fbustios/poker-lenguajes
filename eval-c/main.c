@@ -11,6 +11,9 @@
 #define FOUR_OF_A_KIND  7
 #define STRAIGHT_FLUSH  8
 #define ROYAL_FLUSH     9
+#define SUITS 4
+#define CARDS 14
+
 
 
 char ** readHand(const int size) {
@@ -54,7 +57,29 @@ int getSuitValue(const char c) {
             return 0;
     }
 }
-int findStraight(int * suits) {
+int findStraight(const int * suits_freq, const int * values_freq) {
+    int flag = 0;
+    for (int i = 0; i < SUITS; i++) {
+        if (suits_freq[i] == 5) flag = 1;
+    }
+    int counter = 0;
+    int firstElement = 0;
+    int lastElement = 0;
+    for (int i = 0; i < CARDS; i++) {
+        if (counter == 5 && !flag) return ((STRAIGHT * 14) + (firstElement + 1));
+        if (counter == 5 && (lastElement == 13)) return ROYAL_FLUSH * 14;
+        if (counter == 5 && (lastElement == 9)) return STRAIGHT_FLUSH * 14;
+        counter += 1;
+        lastElement = i;
+
+        if (values_freq[i] != 1) {
+            counter = 0;
+            firstElement = i;
+            lastElement = i;
+        }
+
+    }
+    if (flag) return FLUSH * 14;
     return 0;
 }
 
@@ -70,15 +95,13 @@ int weighHighHand(char ** hand, int handSize) {
         values_freq[number]++;
         suits_freq[suit]++;
     }
-    for (int i = 0; i < 4; i++) {
-        if (suits_freq[i] == 5) {
-
-            free(suits_freq);
-            free(values_freq);
-            free(visited_values);
-            free(visited_suits);
-            return score;
-        }
+    int hasStraight = findStraight(suits_freq, values_freq);
+    if (hasStraight) {
+        free(suits_freq);
+        free(values_freq);
+        free(visited_suits);
+        free(visited_values);
+        return hasStraight;
     }
 
     for (int i = 0; i < 14; i++) {
