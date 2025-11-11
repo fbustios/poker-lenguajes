@@ -8,8 +8,9 @@
 }
 {
 	"event": "PLACE_BET",
-	"current_player": 0,
 	"game_mode": "Omaha",
+	"current_player": 0,
+	"player_action": "RAISE"
 	"bet": 5000
 },
 {
