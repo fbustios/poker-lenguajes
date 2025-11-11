@@ -1,8 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define HIGH_CARD       0
+#define ONE_PAIR        1
+#define TWO_PAIR        2
+#define THREE_OF_A_KIND 3
+#define STRAIGHT        4
+#define FLUSH           5
+#define FULL_HOUSE      6
+#define FOUR_OF_A_KIND  7
+#define STRAIGHT_FLUSH  8
+#define ROYAL_FLUSH     9
 
-char ** readHand(int size) {
+
+char ** readHand(const int size) {
     char ** deck = malloc(size * sizeof(char *));
     for (int i = 0; i < size; i++) {
         deck[i] = malloc(3 * sizeof(char));
@@ -11,7 +22,7 @@ char ** readHand(int size) {
     return deck;
 }
 
-int getCardValue(char c, int low) {
+int getCardValue(const char c, const int low) {
     if (c <= '9' && c >= '0') return c - '0';
     switch (c) {
         case 'T' :
@@ -29,20 +40,60 @@ int getCardValue(char c, int low) {
     }
 }
 
-int weighHighHand(char ** hand, int handSize) {
-    int * suits_freq = calloc(4, sizeof(int));
-    int * values_freq = calloc(14, sizeof(int));
-    for (int i = 0; i < handSize; i++) {
-
+int getSuitValue(const char c) {
+    switch (c) {
+        case 'H':
+            return 1;
+        case 'S':
+            return 2;
+        case 'D':
+            return 3;
+        case 'C':
+            return 4;
+        default:
+            return 0;
     }
-    free(suits_freq);
-    free(values_freq);
+}
+int findStraight(int * suits) {
     return 0;
 }
 
-int isLowHand(char ** hand, int handSize) {
+int weighHighHand(char ** hand, int handSize) {
+    int * suits_freq = calloc(4, sizeof(int));
+    int * values_freq = calloc(14, sizeof(int));
+    int * visited_values = calloc(14, sizeof(int));
+    int * visited_suits = calloc(14, sizeof(int));
+    int score = 0;
+    for (int i = 0; i < handSize; i++) {
+        const int number = getCardValue(hand[i][1],0);
+        const int suit = getSuitValue(hand[i][0]);
+        values_freq[number]++;
+        suits_freq[suit]++;
+    }
+    for (int i = 0; i < 4; i++) {
+        if (suits_freq[i] == 5) {
 
+            free(suits_freq);
+            free(values_freq);
+            free(visited_values);
+            free(visited_suits);
+            return score;
+        }
+    }
+
+    for (int i = 0; i < 14; i++) {
+        if (values_freq[i] == 4) score += (14 * FOUR_OF_A_KIND) + (i + 1);
+        if (values_freq[i] == 3) score += (14 * THREE_OF_A_KIND) + (i + 1);
+        if (values_freq[i] == 2) score += (14 * ONE_PAIR) + (i + 1);
+    }
+    free(suits_freq);
+    free(values_freq);
+    free(visited_values);
+    free(visited_suits);
+    return score;
 }
+
+
 int weighLowHand(char ** hand, int handSize) {
     int handWeight = 0;
     for (int i = 0; i < handSize; i++) {
@@ -76,11 +127,12 @@ char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, in
         }
         return currentHand;
     }
-    char ** takingOption = getBestHandAux(fullHand, currentHand[currentIndex] = fullHand[currentIndex], targetSize, currentHandSize++, currentIndex++);
-    char ** skippingOption = getBestHandAux(fullHand, currentHand, targetSize, currentHandSize,currentIndex++);
-    //return weighHighHand() > weighHighHand() ? takingOption : skippingOption;
-    return skippingOption;
-
+    char ** copyCurrentHand = copyHand(currentHand, currentHandSize);
+    char ** copyCurrentHand2 = copyHand(currentHand, currentHandSize);
+    copyCurrentHand[currentIndex] = fullHand[currentIndex];
+    char ** takingOption = getBestHandAux(fullHand, copyCurrentHand, targetSize, currentHandSize + 1, currentIndex + 1);
+    char ** skippingOption = getBestHandAux(fullHand, copyCurrentHand2, targetSize, currentHandSize, currentIndex + 1);
+    return weighHighHand(takingOption, targetSize + 1) > weighHighHand(skippingOption, targetSize) ? takingOption : skippingOption;
 }
 
 char ** getBestHand(char ** fullHand, int targetSize) {
