@@ -63,18 +63,27 @@ int findStraight(const int * suits_freq, const int * values_freq) {
         if (suits_freq[i] == 5) flag = 1;
     }
     int counter = 0;
-    int firstElement = 0;
     int lastElement = 0;
     for (int i = 0; i < CARDS; i++) {
-        if (counter == 5 && !flag) return ((STRAIGHT * 14) + (firstElement + 1));
-        if (counter == 5 && (lastElement == 13)) return ROYAL_FLUSH * 14;
-        if (counter == 5 && (lastElement == 9)) return STRAIGHT_FLUSH * 14;
         counter += 1;
         lastElement = i;
 
+        if (counter == 5 && !flag) {
+            //printf("%d", lastElement);
+            return ((STRAIGHT * 14) + (lastElement + 1));
+        }
+        if (counter == 5 && (lastElement == 13)) {
+            //printf("%d", lastElement);
+            return ROYAL_FLUSH * 14;
+        }
+        if (counter == 5) {
+            //printf("%d", lastElement);
+            return (STRAIGHT_FLUSH * 14) + (lastElement + 1);
+        }
+
+
         if (values_freq[i] != 1) {
             counter = 0;
-            firstElement = i;
             lastElement = i;
         }
 
@@ -92,7 +101,7 @@ int weighHighHand(char ** hand, int handSize) {
     for (int i = 0; i < handSize; i++) {
         const int number = getCardValue(hand[i][1],0);
         const int suit = getSuitValue(hand[i][0]);
-        values_freq[number]++;
+        values_freq[number-1]++;
         suits_freq[suit]++;
     }
     int hasStraight = findStraight(suits_freq, values_freq);
@@ -170,11 +179,23 @@ int main(void) {
     int players;
     char gamemode[10];
     int deckSize;
-    scanf("%d", &players);
-    scanf("%d", &deckSize);
-    scanf("%s", gamemode);
-    char ** communityCards = readHand(5);
-    free(communityCards);
+    //scanf("%d", &players);
+    //scanf("%d", &deckSize);
+    //scanf("%s", gamemode);
+    //char ** communityCards = readHand(5);
+    //free(communityCards);
+    char ** deck = malloc(5 * sizeof(char *));
+    for (int i = 0; i < 5; i++) {
+        deck[i] = malloc(3 * sizeof(char));
+    }
+    deck[0] = "DA";
+    deck[1] = "DA";
+    deck[2] = "DA";
+    deck[3] = "DK";
+    deck[4] = "DK";
+    int score = weighHighHand(deck, 5);
+    printf("%d", score);
+    /*
     for(int i = 0; i < players; i++) {
         char ** playerDeck = readHand(deckSize);
         if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
@@ -188,6 +209,7 @@ int main(void) {
             //return lowHand;
         }
     }
+    */
 
 
     return 0;
