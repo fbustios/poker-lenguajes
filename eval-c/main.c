@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define SUITS 4
 #define CARDS 14
 #define FULL_HAND 7
