@@ -25,6 +25,11 @@ struct Ranking {
     int score;
 };
 
+struct Player {
+    char * name;
+    char ** bestHand;
+};
+
 char ** readHand(const int size) {
     char ** deck = malloc(size * sizeof(char *));
     for (int i = 0; i < size; i++) {
@@ -156,21 +161,21 @@ struct Ranking findRanking(char ** hand) {
         free(values_freq);
         if (pairCount == 2) {
             const struct Ranking r = {TWO_PAIR, 0};
-            printf("%c",'X');
+            //printf("%c",'X');
             return r;
         }
         const struct Ranking r = {ONE_PAIR, hasPair};
         return r;
     }
     if (hasTrio) {
-        printf("%s","TRIO");
+        //printf("%s","TRIO");
         free(suits_freq);
         free(values_freq);
         const struct Ranking r = {THREE_OF_A_KIND, hasTrio};
         return r;
     }
     const struct Ranking fullHand = findStraightHand(suits_freq, values_freq);
-    printf("%c",'\n');
+    //printf("%c",'\n');
     free(suits_freq);
     free(values_freq);
     return fullHand;
@@ -182,22 +187,12 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
     for (int i = 0; i < HAND_SIZE; i++) {
         int value = getCardValue(firstHand[i][1],0);
         int value2 = getCardValue(secondHand[i][1],0);
-        printf("%d",value);
-        printf("%d",value2);
+        //printf("%d",value);
+        //printf("%d",value2);
         hand1_freq[value-1]++;
         hand2_freq[value2-1]++;
     }
-    printf("%s", "\n");
-    for (int i = 0; i < 14; i++) {
-        printf("%d", hand1_freq[i]);
-        printf("%c", ' ');
-    }
-    printf("%s", "\n");
-    for (int i = 0; i < 14; i++) {
-        printf("%d", hand2_freq[i]);
-        printf("%c", ' ');
-    }
-    printf("%s", "finsih");
+
     int winner = -1;
     int max = 0;
     for (int i = 0; i < CARDS; i++) {
@@ -206,8 +201,8 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
             if (cardValue >= max) {
                 max = cardValue;
                 winner = 2;
-                printf("%d", cardValue);
-                printf("%c", ' ');
+                //printf("%d", cardValue);
+                //printf("%c", ' ');
             }
         }
 
@@ -215,16 +210,16 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
             if (cardValue >= max) {
                 max = cardValue;
                 winner = 1;
-                printf("%d", cardValue);
-                printf("%c", ' ');
+                //printf("%d", cardValue);
+                //printf("%c", ' ');
             }
         }
     }
     free(hand1_freq);
     free(hand2_freq);
-    printf("%s", "se decidió por highcard y ganó: ");
-    printf("%d", winner);
-    printf("%s", "\n");
+    //printf("%s", "se decidió por highcard y ganó: ");
+    //printf("%d", winner);
+    //printf("%s", "\n");
     return winner == 1 ? firstHand : secondHand;
 }
 
@@ -289,7 +284,7 @@ char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, in
 }
 
 
-char ** getBestHand(char ** fullHand, int targetSize) {
+char ** getBestHand(char ** fullHand, const int targetSize) {
     char ** currentHand = calloc(targetSize, sizeof(char *));
     for (int i = 0; i < targetSize; i++) {
         currentHand[i] = calloc(2, sizeof(char));
@@ -297,6 +292,17 @@ char ** getBestHand(char ** fullHand, int targetSize) {
     return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
 }
 
+char ** decideWinners(const struct Player * playerArray, const int players) {
+    char ** winners = malloc(players * sizeof(char *));
+    for (int i = 0; i < players; i++) {
+        winners[i] = malloc(5 * sizeof(char));
+        winners[i] = NULL;
+    }
+    for (int i = 0; i < players; i++) {
+        struct Player p = playerArray[i];
+    }
+    return winners;
+}
 int main(void) {
     int players;
     char gamemode[10];
@@ -328,7 +334,7 @@ int main(void) {
 
     //struct Ranking score = findRanking(deck);
     //struct Ranking score2 = findRanking(deck2);
-    decideTie(deck, deck2);
+    //decideTie(deck, deck2);
     //printf("%d", score.rank);
     //printf("%c", '\n');
     //printf("%d", score2.rank);
@@ -345,10 +351,10 @@ int main(void) {
     fullHand[5] = "CK";
     fullHand[6] = "S2";
 
-    //char ** best = getBestHand(fullHand,5);
+    char ** best = getBestHand(fullHand,5);
     printf("%s", "\n");
     for (int i = 0; i < 5; i++) {
-        //printf("%s", best[i]);
+        printf("%s", best[i]);
         printf("%c", ' ');
     }
     free(fullHand);
