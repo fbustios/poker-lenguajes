@@ -1,7 +1,8 @@
-<<<<<<< HEAD
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define NONE           (-1)
 #define HIGH_CARD       0
 #define ONE_PAIR        1
 #define TWO_PAIR        2
@@ -19,7 +20,10 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 
-
+struct Ranking {
+    int rank;
+    int score;
+};
 
 char ** readHand(const int size) {
     char ** deck = malloc(size * sizeof(char *));
@@ -62,14 +66,16 @@ int getSuitValue(const char c) {
             return 4;
     }
 }
-int findStraight(const int * suits_freq, const int * values_freq) {
+
+struct Ranking findStraightHand(const int * suits_freq, const int * values_freq) {
     int flag = 0;
     for (int i = 0; i < SUITS; i++) {
         if (suits_freq[i] == 5) flag = 1;
     }
+
     int counter = 1;
     int lastElement = 0;
-    int max = 0;
+    int max = 1;
     for (int i = 1; i < CARDS; i++) {
         if (values_freq[i] == 1 && (values_freq[i] == values_freq[i-1])) {
             counter += 1;
@@ -77,129 +83,36 @@ int findStraight(const int * suits_freq, const int * values_freq) {
         } else {
             counter = 1;
         }
-
-        if (values_freq[i] && ((i + 1) > max)) {
-            max = i + 1;
-        }
-        if (counter == 5 && !flag) {
-            printf("%s", "STRAIGHT");
-            return ((STRAIGHT * 14) + (lastElement + 1));
-        }
-        if (counter == 5 && (lastElement == 13)) {
-            printf("%s", "ROYAL_FLUSH");
-            return ROYAL_FLUSH * 14;
-        }
-        if (counter == 5) {
-            printf("%s", "STRAIGHT_FLUSH");
-            return (STRAIGHT_FLUSH * 14) + (lastElement + 1);
-        }
-    }
-
-    if (flag) {
-        printf("%s", "FLUSH");
-        return (FLUSH * 14) + max;
-    }
-    return 0;
-}
-
-int findStraightHand(const int * suits_freq, const int * values_freq) {
-    int flag = 0;
-    for (int i = 0; i < SUITS; i++) {
-        if (suits_freq[i] == 5) flag = 1;
-    }
-    int counter = 1;
-    int lastElement = 0;
-
-    for (int i = 1; i < CARDS; i++) {
-        if (values_freq[i] == 1 && (values_freq[i] == values_freq[i-1])) {
-            counter += 1;
-            lastElement = i;
-        } else {
-            counter = 1;
+        if (values_freq[i]) {
+            max = MAX(max, i + 1);
         }
         if (counter == 5 && !flag) {
             //printf("%s", "STRAIGHT");
-            return STRAIGHT;
+            const struct Ranking r = {STRAIGHT, lastElement + 1};
+            return r;
         }
         if (counter == 5 && (lastElement == 13)) {
             //printf("%s", "ROYAL_FLUSH");
-            return ROYAL_FLUSH;
+            const struct Ranking r = {STRAIGHT, lastElement + 1};
+            return r;
         }
         if (counter == 5) {
             //printf("%s", "STRAIGHT_FLUSH");
-            return STRAIGHT_FLUSH;
+            const struct Ranking r = {STRAIGHT_FLUSH, lastElement + 1};
+            return r;
         }
     }
 
     if (flag) {
         //printf("%s", "FLUSH");
-        return FLUSH;
+        const struct Ranking r = {FLUSH, max};
+        return r;
     }
-    return -1;
+    const struct Ranking r = {HIGH_CARD, max};
+    return r;
 }
 
-int weighHighHand(char ** hand) {
-    int * suits_freq = calloc(4, sizeof(int));
-    int * values_freq = calloc(14, sizeof(int));
-    int * visited_values = calloc(14, sizeof(int));
-    int score = 0;
-    int cardsLeft = HAND_SIZE;
-    for (int i = 0; i < HAND_SIZE; i++) {
-        const int number = getCardValue(hand[i][1],0);
-        const int suit = getSuitValue(hand[i][0]);
-        values_freq[number-1]++;
-        suits_freq[suit]++;
-    }
-
-    int hasPair = 0;
-    int hasTrio = 0;
-    for (int i = 0; i < CARDS; i++) {
-        if (values_freq[i] == 4) {
-            score += (CARDS * FOUR_OF_A_KIND) + ((i + 1 )* FOUR_OF_A_KIND);
-            printf("%s","FOUR_OF_KIND");
-            visited_values[i]++;
-            cardsLeft-=4;
-            break;
-        }
-        if (values_freq[i] == 3) {
-            score += (CARDS * THREE_OF_A_KIND) + ((i + 1) * 14);
-            visited_values[i]++;
-            printf("%s","THREE_OF_KIND");
-            cardsLeft-=3;
-            hasTrio = 1;
-        }
-        if (values_freq[i] == 2) {
-            score += (CARDS * ONE_PAIR) + ((i + 1));
-            visited_values[i]++;
-            printf("%s","PAIR");
-            hasPair += 1;
-            cardsLeft-=2;
-        }
-    }
-    if (hasPair && hasTrio) {
-        score += 14 * 7;
-        printf("%s","FULL_HOUSE");
-    }
-    int highCard = 0;
-    for (int i = (CARDS - 1) ; i >= 0; i--) {
-        if (!visited_values[i] && values_freq[i] && cardsLeft) {
-            //printf("%d",i + 1);
-            //printf("%c",'\n');
-            highCard += i + 1;
-            cardsLeft-=1;
-        }
-    }
-    int bestScore = score + highCard;
-    int hasStraight = findStraight(suits_freq, values_freq);
-
-    printf("%c",'\n');
-    free(suits_freq);
-    free(values_freq);
-    free(visited_values);
-    return MAX(bestScore, hasStraight);
-}
-
-int findHandRanking(char ** hand) {
+struct Ranking findRanking(char ** hand) {
     int * suits_freq = calloc(4, sizeof(int));
     int * values_freq = calloc(14, sizeof(int));
     for (int i = 0; i < HAND_SIZE; i++) {
@@ -208,7 +121,7 @@ int findHandRanking(char ** hand) {
         values_freq[number-1]++;
         suits_freq[suit]++;
     }
-
+    int pairCount = 0;
     int hasPair = 0;
     int hasTrio = 0;
     for (int i = 0; i < CARDS; i++) {
@@ -216,45 +129,122 @@ int findHandRanking(char ** hand) {
             //printf("%s","FOUR_OF_KIND");
             free(suits_freq);
             free(values_freq);
-            return FOUR_OF_A_KIND;
+            const struct Ranking r = {FOUR_OF_A_KIND, i + 1};
+            return r;
         }
         if (values_freq[i] == 3) {
             //printf("%s","THREE_OF_KIND");
-            hasTrio = 1;
+            hasTrio = i + 1;
         }
         if (values_freq[i] == 2) {
             //printf("%s","PAIR");
-            hasPair += 1;
+            hasPair += i + 1;
+            pairCount += 1;
         }
     }
     if (hasPair && hasTrio) {
         //printf("%s","FULL_HOUSE");
         free(suits_freq);
         free(values_freq);
-        return FULL_HOUSE;
+        const struct Ranking r = {FULL_HOUSE, (hasTrio * 50) + hasPair};
+        return r;
 
     }
     if (hasPair) {
         //printf("%s","PAIRS");
         free(suits_freq);
         free(values_freq);
-        return hasPair == 2 ? TWO_PAIR : ONE_PAIR;
+        if (pairCount == 2) {
+            const struct Ranking r = {TWO_PAIR, 0};
+            printf("%c",'X');
+            return r;
+        }
+        const struct Ranking r = {ONE_PAIR, hasPair};
+        return r;
     }
     if (hasTrio) {
-        //printf("%s","TRIO");
+        printf("%s","TRIO");
         free(suits_freq);
         free(values_freq);
-        return THREE_OF_A_KIND;
+        const struct Ranking r = {THREE_OF_A_KIND, hasTrio};
+        return r;
     }
-    int hasStraight = findStraightHand(suits_freq, values_freq);
-
+    const struct Ranking fullHand = findStraightHand(suits_freq, values_freq);
     printf("%c",'\n');
     free(suits_freq);
     free(values_freq);
-    return MAX(HIGH_CARD, hasStraight);
+    return fullHand;
 }
 
+char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
+    int * hand1_freq = calloc(CARDS,sizeof(int));
+    int * hand2_freq = calloc(CARDS,sizeof(int));
+    for (int i = 0; i < HAND_SIZE; i++) {
+        int value = getCardValue(firstHand[i][1],0);
+        int value2 = getCardValue(secondHand[i][1],0);
+        printf("%d",value);
+        printf("%d",value2);
+        hand1_freq[value-1]++;
+        hand2_freq[value2-1]++;
+    }
+    printf("%s", "\n");
+    for (int i = 0; i < 14; i++) {
+        printf("%d", hand1_freq[i]);
+        printf("%c", ' ');
+    }
+    printf("%s", "\n");
+    for (int i = 0; i < 14; i++) {
+        printf("%d", hand2_freq[i]);
+        printf("%c", ' ');
+    }
+    printf("%s", "finsih");
+    int winner = -1;
+    int max = 0;
+    for (int i = 0; i < CARDS; i++) {
+        int cardValue = i + 1;
+        if (!hand1_freq[i] && hand2_freq[i]) {
+            if (cardValue >= max) {
+                max = cardValue;
+                winner = 2;
+                printf("%d", cardValue);
+                printf("%c", ' ');
+            }
+        }
 
+        if (hand1_freq[i] && !hand2_freq[i]) {
+            if (cardValue >= max) {
+                max = cardValue;
+                winner = 1;
+                printf("%d", cardValue);
+                printf("%c", ' ');
+            }
+        }
+    }
+    free(hand1_freq);
+    free(hand2_freq);
+    printf("%s", "se decidió por highcard y ganó: ");
+    printf("%d", winner);
+    printf("%s", "\n");
+    return winner == 1 ? firstHand : secondHand;
+}
+
+char ** decideTie(char ** firstHand, char ** secondHand) {
+    struct Ranking firstHandRanking = findRanking(firstHand);
+    struct Ranking secondHandRanking = findRanking(secondHand);
+    int rank1 = firstHandRanking.rank;
+    int rank2 = secondHandRanking.rank;
+    int score1 = firstHandRanking.score;
+    int score2 = secondHandRanking.score;
+    if (rank1 == rank2) {
+        if (rank1 == 2) { return decideTieByHighCard(firstHand, secondHand);}
+        if (score1 == score2) {
+            return decideTieByHighCard(firstHand,secondHand);
+        }
+        return score1 > score2 ? firstHand : secondHand;
+    };
+
+    return rank1 > rank2 ? firstHand : secondHand;
+}
 
 int weighLowHand(char ** hand, int handSize) {
     int handWeight = 0;
@@ -283,9 +273,6 @@ char ** mergeCards() {
 char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, int currentHandIndex, int currentIndex) {
     if (currentHandIndex == targetSize) return currentHand;
 
-
-    //falta corregir este base case y manejar mejor la memoria
-
     if (targetSize - currentHandIndex == 7 - currentIndex) {
         char ** newHand = copyHand(currentHand,5);
         for (int i = currentIndex; i < FULL_HAND ; i++) {
@@ -298,7 +285,7 @@ char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, in
     copyCurrentHand[currentHandIndex] = fullHand[currentIndex];
     char ** takingOption = getBestHandAux(fullHand, copyCurrentHand, targetSize, currentHandIndex + 1, currentIndex + 1);
     char ** skippingOption = getBestHandAux(fullHand, copyCurrentHand2, targetSize, currentHandIndex, currentIndex + 1);
-    return weighHighHand(takingOption) > weighHighHand(skippingOption) ? takingOption : skippingOption;
+    return decideTie(takingOption, skippingOption);
 }
 
 
@@ -323,47 +310,50 @@ int main(void) {
     for (int i = 0; i < 5; i++) {
         deck[i] = malloc(3 * sizeof(char));
     }
-    deck[0] = "D6";
-    deck[1] = "H6";
-    deck[2] = "S6";
-    deck[3] = "DK";
-    deck[4] = "SJ";
+    deck[0] = "SA";
+    deck[1] = "DA";
+    deck[2] = "C5";
+    deck[3] = "H3";
+    deck[4] = "D1";
 
     char ** deck2 = malloc(5 * sizeof(char *));
     for (int i = 0; i < 5; i++) {
         deck2[i] = malloc(3 * sizeof(char));
     }
-    deck2[0] = "H6";
-    deck2[1] = "H6";
-    deck2[2] = "SA";
-    deck2[3] = "HA";
-    deck2[4] = "H1";
+    deck2[0] = "SA";
+    deck2[1] = "DA";
+    deck2[2] = "H2";
+    deck2[3] = "D5";
+    deck2[4] = "D1";
 
-    int score = findHandRanking(deck);
-    int score2 = findHandRanking(deck2);
-    printf("%d", score);
-    printf("%c", '\n');
-    printf("%d", score2);
+    //struct Ranking score = findRanking(deck);
+    //struct Ranking score2 = findRanking(deck2);
+    decideTie(deck, deck2);
+    //printf("%d", score.rank);
+    //printf("%c", '\n');
+    //printf("%d", score2.rank);
 
     char ** fullHand = malloc(5 * sizeof(char *));
     for (int i = 0; i < 5; i++) {
         fullHand[i] = malloc(3 * sizeof(char));
     }
-    fullHand[0] = "D1";
-    fullHand[1] = "C3";
-    fullHand[2] = "D5";
-    fullHand[3] = "S5";
-    fullHand[4] = "CA";
-    fullHand[5] = "HA";
-    fullHand[6] = "DA";
+    fullHand[0] = "HK";
+    fullHand[1] = "SK";
+    fullHand[2] = "CT";
+    fullHand[3] = "HT";
+    fullHand[4] = "D5";
+    fullHand[5] = "CK";
+    fullHand[6] = "S2";
 
     //char ** best = getBestHand(fullHand,5);
     printf("%s", "\n");
     for (int i = 0; i < 5; i++) {
-       // printf("%s", best[i]);
+        //printf("%s", best[i]);
         printf("%c", ' ');
     }
     free(fullHand);
+    free(deck2);
+    free(deck);
     /*
     for(int i = 0; i < players; i++) {
         char ** playerDeck = readHand(deckSize);
@@ -381,124 +371,4 @@ int main(void) {
     */
     return 0;
 }
-=======
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-char ** readHand(int size) {
-    char ** deck = malloc(size * sizeof(char *));
-    for (int i = 0; i < size; i++) {
-        deck[i] = malloc(3 * sizeof(char));
-        scanf("%3s", deck[i]);
-    }
-    return deck;
-}
-
-int getCardValue(char c, int low) {
-    if (c <= '9' && c >= '0') return c - '0';
-    switch (c) {
-        case 'T' :
-            return 10;
-        case 'J' :
-            return 11;
-        case 'Q' :
-            return 12;
-        case 'K' :
-            return 13;
-        case 'A' :
-            return low ? 1 : 14;
-        default:
-            return -777;
-    }
-}
-
-int weighHighHand(char ** hand, int handSize) {
-    int * suits_freq = calloc(4, sizeof(int));
-    int * values_freq = calloc(14, sizeof(int));
-    for (int i = 0; i < handSize; i++) {
-
-    }
-    free(suits_freq);
-    free(values_freq);
-    return 0;
-}
-
-int isLowHand(char ** hand, int handSize) {
-
-}
-int weighLowHand(char ** hand, int handSize) {
-    int handWeight = 0;
-    for (int i = 0; i < handSize; i++) {
-        char cardNumber = hand[i][1];
-        int cardValue = cardNumber - '0';
-        handWeight -= cardValue;
-    }
-    return handWeight;
-}
-
-char ** copyHand(char ** originalHand, int size) {
-    char ** copy = malloc(size * sizeof(char *));
-    for (int i = 0; i < size; i++) {
-        copy[i] = malloc(3 * sizeof(char));
-        copy[i] = originalHand[i];
-    }
-    return copy;
-}
-
-char ** mergeCards() {
-    return 0;
-}
-
-
-char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, int currentHandSize, int currentIndex) {
-    if (currentHandSize == targetSize) return currentHand;
-
-    if (targetSize - currentHandSize == targetSize - currentIndex) {
-        for (int i = currentIndex; i < targetSize ; i++) {
-            currentHand[i] = fullHand[i];
-        }
-        return currentHand;
-    }
-    char ** takingOption = getBestHandAux(fullHand, currentHand[currentIndex] = fullHand[currentIndex], targetSize, currentHandSize++, currentIndex++);
-    char ** skippingOption = getBestHandAux(fullHand, currentHand, targetSize, currentHandSize,currentIndex++);
-    //return weighHighHand() > weighHighHand() ? takingOption : skippingOption;
-    return skippingOption;
-
-}
-
-char ** getBestHand(char ** fullHand, int targetSize) {
-    char ** currentHand = calloc(targetSize, sizeof(char *));
-    for (int i = 0; i < targetSize; i++) {
-        currentHand[i] = calloc(2, sizeof(char));
-    }
-    return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
-}
-
-int main(void) {
-    int players;
-    char gamemode[10];
-    int deckSize;
-    scanf("%d", &players);
-    scanf("%d", &deckSize);
-    scanf("%s", gamemode);
-    char ** communityCards = readHand(5);
-    free(communityCards);
-    for(int i = 0; i < players; i++) {
-        char ** playerDeck = readHand(deckSize);
-        if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
-            //char ** communityCards = readCommunityCards(5);
-            mergeCards();
-
-            //return weighHighHand(,7);
-        }
-        if (strcmp(gamemode, "razz") || strcmp(gamemode,"omaha-hilo")) {
-            //int lowHand = weighLowHand(,7);
-            //return lowHand;
-        }
-    }
-
-
-    return 0;
-}
->>>>>>> b166d8a (adding a dependenci for an object mapper for json)
