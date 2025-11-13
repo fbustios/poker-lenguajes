@@ -10,4 +10,5 @@ Incluye las funciones principales:
 - `decideTie(char **firstHand, char **secondHand)` → Determina la mano ganadora.
 
 Este componente se integra en el **servidor de juego**, recibiendo las manos de los jugadores  
-y devolviendo la mano ganadora según las reglas estándar de póker.
+y devolviendo la mano ganadora según las reglas estándar de póker HORSE.
+
