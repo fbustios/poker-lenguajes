@@ -2,23 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NONE           (-1)
-#define HIGH_CARD       0
-#define ONE_PAIR        1
-#define TWO_PAIR        2
-#define THREE_OF_A_KIND 3
-#define STRAIGHT        4
-#define FLUSH           5
-#define FULL_HOUSE      6
-#define FOUR_OF_A_KIND  7
-#define STRAIGHT_FLUSH  8
-#define ROYAL_FLUSH     9
 #define SUITS 4
 #define CARDS 14
 #define FULL_HAND 7
 #define HAND_SIZE 5
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+enum HandRank {
+    NONE = -1,
+    HIGH_CARD,
+    ONE_PAIR,
+    TWO_PAIR,
+    THREE_OF_A_KIND,
+    STRAIGHT,
+    FLUSH,
+    FULL_HOUSE,
+    FOUR_OF_A_KIND,
+    STRAIGHT_FLUSH,
+    ROYAL_FLUSH
+};
 
 struct Ranking {
     int rank;
@@ -98,7 +100,7 @@ struct Ranking findStraightHand(const int * suits_freq, const int * values_freq)
         }
         if (counter == 5 && (lastElement == 13)) {
             //printf("%s", "ROYAL_FLUSH");
-            const struct Ranking r = {STRAIGHT, lastElement + 1};
+            const struct Ranking r = {ROYAL_FLUSH, lastElement + 1};
             return r;
         }
         if (counter == 5) {
@@ -343,11 +345,11 @@ int main(void) {
     for (int i = 0; i < 5; i++) {
         fullHand[i] = malloc(3 * sizeof(char));
     }
-    fullHand[0] = "H1";
-    fullHand[1] = "S2";
-    fullHand[2] = "C7";
-    fullHand[3] = "HA";
-    fullHand[4] = "DA";
+    fullHand[0] = "HA";
+    fullHand[1] = "HK";
+    fullHand[2] = "HQ";
+    fullHand[3] = "HJ";
+    fullHand[4] = "HT";
     fullHand[5] = "CA";
     fullHand[6] = "SA";
 
