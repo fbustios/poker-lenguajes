@@ -1,7 +1,7 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define NONE           (-1)
 #define HIGH_CARD       0
 #define ONE_PAIR        1
@@ -343,13 +343,13 @@ int main(void) {
     for (int i = 0; i < 5; i++) {
         fullHand[i] = malloc(3 * sizeof(char));
     }
-    fullHand[0] = "HK";
-    fullHand[1] = "SK";
-    fullHand[2] = "CT";
-    fullHand[3] = "HT";
-    fullHand[4] = "D5";
-    fullHand[5] = "CK";
-    fullHand[6] = "S2";
+    fullHand[0] = "H1";
+    fullHand[1] = "S2";
+    fullHand[2] = "C7";
+    fullHand[3] = "HA";
+    fullHand[4] = "DA";
+    fullHand[5] = "CA";
+    fullHand[6] = "SA";
 
     char ** best = getBestHand(fullHand,5);
     printf("%s", "\n");
