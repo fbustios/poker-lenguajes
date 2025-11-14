@@ -1,12 +1,12 @@
 package pokertable;
 
 public final class CLLPokerTable implements PokerTable{
-    private PokerTable next;
-    private final String playerName;
+    private CLLPokerTable next;
 
 
-    private CLLPokerTable(final String playerName) {
-        this.playerName = playerName;
+//basura tengo que hacer un nodo individual y luego
+    private CLLPokerTable() {
+
     }
 
     @Override
