@@ -2,6 +2,7 @@ package dealing;
 
 import pokeritems.Deck;
 import pokeritems.PlayerModel;
+import pokertable.PokerTable;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public final class HoldemDealer implements Dealer {
     }
 
     @Override
-    public void deal(List<PlayerModel> playerModels, Deck deck) {
+    public void deal(PokerTable table, Deck deck) {
         switch (actualStage) {
             case PRE_FLOP -> preFlop();
             case FLOP -> flop();
