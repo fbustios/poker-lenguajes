@@ -1,5 +1,7 @@
 package pokertable;
 
+import pokeritems.PlayerModel;
+
 public interface PokerTable {
-    PokerTable next();
+    PlayerModel next();
 }

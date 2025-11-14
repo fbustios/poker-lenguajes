@@ -53,7 +53,7 @@
 }
 {
 	"event": "GAME_STARTED",
-	"players": [
+	"playerModels": [
 		{ "player": "aaron", "index": 0 },
 		{ "player": "franco", "index": 1 },
 		{ "player": "daniel", "index": 2 },

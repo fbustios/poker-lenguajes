@@ -2,11 +2,11 @@ package pokeritems;
 
 import java.util.List;
 
-public final class Player {
+public final class PlayerModel {
     private final int name;
     private List<Card> cards;
 
-    public Player(int name, List<Card> cardList) {
+    public PlayerModel(int name, List<Card> cardList) {
         this.name = name;
         this.cards = cardList;
     }
