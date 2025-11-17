@@ -3,14 +3,16 @@ package pokertable;
 import pokeritems.PlayerModel;
 
 public final class Seat {
+    private final boolean isDealer;
     private final int seatNumber;
     private boolean hasFolded;
     private Seat next;
-    private PlayerModel player;
+    private final PlayerModel player;
 
-    public Seat(final int seatNumber, PlayerModel player) {
+    public Seat(final int seatNumber, final PlayerModel player) {
         this.seatNumber = seatNumber;
         this.player = player;
+        this.isDealer = false;
     }
 
     public void setNext(final Seat next) {
@@ -25,7 +27,15 @@ public final class Seat {
         return this.hasFolded;
     }
 
-    public void setHasFolded(boolean value) {
+    public void setHasFolded(final boolean value) {
         this.hasFolded = value;
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    public PlayerModel getPlayer() {
+        return player;
     }
 }

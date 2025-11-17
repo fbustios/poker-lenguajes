@@ -1,3 +1,5 @@
+import network.PlayerConnection;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -19,7 +21,7 @@ public final class PokerServer {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             int currentPlayers = 0;
             while(currentPlayers < this.maxPlayers) {
-                new Thread();
+                new Thread(new PlayerConnection());
             }
         } catch (IOException e) {
             System.err.println("Could not listen on port " + this.port);

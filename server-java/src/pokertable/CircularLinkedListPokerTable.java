@@ -8,16 +8,30 @@ public final class CircularLinkedListPokerTable implements PokerTable{
     private Seat dealer;
     private Seat current;
 
-    private CircularLinkedListPokerTable() {
-
+    private CircularLinkedListPokerTable(Seat dealer) {
+        this.dealer = dealer;
+        this.current = dealer;
     }
 
     @Override
     public PlayerModel next() {
-      return null;
+      Seat next = this.current.getNext();
+      this.current = next;
+      return next.getPlayer();
     }
 
 
+    @Override
+    public List<PlayerModel> getPlayers() {
+        return List.of();
+    }
 
-
+    @Override
+    public void resetTable() {
+        Seat curr = current;
+        while(current != dealer) {
+            curr.setHasFolded(false);
+            curr = curr.getNext();
+        }
+    }
 }
