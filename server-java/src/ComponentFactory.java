@@ -6,10 +6,10 @@ import java.util.List;
 
 public final class ComponentFactory {
     public static Controller buildController(List<PlayerConnection> connections) {
-
+        return null;
     }
 
     private PokerTable buildPokerTable() {
-
+        return null;
     }
 }

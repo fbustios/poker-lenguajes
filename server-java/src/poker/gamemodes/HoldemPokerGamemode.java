@@ -20,5 +20,8 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         
     }
 
-
+    @Override
+    public boolean gamemodeOver() {
+        return false;
+    }
 }

@@ -1,4 +1,6 @@
 package poker;
 
-public class PokerGame {
+public interface PokerGame {
+    boolean isGameFinished();
+    void play();
 }

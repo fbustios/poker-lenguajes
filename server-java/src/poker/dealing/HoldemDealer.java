@@ -28,7 +28,6 @@ public final class HoldemDealer implements Dealer {
             case TURN -> turn();
             case RIVER -> river();
         }
-        nextStage();
     }
 
 

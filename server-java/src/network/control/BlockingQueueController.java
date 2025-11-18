@@ -1,21 +1,19 @@
 package network.control;
 
-import poker.gamemodes.PokerGamemode;
-import poker.table.PokerTable;
+import poker.PokerGame;
 
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class BlockingQueueController implements Controller{
+public final class BlockingQueueController implements Controller{
     private final BlockingQueue<String> eventQueue;
-    private PokerGamemode currentGamemode;
-    private final PokerTable table;
-    private boolean isGameFinished;
+    private final PokerGame game;
 
-    public BlockingQueueController(BlockingQueue<String> eventQueue, PokerTable table) {
+
+    public BlockingQueueController(BlockingQueue<String> eventQueue, PokerGame game) {
         this.eventQueue = eventQueue;
-        this.table = table;
+        this.game = game;
     }
 
 
@@ -26,7 +24,7 @@ public class BlockingQueueController implements Controller{
                 if (event.isPresent()) {
                     processEvent();
                 }
-                if (isGameFinished) {
+                if (game.isGameFinished()) {
                     return;
                 }
             } catch (InterruptedException e) {

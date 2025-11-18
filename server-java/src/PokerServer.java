@@ -1,8 +1,11 @@
 import network.control.BlockingQueueController;
 import network.control.Controller;
 import network.PlayerConnection;
+import network.io.ClientMessage;
 import network.io.LineScannerRequestParser;
 import network.io.RequestParser;
+import poker.HorsePokerGame;
+import poker.PokerGame;
 import poker.items.PlayerModel;
 import poker.table.CircularLinkedListPokerTable;
 import poker.table.PokerTable;
@@ -33,29 +36,33 @@ public final class PokerServer {
 
     void run() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Servidor escuchando en el puerto " + port + "...");
-            BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-            RequestParser rq = new LineScannerRequestParser();
-            int currentPlayers = 0;
-            List<PlayerConnection> playerConnections = new ArrayList<>();
-            while(currentPlayers < this.maxPlayers) {
-                Socket playerSocket = serverSocket.accept();
-                currentPlayers++;
-                PlayerConnection playerConnection = new PlayerConnection(playerSocket, queue, rq);
-                playerConnections.add(playerConnection);
-                new Thread(playerConnection).start();
-            }
-            PokerTable table = new CircularLinkedListPokerTable(new Seat(2, new PlayerModel(1, List.of())));
-            Controller gameController = new BlockingQueueController(queue, table);
+            System.out.println("Listening on " + port + "...");
+            BlockingQueue<ClientMessage> queue = new LinkedBlockingQueue<>();
+            List<PlayerConnection> playerConnections = gatherConnections(serverSocket,queue);
+            //PokerGame game = new HorsePokerGame();
+            //Controller gameController = new BlockingQueueController(queue, game);
             //gameController.start();
-            for(int i = 0; i < currentPlayers; i++ ) {
+            for(int i = 0; i < playerConnections.size(); i++ ) {
                 System.out.println(playerConnections.get(i).CONST);
             }
-
         } catch (IOException e) {
             System.err.println("Could not listen on port " + this.port);
             System.exit(-1);
         }
+    }
+
+    List<PlayerConnection> gatherConnections (ServerSocket socket, BlockingQueue<ClientMessage> queue) throws IOException {
+        RequestParser rq = new LineScannerRequestParser();
+        int currentPlayers = 0;
+        List<PlayerConnection> playerConnections = new ArrayList<>();
+        while(currentPlayers < this.maxPlayers) {
+            Socket playerSocket = socket.accept();
+            currentPlayers++;
+            PlayerConnection playerConnection = new PlayerConnection(playerSocket, queue, rq);
+            playerConnections.add(playerConnection);
+            new Thread(playerConnection).start();
+        }
+        return playerConnections;
     }
 
 
