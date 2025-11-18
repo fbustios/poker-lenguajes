@@ -1,6 +1,6 @@
 package poker.gamemodes;
 
-import dealing.Dealer;
+import poker.dealing.Dealer;
 import poker.items.PlayerModel;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
