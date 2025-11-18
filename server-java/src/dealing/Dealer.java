@@ -1,7 +1,7 @@
 package dealing;
 
-import pokeritems.Deck;
-import pokertable.PokerTable;
+import poker.items.Deck;
+import poker.table.PokerTable;
 
 
 public interface Dealer {

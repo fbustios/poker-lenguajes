@@ -1,10 +1,7 @@
 package dealing;
 
-import pokeritems.Deck;
-import pokeritems.PlayerModel;
-import pokertable.PokerTable;
-
-import java.util.List;
+import poker.items.Deck;
+import poker.table.PokerTable;
 
 public class OmahaDealer implements Dealer {
 

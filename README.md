@@ -43,13 +43,13 @@
 	"next_player": "franco",
 	"action": "raise",
 	"dealer": "p1",
-	"pot": 800
+	"poker.pot": 800
 }
 {
 	"event": "ROUND_OVER",
 	"game_mode": "Holdem",
 	"next_round": "show",
-	"pot": 500
+	"poker.pot": 500
 }
 {
 	"event": "GAME_STARTED",
@@ -71,7 +71,7 @@
 	"winners": [
 		{
 			"player": "sergio",
-			"pot": 300
+			"poker.pot": 300
 		}
 	]
 }

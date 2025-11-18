@@ -1,14 +1,14 @@
 package dealing;
 
-import pokeritems.Deck;
-import pokeritems.PlayerModel;
-import pokertable.PokerTable;
+import poker.items.Deck;
+import poker.items.PlayerModel;
+import poker.table.PokerTable;
 
 import java.util.List;
 
 public final class HoldemDealer implements Dealer {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
-    Stage actualStage;
+    private Stage actualStage;
 
     public HoldemDealer() {
         actualStage = Stage.PRE_FLOP;
@@ -16,22 +16,21 @@ public final class HoldemDealer implements Dealer {
 
     @Override
     public void deal(PokerTable table, Deck deck) {
+        List<PlayerModel> players = table.getPlayers();
         switch (actualStage) {
-            case PRE_FLOP -> preFlop();
-            case FLOP -> flop();
+            case PRE_FLOP -> {
+                preFlop();
+                actualStage = Stage.FLOP;
+            }
+            case FLOP -> {
+                flop();
+            }
             case TURN -> turn();
             case RIVER -> river();
         }
         nextStage();
     }
 
-    private void nextStage() {
-        switch (actualStage) {
-            case PRE_FLOP -> this.actualStage = Stage.FLOP;
-            case FLOP -> this.actualStage = Stage.TURN;
-            case TURN -> this.actualStage = Stage.RIVER;
-        }
-    }
 
     private void preFlop() {
 
