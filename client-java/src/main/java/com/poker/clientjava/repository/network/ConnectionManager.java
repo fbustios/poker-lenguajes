@@ -1,4 +1,4 @@
 package com.poker.clientjava.repository.network;
 
-public class ConnectionManager {
+public final class ConnectionManager {
 }
