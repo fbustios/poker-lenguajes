@@ -1,8 +1,0 @@
-ext.pathMapper = [:]
-ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/lib/external-system-rt.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/lib/external-system-rt.jar')
-ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/plugins/gradle/lib/gradle-tooling-extension-impl.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/plugins/gradle/lib/gradle-tooling-extension-impl.jar')
-ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/plugins/gradle/lib/gradle-tooling-extension-api.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2024.3.4/plugins/gradle/lib/gradle-tooling-extension-api.jar')
-ext.pathMapper.put('//wsl.localhost/Ubuntu-24.04/home/aaaron27/.sdkman/candidates/java/22.0.2-sem/bin/java', '/home/aaaron27/.sdkman/candidates/java/22.0.2-sem/bin/java')
-ext.pathMapper.put('//wsl.localhost/Ubuntu-24.04/home/aaaron27/code/poker-lenguajes/client-java', '/home/aaaron27/code/poker-lenguajes/client-java')
-ext.pathMapper.put("<<target java executable path>>", '/home/aaaron27/.sdkman/candidates/java/22.0.2-sem/bin/java')
-ext.mapPath = { path -> pathMapper.get(path) ?: path }
