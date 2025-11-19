@@ -1,4 +1,4 @@
 package com.poker.clientjava.repository.network.events;
 
-public class PlaceBetEvent {
+public final class PlaceBetEvent {
 }
