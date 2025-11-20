@@ -1,5 +1,7 @@
 package network.io;
 
+import network.ClientEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

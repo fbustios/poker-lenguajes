@@ -16,6 +16,12 @@ public class HorsePokerGame implements PokerGame{
     public boolean isGameFinished() {
         return false;
     }
+
+    @Override
+    public boolean isGamemodeOver() {
+        return false;
+    }
+
     public void play(){
 
     }

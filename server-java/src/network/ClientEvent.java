@@ -1,4 +1,4 @@
-package network.io;
+package network;
 
 public enum ClientEvent {
     JOIN_GAME("join_game"), ACTION("action");

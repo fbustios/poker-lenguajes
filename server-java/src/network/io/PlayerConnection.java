@@ -1,7 +1,6 @@
-package network;
+package network.io;
 
-import network.io.ClientMessage;
-import network.io.RequestParser;
+import network.ServerMessage;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -13,15 +12,19 @@ import java.util.concurrent.BlockingQueue;
 public final class PlayerConnection implements Runnable{
     private final Socket socket;
     public final int CONST = 1;
-    private final BlockingQueue<ClientMessage> queue;
+    private final BlockingQueue<ClientMessage> outputQueue;
+    private final BlockingQueue<String> inputQueue;
     private final InputStream inputStream;
     private final RequestParser requestParser;
+    private boolean alive;
 
-    public PlayerConnection(Socket socket, BlockingQueue<ClientMessage> queue, RequestParser requestParser) throws IOException {
+    public PlayerConnection(Socket socket, BlockingQueue<ClientMessage> outputQueue, BlockingQueue<String> inputQueue, RequestParser requestParser) throws IOException {
         this.socket = socket;
-        this.queue = queue;
+        this.outputQueue = outputQueue;
         this.inputStream = socket.getInputStream();
+        this.inputQueue = inputQueue;
         this.requestParser = requestParser;
+        this.alive = true;
     }
 
     @Override
@@ -31,7 +34,7 @@ public final class PlayerConnection implements Runnable{
             while (true) {
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
-                    queue.add(message.get());
+                    outputQueue.add(message.get());
                     System.out.println("added to the event queue");
                 }
             }
@@ -60,4 +63,14 @@ public final class PlayerConnection implements Runnable{
     }
 
     private void write() {}
+
+    public boolean isAlive() {
+        return this.alive;
+    }
+
+    public void addToEventQueue(String message) {
+        inputQueue.add(message);
+    }
+
+
 }
