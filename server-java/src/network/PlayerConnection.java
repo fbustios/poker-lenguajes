@@ -4,7 +4,6 @@ import network.io.ClientMessage;
 import network.io.RequestParser;
 
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
