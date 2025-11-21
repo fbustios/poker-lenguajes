@@ -4,6 +4,7 @@ import java.util.List;
 
 
 public class ListDeck implements Deck{
+    private List<Card> fullCards;
     private List<Card> cards;
 
     @Override
@@ -14,5 +15,10 @@ public class ListDeck implements Deck{
     @Override
     public Card draw() {
         return cards.removeFirst();
+    }
+
+    @Override
+    public void refill() {
+        this.cards = List.copyOf(fullCards);
     }
 }

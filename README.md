@@ -41,7 +41,7 @@
 	"game_mode": "Omaha",
 	"player": "aaron",
 	"next_player": "franco",
-	"action": "raise",
+	"pokerAction": "raise",
 	"dealer": "p1",
 	"poker.pot": 800
 }

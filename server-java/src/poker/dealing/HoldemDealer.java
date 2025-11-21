@@ -1,5 +1,6 @@
 package poker.dealing;
 
+import poker.items.Card;
 import poker.items.Deck;
 import poker.items.PlayerModel;
 import poker.table.PokerTable;
@@ -9,9 +10,12 @@ import java.util.List;
 public final class HoldemDealer implements Dealer {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
     private Stage actualStage;
+    private List<Card> communityCards;
 
-    public HoldemDealer() {
+    public HoldemDealer(final List<Card> communityCards) {
         actualStage = Stage.PRE_FLOP;
+        this.communityCards = communityCards;
+
     }
 
     @Override
@@ -23,40 +27,41 @@ public final class HoldemDealer implements Dealer {
                 actualStage = Stage.FLOP;
             }
             case FLOP -> {
-                flop();
+                flop(deck);
                 actualStage = Stage.TURN;
             }
             case TURN -> {
-                turn();
+                turn(deck);
                 actualStage = Stage.RIVER;
             }
-            case RIVER -> river();
+            case RIVER -> river(deck);
         }
     }
 
 
     private void preFlop(PokerTable table, Deck deck) {
         int playerCount = table.getPlayers().size();
-        for(int round = 0; round < 2; round ++){
-            for(int i = 0; i < playerCount; i++){
-                PlayerModel player = table.next();
-                if (player != null) {
-                    player.receiveCard(deck.draw());
-                }
+        for(int i = 0; i < playerCount; i++){
+            PlayerModel player = table.next();
+            if (player != null) {
+                player.receiveCard(deck.draw());
+                player.receiveCard(deck.draw());
             }
         }
-
-
     }
 
-    private void flop() {
-
+    private void flop(Deck deck) {
+        for (int i = 0; i < 3; i++){
+            communityCards.add(deck.draw());
+        }
     }
-    private void turn() {
 
+    private void turn(Deck deck) {
+        communityCards.add(deck.draw());
     }
 
-    private void river() {
+    private void river(Deck deck) {
+        communityCards.add(deck.draw());
 
     }
 }

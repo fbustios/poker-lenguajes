@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface PokerGamemode {
     boolean isOver();
-    void play(Action lastAction);
+    void play(PokerAction lastPokerAction);
     Optional<PlayerModel> getNextTurn();
 }

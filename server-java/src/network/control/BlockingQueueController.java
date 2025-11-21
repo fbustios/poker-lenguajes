@@ -45,13 +45,13 @@ public final class BlockingQueueController implements Controller{
                     //sendEvent([valor retornado por processEvent]) que corresponde al round_update
                 }
                 if (game.isGameFinished()) {
-                    Optional<List<PlayerModel>> winners = game.getWinners();
+                    PlayerModel winner = game.getWinner();
                     ServerEvent serverEvent = ServerEvent.GAME_ENDED;
                     //llama a sendEvent
                     return;
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException();
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
             }
 
         }

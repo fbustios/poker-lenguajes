@@ -1,6 +1,6 @@
 package poker;
 
-import poker.gamemodes.Action;
+import poker.gamemodes.PokerAction;
 import poker.items.PlayerModel;
 
 import java.util.List;
@@ -10,6 +10,6 @@ public interface PokerGame {
     boolean isGameFinished();
     void startGame();
     boolean isGamemodeOver();
-    Optional<List<PlayerModel>> getWinners();
-    Optional<PlayerModel> play(Action player);
+    PlayerModel getWinner();
+    Optional<PlayerModel> play(PokerAction player);
 }
