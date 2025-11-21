@@ -5,10 +5,14 @@ import java.util.List;
 public final class PlayerModel {
     private final int name;
     private List<Card> cards;
+    private boolean isActive;
+    private boolean isAllIn;
 
     public PlayerModel(int name, List<Card> cardList) {
         this.name = name;
         this.cards = cardList;
+        this.isActive = true;
+        this.isAllIn = false;
     }
 
     public void receiveCard(Card card) {

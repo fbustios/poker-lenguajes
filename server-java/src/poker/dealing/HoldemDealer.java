@@ -19,19 +19,33 @@ public final class HoldemDealer implements Dealer {
         List<PlayerModel> players = table.getPlayers();
         switch (actualStage) {
             case PRE_FLOP -> {
-                preFlop();
+                preFlop(table, deck);
                 actualStage = Stage.FLOP;
             }
             case FLOP -> {
                 flop();
+                actualStage = Stage.TURN;
             }
-            case TURN -> turn();
+            case TURN -> {
+                turn();
+                actualStage = Stage.RIVER;
+            }
             case RIVER -> river();
         }
     }
 
 
-    private void preFlop() {
+    private void preFlop(PokerTable table, Deck deck) {
+        int playerCount = table.getPlayers().size();
+        for(int round = 0; round < 2; round ++){
+            for(int i = 0; i < playerCount; i++){
+                PlayerModel player = table.next();
+                if (player != null) {
+                    player.receiveCard(deck.draw());
+                }
+            }
+        }
+
 
     }
 

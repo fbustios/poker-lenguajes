@@ -6,6 +6,8 @@ import network.ServerEvent;
 import network.ServerMessage;
 import network.io.ClientMessage;
 import poker.PokerGame;
+import poker.items.PlayerModel;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
@@ -31,15 +33,19 @@ public final class BlockingQueueController implements Controller{
         //falta clase que construya los mensajes del server;
         ServerMessage startMessage = new ServerMessage();
         sendEvent(startMessage);
+        game.startGame();
         while(true) {
             try {
                 Optional<ClientMessage> event = Optional.ofNullable(eventQueue.poll(100, TimeUnit.MILLISECONDS));
-                //if (game.isGamemodeOver()) {ServerEvent serverEvent = ServerEvent.MODE_CHANGED; sendEvent()}
+                if (game.isGamemodeOver()) {
+                    ServerEvent serverEvent = ServerEvent.MODE_CHANGED; //sendEvent();
+                }
                 if (event.isPresent()) {
                     processEvent(event.get());
                     //sendEvent([valor retornado por processEvent]) que corresponde al round_update
                 }
                 if (game.isGameFinished()) {
+                    Optional<List<PlayerModel>> winners = game.getWinners();
                     ServerEvent serverEvent = ServerEvent.GAME_ENDED;
                     //llama a sendEvent
                     return;

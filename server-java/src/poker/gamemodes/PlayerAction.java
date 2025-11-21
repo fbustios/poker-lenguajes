@@ -1,4 +1,4 @@
-package network;
+package poker.gamemodes;
 
 public enum PlayerAction {
     CHECK("check"), FOLD("fold"), CALL("call"), ALL_IN("all_in");
