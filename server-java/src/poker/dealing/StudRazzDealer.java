@@ -15,6 +15,7 @@ public class StudRazzDealer implements Dealer {
         switch (currentStage){
             case THIRD -> {
                 dealThirdStreet(table, deck);
+                dealOneUpCard(table, deck);
                 currentStage = Stage.FOURTH;
             }
             case FOURTH -> {
@@ -43,23 +44,27 @@ public class StudRazzDealer implements Dealer {
     private void dealThirdStreet(PokerTable table, Deck deck){
         int playerCount = table.getPlayers().size();
         for(int i = 0; i < playerCount; i++){
-            player.recieveCard(deck.draw());
-            player.recieveCard(deck.draw());
-            player.recieveCard(deck.draw());
+            PlayerModel player = table.next();
+            player.receiveCard(deck.draw());
+            player.receiveCard(deck.draw());
         }
     }
 
     private void dealOneUpCard(PokerTable table, Deck deck) {
-        int playerCount = table.getPlayers().size();
+        int playerCount = table.getActivePlayers().size();
         for (int i = 0; i < playerCount; i++) {
-            player.recieveCard(deck.draw());
+            PlayerModel player = table.next();
+            if(!player.isFolded()) {
+                player.receiveCard(deck.draw());
+            }
         }
     }
 
     private void dealSeventhStreet(PokerTable table, Deck deck) {
-        int playerCount = table.getPlayers().size();
+        int playerCount = table.getActivePlayers().size();
         for (int i = 0; i < playerCount; i++) {
-            player.recieveCard(deck.draw());
+            PlayerModel player = table.next();
+            player.receiveCard(deck.draw());
 
         }
     }
