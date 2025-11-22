@@ -9,5 +9,5 @@ public interface TurnManager {
 
     Optional<PlayerModel> nextTurn();
 
-    void updateGame();
+    void setStartingPlayer();
 }

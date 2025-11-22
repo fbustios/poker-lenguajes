@@ -8,4 +8,6 @@ public interface PokerGamemode {
     boolean isOver();
     void play(PokerAction lastPokerAction);
     Optional<PlayerModel> getNextTurn();
+
+    void distributePot();
 }

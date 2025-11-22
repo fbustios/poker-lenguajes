@@ -1,5 +1,6 @@
 package network.control;
 
+import network.ClientEvent;
 import network.io.EventEmitter;
 import network.io.PlayerConnection;
 import network.ServerEvent;
@@ -9,6 +10,7 @@ import poker.PokerGame;
 import poker.items.PlayerModel;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -18,13 +20,18 @@ public final class BlockingQueueController implements Controller{
     private final List<PlayerConnection> connections;
     private final BlockingQueue<ClientMessage> eventQueue;
     private final PokerGame game;
+    private final ConnectionPlayerMapping connectionMap;
 
-
-    public BlockingQueueController(EventEmitter pokerEventEmitter, List<PlayerConnection> connections, BlockingQueue<ClientMessage> eventQueue, PokerGame game) {
+    public BlockingQueueController(final EventEmitter pokerEventEmitter,
+                                   final List<PlayerConnection> connections,
+                                   final BlockingQueue<ClientMessage> eventQueue,
+                                   final PokerGame game,
+                                   final ConnectionPlayerMapping connectionMap) {
         this.pokerEventEmitter = pokerEventEmitter;
         this.connections = connections;
         this.eventQueue = eventQueue;
         this.game = game;
+        this.connectionMap = connectionMap;
     }
 
 
@@ -59,6 +66,9 @@ public final class BlockingQueueController implements Controller{
 
 
     private void processEvent(final ClientMessage message) {
+        String author = message.author();
+        ClientEvent event = message.event();
+
         //deberia de venir lo que hizo el jugador
         //currentGamemode.play(action) solo si el turnManager esperaba una accion
     }

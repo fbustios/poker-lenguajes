@@ -6,7 +6,7 @@ import java.util.List;
 
 public class HiPotDistributer implements PotDistributer{
     @Override
-    public List<PlayerModel> distribute(List<PlayerModel> winners) {
+    public List<PlayerModel> distribute() {
         return List.of();
     }
 }

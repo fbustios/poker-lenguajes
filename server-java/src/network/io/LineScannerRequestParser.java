@@ -11,19 +11,29 @@ public final class LineScannerRequestParser implements RequestParser {
     private final static int DETAILS_SIZE = 8;
     @Override
     public Optional<ClientMessage> parse(final String event) {
-        final String[] parts = event.split("\n",2);
-        if (parts.length != 2) {
+        final String[] parts = event.split("\n",3);
+        if (parts.length != 3) {
             return Optional.empty();
         }
         final String action = parts[0];
-        final String details = parts[1];
+        final String author = parts[1];
+        final String details = parts[2];
         final Optional<ClientEvent> parsedEvent = parseEvent(action);
         final Optional<Map<String, String>> parsedDetails = parseDetails(details);
-        if (parsedEvent.isEmpty() || parsedDetails.isEmpty()) {
+        final Optional<String> parsedAuthor = parseAuthor(author);
+        if (parsedEvent.isEmpty() || parsedDetails.isEmpty() || parsedAuthor.isEmpty()) {
             return Optional.empty();
         }
-        ClientMessage parsedMessage = new ClientMessage(parsedEvent.get(), parsedDetails.get());
+        ClientMessage parsedMessage = new ClientMessage(parsedEvent.get(), parsedAuthor.get() ,parsedDetails.get()); //corregir creo que ya
         return Optional.of(parsedMessage);
+    }
+    private Optional<String> parseAuthor(final String line){
+        final String[] parts = line.split(" ");
+        if (parts.length != 2) {
+            return Optional.empty();
+        }
+        final String author = parts[1];
+        return Optional.of(author);
     }
 
     private Optional<ClientEvent> parseEvent(final String firstLine) {

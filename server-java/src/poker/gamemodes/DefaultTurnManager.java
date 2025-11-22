@@ -14,4 +14,9 @@ public class DefaultTurnManager implements TurnManager{
     public Optional<PlayerModel> nextTurn() {
         return Optional.empty();
     }
+
+    @Override
+    public void setStartingPlayer() {
+
+    }
 }

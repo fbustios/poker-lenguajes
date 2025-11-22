@@ -11,12 +11,13 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     private final Dealer dealer;
     private HoldemRound currentRound;
     private final TurnManager turnManager;
-    private PotDistributer pt;
+    private final PotDistributer potDistributer;
     private Deck deck;
     private final boolean gameStarted;
 
-    public HoldemPokerGamemode(Dealer dealer, TurnManager turnManager, Deck deck) {
+    public HoldemPokerGamemode(Dealer dealer, TurnManager turnManager, PotDistributer pt, Deck deck) {
         this.turnManager = turnManager;
+        this.potDistributer = pt;
         this.gameStarted = false;
         this.dealer = dealer;
         this.deck = deck;
@@ -28,7 +29,31 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         if (!checkAction()) {
             throw new IllegalStateException();
         }
-        turnManager.updateGame();
+        if(!gameStarted) {}//raro corregir
+        
+        PlayerAction action = lastPokerAction.action();
+        switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
+            case RAISE -> handleRaise();
+            case CALL -> handleCall();
+            case CHECK -> handleCheck();
+            case ALL_IN -> handelAllIn();
+            case FOLD -> handleFold();
+        }
+    }
+
+    private void handleFold() {
+    }
+
+    private void handelAllIn() {
+    }
+
+    private void handleCheck() {
+    }
+
+    private void handleCall() {
+    }
+
+    private void handleRaise() {
     }
 
 
@@ -46,9 +71,20 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         return turnManager.nextTurn();
     }
 
+    @Override
+    public void distributePot() {
 
-    private void start() {
-        dealer.deal(table, deck);
+        potDistributer.distribute();
+    }
+
+    private void nextRound() {
+        turnManager.setStartingPlayer();
+    }
+
+
+    private void setUpGame() {
+        deck.refill();
+
     }
 
     private boolean checkAction() {
