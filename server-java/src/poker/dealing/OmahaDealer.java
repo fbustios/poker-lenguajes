@@ -14,7 +14,7 @@ public class OmahaDealer implements Dealer {
 
     private Stage actualStage = Stage.PRE_FLOP;
 
-    private List<Card> communityCards = new ArrayList<>();
+    private final List<Card> communityCards = new ArrayList<>();
 
 
 
@@ -40,7 +40,7 @@ public class OmahaDealer implements Dealer {
 
 
     private void preFlop(PokerTable table, Deck deck) {
-        int playerCount = table.getPlayers().size();
+        int playerCount = table.getActivePlayers().size();
         for(int i = 0; i < playerCount; i++){
             PlayerModel player = table.next();
             if (player != null) {

@@ -28,4 +28,9 @@ public class RazzPokerGamemode implements PokerGamemode{
     public Optional<PlayerModel> getNextTurn() {
         return Optional.empty();
     }
+
+    @Override
+    public void distributePot() {
+
+    }
 }

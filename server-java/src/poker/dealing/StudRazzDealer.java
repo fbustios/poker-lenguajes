@@ -42,7 +42,7 @@ public class StudRazzDealer implements Dealer {
     }
 
     private void dealThirdStreet(PokerTable table, Deck deck){
-        int playerCount = table.getPlayers().size();
+        int playerCount = table.getActivePlayers().size();
         for(int i = 0; i < playerCount; i++){
             PlayerModel player = table.next();
             player.receiveCard(deck.draw());

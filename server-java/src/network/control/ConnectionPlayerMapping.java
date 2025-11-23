@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface ConnectionPlayerMapping {
     Optional<PlayerConnection> getConnectionFromName(String name);
+    Optional<PlayerModel> getPlayerFromName(String name);
     void deleteConnection(String name);
 }

@@ -1,5 +1,6 @@
 package network.io;
 
+import network.ServerEvent;
 import network.ServerMessage;
 
 import java.io.DataInputStream;
@@ -8,6 +9,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public final class PlayerConnection implements Runnable{
     private final Socket socket;
@@ -18,11 +20,11 @@ public final class PlayerConnection implements Runnable{
     private final RequestParser requestParser;
     private boolean alive;
 
-    public PlayerConnection(Socket socket, BlockingQueue<ClientMessage> outputQueue, BlockingQueue<String> inputQueue, RequestParser requestParser) throws IOException {
+    public PlayerConnection(Socket socket, BlockingQueue<ClientMessage> outputQueue, RequestParser requestParser) throws IOException {
         this.socket = socket;
-        this.outputQueue = outputQueue;
+        this.inputQueue = new LinkedBlockingQueue<>();
         this.inputStream = socket.getInputStream();
-        this.inputQueue = inputQueue;
+        this.outputQueue = outputQueue;
         this.requestParser = requestParser;
         this.alive = true;
     }
@@ -35,11 +37,12 @@ public final class PlayerConnection implements Runnable{
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
                     outputQueue.add(message.get());
-                    System.out.println("added to the event queue");
+                    System.out.println(message.get().event());
+                    System.out.println(outputQueue.size());
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
 
@@ -49,20 +52,26 @@ public final class PlayerConnection implements Runnable{
 
     private Optional<ClientMessage> read() {
         try {
-            DataInputStream dis = new DataInputStream(inputStream);
-            int len = dis.readInt();
-            byte[] data = new byte[len];
-            dis.readFully(data);
-            String event = new String(data);
-            return requestParser.parse(event);
+            if (inputStream.available() != 0) {
+                DataInputStream dis = new DataInputStream(inputStream);
+                int len = dis.readInt();
+                byte[] data = new byte[len];
+                dis.readFully(data);
+                String event = new String(data);
+                return requestParser.parse(event);
+            }
+            return Optional.empty();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println("error aca");
+            throw new RuntimeException(e.getMessage());
         }
 
     }
 
-    private void write() {}
+    private void write(String event) {
+
+    }
 
     public boolean isAlive() {
         return this.alive;

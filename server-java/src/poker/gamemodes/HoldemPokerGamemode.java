@@ -33,29 +33,13 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         
         PlayerAction action = lastPokerAction.action();
         switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
-            case RAISE -> handleRaise();
-            case CALL -> handleCall();
-            case CHECK -> handleCheck();
-            case ALL_IN -> handelAllIn();
-            case FOLD -> handleFold();
+            case RAISE -> handleRaise(lastPokerAction.player(),lastPokerAction.bet());
+            case CALL -> handleCall(lastPokerAction.player());
+            case CHECK -> handleCheck(lastPokerAction.player());
+            case ALL_IN -> handleAllIn(lastPokerAction.player(), lastPokerAction.bet());
+            case FOLD -> handleFold(lastPokerAction.player());
         }
     }
-
-    private void handleFold() {
-    }
-
-    private void handelAllIn() {
-    }
-
-    private void handleCheck() {
-    }
-
-    private void handleCall() {
-    }
-
-    private void handleRaise() {
-    }
-
 
     @Override
     public boolean isOver() {
@@ -66,14 +50,13 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     public Optional<PlayerModel> getNextTurn() {
         if(turnManager.isRoundOver()) {
             nextRound();
-            dealer.deal(table, deck);
+            //dealer.deal(table, deck);
         }
         return turnManager.nextTurn();
     }
 
     @Override
     public void distributePot() {
-
         potDistributer.distribute();
     }
 
@@ -88,7 +71,23 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     private boolean checkAction() {
+        return true;
+    }
 
+    private void handleRaise(PlayerModel player, int bet) {
+    }
+
+    private void handleAllIn(PlayerModel player, int bet) {
+    }
+
+    private void handleFold(PlayerModel player) {
+    }
+
+
+    private void handleCheck(PlayerModel player) {
+    }
+
+    private void handleCall(PlayerModel player) {
     }
 
 
