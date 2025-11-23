@@ -1,6 +1,7 @@
 package network.control;
 
 import network.ClientEvent;
+import network.io.Connection;
 import network.io.EventEmitter;
 import network.io.PlayerConnection;
 import network.ServerEvent;
@@ -9,10 +10,8 @@ import network.io.ClientMessage;
 import poker.PokerGame;
 import poker.gamemodes.PlayerAction;
 import poker.gamemodes.PokerAction;
-import poker.items.PlayerModel;
-
+import poker.items.Player;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -23,8 +22,6 @@ public final class BlockingQueueController implements Controller{
     private final BlockingQueue<ClientMessage> eventQueue;
     private final PokerGame game;
     private final ConnectionPlayerMapping connectionMap;
-    //el controller deberia ser parte de una clase Lobby, pero no hay tiempo
-
     public BlockingQueueController(final EventEmitter pokerEventEmitter,
                                    final List<PlayerConnection> connections,
                                    final BlockingQueue<ClientMessage> eventQueue,
@@ -53,10 +50,9 @@ public final class BlockingQueueController implements Controller{
                 }
                 if (event.isPresent()) {
                     processEvent(event.get());
-                    //sendEvent([valor retornado por processEvent]) que corresponde al round_update
                 }
                 if (game.isGameFinished()) {
-                    PlayerModel winner = game.getWinner();
+                    Player winner = game.getWinner();
                     ServerEvent serverEvent = ServerEvent.GAME_ENDED;
                     //llama a sendEvent
                     return;
@@ -79,31 +75,32 @@ public final class BlockingQueueController implements Controller{
             case LEAVE_GAME -> handleLeaveGame(message);
             case JOIN_GAME -> handleJoinGame(message);
         }
-       
-        //currentGamemode.play(action) solo si el turnManager esperaba una accion
     }
 
     private void handleJoinGame(ClientMessage message) {
-        System.out.println("Not valid"); //de momento, igual no deberia pasar porque si se conecta cuando ya el juego empez'o tirar connection refused
+        System.out.println("Not valid"); //de momento
     }
 
     private void handleLeaveGame(ClientMessage message) {
         String author = message.author();
-        Optional<PlayerModel> player = connectionMap.getPlayerFromName(author);
-        if (player.isPresent()) {
+        Optional<Player> player = connectionMap.getPlayerFromName(author);
+        Optional<Connection> connection = connectionMap.getConnectionFromName(author);
+        if (player.isPresent() && connection.isPresent()) {
             player.get().setActive(false);
+            connection.get().setAlive(false);
         }
     }
 
     private void handleAction(ClientMessage message) {
         String author = message.author();
-        Optional<PlayerModel> playerModel = connectionMap.getPlayerFromName(message.author());
+        Optional<Player> playerModel = connectionMap.getPlayerFromName(message.author());
         if (playerModel.isPresent()) {
             PokerAction action = new PokerAction(playerModel.get(), PlayerAction.CALL, 2);
             game.play(action);
+            Optional<Player> nextPlayer = game.nextTurn();
+            String parsedAction = "x";
+            pokerEventEmitter.emit(connections, parsedAction);
         }
-
-
     }
 
     private void sendEvent(final ServerMessage message) {

@@ -2,7 +2,7 @@ package poker.gamemodes;
 
 import poker.dealing.Dealer;
 import poker.items.Deck;
-import poker.items.PlayerModel;
+import poker.items.Player;
 import poker.pot.PotDistributer;
 import java.util.Optional;
 
@@ -47,7 +47,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     @Override
-    public Optional<PlayerModel> getNextTurn() {
+    public Optional<Player> getNextTurn() {
         if(turnManager.isRoundOver()) {
             nextRound();
             //dealer.deal(table, deck);
@@ -74,20 +74,20 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         return true;
     }
 
-    private void handleRaise(PlayerModel player, int bet) {
+    private void handleRaise(Player player, int bet) {
     }
 
-    private void handleAllIn(PlayerModel player, int bet) {
+    private void handleAllIn(Player player, int bet) {
     }
 
-    private void handleFold(PlayerModel player) {
+    private void handleFold(Player player) {
     }
 
 
-    private void handleCheck(PlayerModel player) {
+    private void handleCheck(Player player) {
     }
 
-    private void handleCall(PlayerModel player) {
+    private void handleCall(Player player) {
     }
 
 

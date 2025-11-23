@@ -1,13 +1,13 @@
 package poker.gamemodes;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.Optional;
 
 public interface TurnManager {
     boolean isRoundOver();
 
-    Optional<PlayerModel> nextTurn();
+    Optional<Player> nextTurn();
 
     void setStartingPlayer();
 }

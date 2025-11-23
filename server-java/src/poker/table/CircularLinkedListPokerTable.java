@@ -1,6 +1,6 @@
 package poker.table;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public final class CircularLinkedListPokerTable implements PokerTable{
     }
 
     @Override
-    public PlayerModel next() {
+    public Player next() {
       Seat next = this.current.getNext();
       this.current = next;
       return next.getPlayer();
@@ -23,12 +23,12 @@ public final class CircularLinkedListPokerTable implements PokerTable{
 
 
     @Override
-    public List<PlayerModel> getPlayers() {
-        final List<PlayerModel> activePlayers = new ArrayList<>();
+    public List<Player> getPlayers() {
+        final List<Player> activePlayers = new ArrayList<>();
         Seat currentSeat = current;
         final int startingSeat = currentSeat.getSeatNumber();
         do {
-            final PlayerModel currentPlayer = currentSeat.getPlayer();
+            final Player currentPlayer = currentSeat.getPlayer();
             activePlayers.add(currentPlayer);
             currentSeat = currentSeat.getNext();
         } while (currentSeat.getSeatNumber() != startingSeat);
@@ -37,12 +37,12 @@ public final class CircularLinkedListPokerTable implements PokerTable{
     }
 
     @Override
-    public List<PlayerModel> getActivePlayers() {
-        final List<PlayerModel> activePlayers = new ArrayList<>();
+    public List<Player> getActivePlayers() {
+        final List<Player> activePlayers = new ArrayList<>();
         Seat currentSeat = current;
         final int startingSeat = currentSeat.getSeatNumber();
         do {
-            final PlayerModel currentPlayer = currentSeat.getPlayer();
+            final Player currentPlayer = currentSeat.getPlayer();
             if(currentPlayer.isActive()) {
                 activePlayers.add(currentPlayer);
             }
@@ -57,7 +57,7 @@ public final class CircularLinkedListPokerTable implements PokerTable{
         Seat currentSeat = current;
         final int startingSeat = currentSeat.getSeatNumber();
         do {
-            final PlayerModel currentPlayer = currentSeat.getPlayer();
+            final Player currentPlayer = currentSeat.getPlayer();
             if(currentPlayer.isActive()) {
                 currentPlayer.setAllIn(false);
                 currentPlayer.setFolded(false);
@@ -77,7 +77,7 @@ public final class CircularLinkedListPokerTable implements PokerTable{
     }
 
     @Override
-    public PlayerModel getIthPlayerFromDealer(int i) {
+    public Player getIthPlayerFromDealer(int i) {
         return null;
     }
 }

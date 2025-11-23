@@ -2,7 +2,7 @@ package poker.items;
 
 import java.util.List;
 
-public final class PlayerModel {
+public final class Player {
     private final String name;
     private List<Card> cards;
     private int money;
@@ -10,7 +10,7 @@ public final class PlayerModel {
     private boolean isFolded;
     private boolean isAllIn;
 
-    public PlayerModel(final String name, final List<Card> cardList, final int initialBet) {
+    public Player(final String name, final List<Card> cardList, final int initialBet) {
         this.name = name;
         this.cards = cardList;
         this.isActive = true;

@@ -1,6 +1,6 @@
 package poker.gamemodes;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
-public record PokerAction(PlayerModel player, PlayerAction action, int bet) {
+public record PokerAction(Player player, PlayerAction action, int bet) {
 }

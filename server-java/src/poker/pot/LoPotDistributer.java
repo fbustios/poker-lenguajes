@@ -1,12 +1,12 @@
 package poker.pot;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.List;
 
 public class LoPotDistributer implements PotDistributer{
     @Override
-    public List<PlayerModel> distribute() {
+    public List<Player> distribute() {
         return List.of();
     }
 }

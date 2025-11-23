@@ -9,7 +9,8 @@ public class PokerEventEmitter implements EventEmitter{
     public void emit(List<PlayerConnection> connectionsList, String message) {
         for(PlayerConnection connection : connectionsList) {
             if (connection.isAlive()) {
-                connection.addToEventQueue(message);
+                System.out.println("mensaje enviado");
+                connection.addToOutputQueue(message);
             }
         }
     }

@@ -1,10 +1,9 @@
 package poker.gamemodes;
 
 import poker.items.Deck;
-import poker.items.PlayerModel;
+import poker.items.Player;
 import poker.table.PokerTable;
 import poker.dealing.Dealer;
-import poker.table.PokerTable;
 
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ public class RazzPokerGamemode implements PokerGamemode{
     }
 
     @Override
-    public Optional<PlayerModel> getNextTurn() {
+    public Optional<Player> getNextTurn() {
         return Optional.empty();
     }
 

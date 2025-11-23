@@ -1,15 +1,15 @@
 package poker.table;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 public final class Seat {
     private final boolean isDealer;
     private final int seatNumber;
     private boolean hasFolded;
     private Seat next;
-    private final PlayerModel player;
+    private final Player player;
 
-    public Seat(final int seatNumber, final PlayerModel player) {
+    public Seat(final int seatNumber, final Player player) {
         this.seatNumber = seatNumber;
         this.player = player;
         this.isDealer = false;
@@ -35,7 +35,7 @@ public final class Seat {
         return seatNumber;
     }
 
-    public PlayerModel getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 }

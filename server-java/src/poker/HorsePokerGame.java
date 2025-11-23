@@ -2,7 +2,7 @@ package poker;
 
 import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
-import poker.items.PlayerModel;
+import poker.items.Player;
 import poker.table.PokerTable;
 
 import java.util.List;
@@ -26,14 +26,14 @@ public class HorsePokerGame implements PokerGame{
     @Override
     public void startGame() {
         if (table.getPlayers().size() < MIN_PLAYERS_TO_START) {
-            throw new IllegalStateException("Se requieren al menos dos jugadores para iniciar el juego");
+            System.out.println("no puedo empezar");
         }
         this.currentGame = this.modes.get(currentGameIndex);
     }
 
 
     @Override
-    public Optional<PlayerModel> play(PokerAction lastPokerAction){
+    public void play(PokerAction lastPokerAction){
         if (!checkActionState(lastPokerAction)) {
             throw new IllegalStateException("Acción inválida");
         }
@@ -42,8 +42,6 @@ public class HorsePokerGame implements PokerGame{
             currentGame.distributePot();
             setNextMode();
         }
-
-        return nextTurn();
     }
 
     @Override
@@ -58,24 +56,25 @@ public class HorsePokerGame implements PokerGame{
     }
 
     @Override
-    public PlayerModel getWinner() {
-        final List<PlayerModel> players = table.getPlayers();
-        PlayerModel winner = new PlayerModel("t", List.of(),0);
-        for (PlayerModel currentPlayer : players) {
+    public Player getWinner() {
+        final List<Player> players = table.getPlayers();
+        Player winner = new Player("t", List.of(),0);
+        for (Player currentPlayer : players) {
             winner = currentPlayer.getMoney() > winner.getMoney() ? currentPlayer : winner;
         }
         return winner;
     }
 
-    private Optional<PlayerModel> nextTurn() {
+    @Override
+    public Optional<Player> nextTurn() {
         return currentGame.getNextTurn();
     }
 
     private boolean checkActionState(PokerAction pokerAction) {
-        final PlayerModel playerModel = pokerAction.player();
-        final int playerMoney = playerModel.getMoney();
+        final Player player = pokerAction.player();
+        final int playerMoney = player.getMoney();
         final int actionBet = pokerAction.bet();
-        return playerModel.isActive() && !playerModel.isAllIn() && (playerMoney >= actionBet);
+        return player.isActive() && !player.isAllIn() && (playerMoney >= actionBet);
     }
 
     private void setNextMode() {

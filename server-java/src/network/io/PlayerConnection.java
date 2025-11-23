@@ -1,31 +1,29 @@
 package network.io;
 
-import network.ServerEvent;
-import network.ServerMessage;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public final class PlayerConnection implements Runnable{
+public final class PlayerConnection implements Connection{
     private final Socket socket;
-    public final int CONST = 1;
-    private final BlockingQueue<ClientMessage> outputQueue;
-    private final BlockingQueue<String> inputQueue;
+    private final BlockingQueue<String> outputQueue;
+    private final BlockingQueue<ClientMessage> clientEventQueue;
     private final InputStream inputStream;
+    private final OutputStream outputStream;
     private final RequestParser requestParser;
     private boolean alive;
 
-    public PlayerConnection(Socket socket, BlockingQueue<ClientMessage> outputQueue, RequestParser requestParser) throws IOException {
+    public PlayerConnection(final Socket socket,
+                            final BlockingQueue<ClientMessage> clientEventQueue,
+                            final RequestParser requestParser) throws IOException {
         this.socket = socket;
-        this.inputQueue = new LinkedBlockingQueue<>();
+        this.clientEventQueue = clientEventQueue;
         this.inputStream = socket.getInputStream();
-        this.outputQueue = outputQueue;
+        this.outputQueue = new LinkedBlockingQueue<>();
         this.requestParser = requestParser;
+        this.outputStream = socket.getOutputStream();
         this.alive = true;
     }
 
@@ -33,21 +31,37 @@ public final class PlayerConnection implements Runnable{
     public void run() {
         System.out.println("Connection running");
         try {
-            while (true) {
+            while (this.alive) {
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
-                    outputQueue.add(message.get());
+                    clientEventQueue.add(message.get());
                     System.out.println(message.get().event());
                     System.out.println(outputQueue.size());
                 }
+                if (!outputQueue.isEmpty()) {
+                    String event = outputQueue.poll();
+                    write(event);
+                }
             }
+            inputStream.close();
+            outputStream.close();
+            socket.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @Override
+    public boolean isAlive() {
+        return this.alive;
+    }
 
-
-        //System.out.println(message.get().event().getAction());
-
+    @Override
+    public void setAlive(boolean val) {
+        this.alive = val;
+    }
+    @Override
+    public void addToOutputQueue(String message) {
+        outputQueue.add(message);
     }
 
     private Optional<ClientMessage> read() {
@@ -70,16 +84,12 @@ public final class PlayerConnection implements Runnable{
     }
 
     private void write(String event) {
-
+        try {
+            DataOutputStream dos = new DataOutputStream(outputStream);
+            dos.writeInt(event.length());
+            dos.writeBytes(event);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
-
-    public boolean isAlive() {
-        return this.alive;
-    }
-
-    public void addToEventQueue(String message) {
-        inputQueue.add(message);
-    }
-
-
 }

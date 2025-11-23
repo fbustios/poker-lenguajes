@@ -1,6 +1,6 @@
 package poker.gamemodes;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ public class DefaultTurnManager implements TurnManager{
     }
 
     @Override
-    public Optional<PlayerModel> nextTurn() {
+    public Optional<Player> nextTurn() {
         return Optional.empty();
     }
 

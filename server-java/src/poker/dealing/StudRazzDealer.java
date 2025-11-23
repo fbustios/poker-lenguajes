@@ -2,7 +2,7 @@ package poker.dealing;
 
 import poker.items.Deck;
 import poker.table.PokerTable;
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 
 public class StudRazzDealer implements Dealer {
@@ -44,7 +44,7 @@ public class StudRazzDealer implements Dealer {
     private void dealThirdStreet(PokerTable table, Deck deck){
         int playerCount = table.getActivePlayers().size();
         for(int i = 0; i < playerCount; i++){
-            PlayerModel player = table.next();
+            Player player = table.next();
             player.receiveCard(deck.draw());
             player.receiveCard(deck.draw());
         }
@@ -53,7 +53,7 @@ public class StudRazzDealer implements Dealer {
     private void dealOneUpCard(PokerTable table, Deck deck) {
         int playerCount = table.getActivePlayers().size();
         for (int i = 0; i < playerCount; i++) {
-            PlayerModel player = table.next();
+            Player player = table.next();
             if(!player.isFolded()) {
                 player.receiveCard(deck.draw());
             }
@@ -63,7 +63,7 @@ public class StudRazzDealer implements Dealer {
     private void dealSeventhStreet(PokerTable table, Deck deck) {
         int playerCount = table.getActivePlayers().size();
         for (int i = 0; i < playerCount; i++) {
-            PlayerModel player = table.next();
+            Player player = table.next();
             player.receiveCard(deck.draw());
 
         }

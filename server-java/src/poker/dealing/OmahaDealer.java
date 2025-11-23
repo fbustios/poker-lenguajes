@@ -3,7 +3,7 @@ package poker.dealing;
 import poker.items.Deck;
 import poker.table.PokerTable;
 import poker.items.Card;
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class OmahaDealer implements Dealer {
 
     @Override
     public void deal(PokerTable table, Deck deck) {
-        List<PlayerModel> players = table.getPlayers();
+        List<Player> players = table.getPlayers();
         switch (actualStage) {
             case PRE_FLOP -> {
                 preFlop(table, deck);
@@ -42,7 +42,7 @@ public class OmahaDealer implements Dealer {
     private void preFlop(PokerTable table, Deck deck) {
         int playerCount = table.getActivePlayers().size();
         for(int i = 0; i < playerCount; i++){
-            PlayerModel player = table.next();
+            Player player = table.next();
             if (player != null) {
                 player.receiveCard(deck.draw());
                 player.receiveCard(deck.draw());
