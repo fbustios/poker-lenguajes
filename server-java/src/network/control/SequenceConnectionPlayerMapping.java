@@ -3,10 +3,7 @@ package network.control;
 import network.io.Connection;
 import poker.items.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SequenceConnectionPlayerMapping implements ConnectionPlayerMapping{
     private final Map<String, Connection> connectionMap;
@@ -35,10 +32,19 @@ public class SequenceConnectionPlayerMapping implements ConnectionPlayerMapping{
         connectionMap.remove(name);
     }
 
-    public static SequenceConnectionPlayerMapping build(List<Connection> connectionList, List<Player> player) {
-        Map<String, Connection> map = new HashMap<>();
-        Map<String, Player> map2 = new HashMap<>();
-        return new SequenceConnectionPlayerMapping(map, map2);
+    @Override
+    public List<Connection> getConnections() {
+        return new ArrayList<>(connectionMap.values());
+    }
+
+    public static SequenceConnectionPlayerMapping build(Map<Connection, Player> mapping) {
+        Map<String, Connection> connectionMap2 = new HashMap<>();
+        Map<String, Player> playerMap2 = new HashMap<>();
+        for (Map.Entry<Connection, Player> entry : mapping.entrySet()) {
+            connectionMap2.put(entry.getValue().getName(), entry.getKey());
+            connectionMap2.put(entry.getValue().getName(), entry.getKey());
+        }
+        return new SequenceConnectionPlayerMapping(connectionMap2, playerMap2);
     }
 
 

@@ -29,6 +29,11 @@ public class RazzPokerGamemode implements PokerGamemode{
     }
 
     @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
     public void distributePot() {
 
     }

@@ -89,7 +89,7 @@ public final class PlayerConnection implements Connection{
             dos.writeInt(event.length());
             dos.writeBytes(event);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

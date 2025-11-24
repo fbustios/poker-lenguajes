@@ -1,5 +1,6 @@
 package poker.gamemodes;
 
+import poker.GameState;
 import poker.dealing.Dealer;
 import poker.items.Deck;
 import poker.items.Player;
@@ -8,6 +9,7 @@ import java.util.Optional;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
+    private static final String name = "holdem";
     private final Dealer dealer;
     private HoldemRound currentRound;
     private final TurnManager turnManager;
@@ -56,9 +58,16 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public void distributePot() {
         potDistributer.distribute();
     }
+
+
 
     private void nextRound() {
         turnManager.setStartingPlayer();

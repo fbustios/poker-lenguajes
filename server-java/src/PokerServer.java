@@ -1,12 +1,17 @@
 import network.ClientEvent;
+import network.control.BlockingQueueController;
+import network.control.Controller;
+import network.control.SequenceConnectionPlayerMapping;
 import network.io.*;
+import poker.HorsePokerGame;
+import poker.PokerGame;
+import poker.gamemodes.Gamemode;
+import poker.gamemodes.HoldemPokerGamemode;
 import poker.items.Player;
-
+import poker.table.CircularLinkedListPokerTable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +27,7 @@ public final class PokerServer {
     }
 
     public static void main(String[] args) {
-        final PokerServer app = new PokerServer(8080,2);
+        final PokerServer app = new PokerServer(8080,1);
         app.run();
     }
 
@@ -30,11 +35,11 @@ public final class PokerServer {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Listening on " + port + "...");
             BlockingQueue<ClientMessage> queue = new LinkedBlockingQueue<>();
-            List<Connection> playerConnections = gatherConnections(serverSocket,queue);
+            Map<Connection, Player> playerConnections = gatherConnections(serverSocket,queue);
             System.out.println("Lobby built");
-            //PokerGame game = new HorsePokerGame();
-            //Controller gameController = new BlockingQueueController(queue, game);
-            //gameController.start();
+            PokerGame game = new HorsePokerGame(List.of(new HoldemPokerGamemode(null, null, null, null)), null);
+            Controller gameController = new BlockingQueueController(new PokerEventEmitter(), queue,game, SequenceConnectionPlayerMapping.build(playerConnections));
+            gameController.start();
         } catch (Exception e) {
             System.err.println("Could not listen on port " + this.port);
             System.err.println(e.getMessage());
@@ -42,17 +47,15 @@ public final class PokerServer {
         }
     }
 
-    List<Connection> gatherConnections (ServerSocket socket, BlockingQueue<ClientMessage> queue) {
+    Map<Connection, Player> gatherConnections (ServerSocket socket, BlockingQueue<ClientMessage> queue) {
         try {
             RequestParser rq = new LineScannerRequestParser();
             int currentPlayers = 0;
-            List<Connection> playerConnections = new ArrayList<>();
-            List<Player> players = new ArrayList<>();
+            Map<Connection, Player> playerConnections = new HashMap<>();
             while(currentPlayers < this.maxPlayers) {
                 Socket playerSocket = socket.accept();
                 currentPlayers++;
                 Connection playerConnection = new PlayerConnection(playerSocket, queue,rq);
-                playerConnections.add(playerConnection);
                 new Thread(playerConnection).start();
                 boolean sent = false;
                 while (!sent) {  //deberia ser toda una responsabilidad aparte, crear lobbys, pero bueno
@@ -61,13 +64,11 @@ public final class PokerServer {
                         ClientMessage message = event.get();
                         if (message.event().equals(ClientEvent.JOIN_GAME)) {
                             sent = true;
-                            players.add(new Player(message.author(),List.of(),Integer.parseInt(message.details().get("bet"))));
+                            Player p = new Player(message.author(),List.of(),Integer.parseInt(message.details().get("bet")));
+                            playerConnections.put(playerConnection,p);
                         }
                     }
                 }
-            }
-            for (Player model : players) {
-                System.out.println(model.getName());
             }
             return playerConnections;
         } catch (Exception e) {

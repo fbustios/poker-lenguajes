@@ -4,11 +4,10 @@ import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
 import poker.table.PokerTable;
-
 import java.util.List;
 import java.util.Optional;
 
-public class HorsePokerGame implements PokerGame{
+public class HorsePokerGame implements PokerGame, GameState{
     private final static int MIN_PLAYERS_TO_START = 2;
     private int currentGameIndex;
     private PokerGamemode currentGame;
@@ -70,6 +69,11 @@ public class HorsePokerGame implements PokerGame{
         return currentGame.getNextTurn();
     }
 
+    @Override
+    public GameState getGameState() {
+        return this;
+    }
+
     private boolean checkActionState(PokerAction pokerAction) {
         final Player player = pokerAction.player();
         final int playerMoney = player.getMoney();
@@ -83,6 +87,18 @@ public class HorsePokerGame implements PokerGame{
     }
 
 
+    @Override
+    public List<Player> getPlayers() {
+        return table.getActivePlayers();
+    }
 
+    @Override
+    public int getPot() {
+        return 0;
+    }
 
+    @Override
+    public String getCurrentGamemode() {
+        return currentGame.getName();
+    }
 }
