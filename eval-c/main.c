@@ -29,6 +29,7 @@ struct Ranking {
 struct Player {
     char name[5];
     char ** bestHand;
+    int winner;
 };
 
 char ** readHand(const int size) {
@@ -294,21 +295,65 @@ char ** getBestHand(char ** fullHand, const int targetSize) {
     return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
 }
 
-int totalTie(char ** hand, char ** hand)
 
-char ** decideWinner(const struct Player * playerArray, const int players) {
-    char ** winners = malloc(players * sizeof(char *));
-    for (int i = 0; i < players; i++) {
-        winners[i] = malloc(5 * sizeof(char));
+int same(char ** firstHand, char ** secondHand) {
+    int * hand1_freq = calloc(CARDS,sizeof(int));
+    int * hand2_freq = calloc(CARDS,sizeof(int));
+    for (int i = 0; i < HAND_SIZE; i++) {
+        int value = getCardValue(firstHand[i][1],0);
+        int value2 = getCardValue(secondHand[i][1],0);
+        hand1_freq[value-1]++;
+        hand2_freq[value2-1]++;
     }
-    struct Player best = playerArray[0];
-    for (int i = 0; i < players; i++) {
-        if (decideTie(best.bestHand, playerArray[i].bestHand) != best.bestHand) {
-            best = playerArray[i];
+
+    for (int i = 0; i < CARDS; i++) {
+        if (!hand1_freq[i] && hand2_freq[i]) {
+            free(hand1_freq);
+            free(hand2_freq);
+            return 0;
+        }
+
+        if (hand1_freq[i] && !hand2_freq[i]) {
+            free(hand1_freq);
+            free(hand2_freq);
+            return 0;
         }
     }
-    for ()
-    return winners;
+    free(hand1_freq);
+    free(hand2_freq);
+    return 1;
+}
+
+int totalTie(char ** firstHand, char ** secondHand) {
+    struct Ranking firstHandRanking = findRanking(firstHand);
+    struct Ranking secondHandRanking = findRanking(secondHand);
+    int rank1 = firstHandRanking.rank;
+    int rank2 = secondHandRanking.rank;
+    int score1 = firstHandRanking.score;
+    int score2 = secondHandRanking.score;
+    if ((rank1 == rank2) && (score1 == score2)) {
+        return same(firstHand,secondHand);
+    };
+    return 0;
+}
+
+
+void decideWinner(struct Player * players, const int numPlayers) {
+    struct Player best = players[0];
+    for (int i = 0; i < numPlayers; i++) {
+        if (decideTie(best.bestHand, players[i].bestHand) != best.bestHand) {
+            best = players[i];
+        }
+    }
+
+
+    for (int i = 0; i < numPlayers; i++) {
+        if (totalTie(best.bestHand, players[i].bestHand)) {
+            players[i].winner = 1;
+        } else {
+            players[i].winner = 0;
+        }
+    }
 }
 
 
@@ -317,11 +362,8 @@ void decideBestHands(struct Player * players, int sizePlayers) {
     for (int i = 0; i < sizePlayers; i ++) {
         players[i].bestHand = getBestHand(players[i].bestHand, 5);
         printf("%s", "\n");
-        for (int j = 0; j < 5; j++) {
-            printf("%s", players[i].bestHand[j]);
-            printf("%s"," ");
-        }
     }
+
 }
 
 
@@ -334,7 +376,18 @@ int main(void) {
     scanf("%s", gamemode);
 
     struct Player * players = readPlayers(numPlayers);
-
     decideBestHands(players, numPlayers);
+    decideWinner(players, numPlayers);
+    for (int i = 0; i < numPlayers; i++) {
+       if (players[i].winner) {
+           for (int j = 0; j < 5; j++) {
+               printf("%s", players[i].bestHand[j]);
+               printf("%s"," ");
+           }
+           printf("%s", "\n");
+       }
+    }
+    free(players);
+
     return 0;
 }
