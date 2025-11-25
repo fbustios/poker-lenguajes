@@ -41,19 +41,19 @@
 	"game_mode": "Omaha",
 	"player": "aaron",
 	"next_player": "franco",
-	"action": "raise",
+	"pokerAction": "raise",
 	"dealer": "p1",
-	"pot": 800
+	"poker.pot": 800
 }
 {
 	"event": "ROUND_OVER",
 	"game_mode": "Holdem",
 	"next_round": "show",
-	"pot": 500
+	"poker.pot": 500
 }
 {
 	"event": "GAME_STARTED",
-	"players": [
+	"playerModels": [
 		{ "player": "aaron", "index": 0 },
 		{ "player": "franco", "index": 1 },
 		{ "player": "daniel", "index": 2 },
@@ -71,7 +71,7 @@
 	"winners": [
 		{
 			"player": "sergio",
-			"pot": 300
+			"poker.pot": 300
 		}
 	]
 }

@@ -1,3 +1,0 @@
-ext.pathMapper = [:]
-ext.pathMapper.put("<<target java executable path>>", '/home/aaaron27/.sdkman/candidates/java/22.0.2-sem/bin/java')
-ext.mapPath = { path -> pathMapper.get(path) ?: path }

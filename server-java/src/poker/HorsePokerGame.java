@@ -1,0 +1,104 @@
+package poker;
+
+import poker.gamemodes.PokerAction;
+import poker.gamemodes.PokerGamemode;
+import poker.items.Player;
+import poker.table.PokerTable;
+import java.util.List;
+import java.util.Optional;
+
+public class HorsePokerGame implements PokerGame, GameState{
+    private final static int MIN_PLAYERS_TO_START = 2;
+    private int currentGameIndex;
+    private PokerGamemode currentGame;
+    private final List<PokerGamemode> modes;
+    private final PokerTable table;
+    private boolean gameFinished;
+
+    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table) {
+        this.modes = modes;
+        this.gameFinished = false;
+        this.table = table;
+        this.currentGameIndex = 0;
+    }
+
+    @Override
+    public void startGame() {
+        if (table.getPlayers().size() < MIN_PLAYERS_TO_START) {
+            System.out.println("no puedo empezar");
+        }
+        this.currentGame = this.modes.get(currentGameIndex);
+    }
+
+
+    @Override
+    public void play(PokerAction lastPokerAction){
+        if (!checkActionState(lastPokerAction)) {
+            throw new IllegalStateException("Acción inválida");
+        }
+        currentGame.play(lastPokerAction);
+        if(!currentGame.isOver()) {
+            currentGame.distributePot();
+            setNextMode();
+        }
+    }
+
+    @Override
+    public boolean isGameFinished() {
+        return this.gameFinished;
+    }
+
+
+    @Override
+    public boolean isGamemodeOver() {
+        return currentGame.isOver();
+    }
+
+    @Override
+    public Player getWinner() {
+        final List<Player> players = table.getPlayers();
+        Player winner = new Player("t", List.of(),0);
+        for (Player currentPlayer : players) {
+            winner = currentPlayer.getMoney() > winner.getMoney() ? currentPlayer : winner;
+        }
+        return winner;
+    }
+
+    @Override
+    public Optional<Player> nextTurn() {
+        return currentGame.getNextTurn();
+    }
+
+    @Override
+    public GameState getGameState() {
+        return this;
+    }
+
+    private boolean checkActionState(PokerAction pokerAction) {
+        final Player player = pokerAction.player();
+        final int playerMoney = player.getMoney();
+        final int actionBet = pokerAction.bet();
+        return player.isActive() && !player.isAllIn() && (playerMoney >= actionBet);
+    }
+
+    private void setNextMode() {
+        this.currentGameIndex +=1;
+        this.currentGame = modes.get(currentGameIndex);
+    }
+
+
+    @Override
+    public List<Player> getPlayers() {
+        return table.getActivePlayers();
+    }
+
+    @Override
+    public int getPot() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentGamemode() {
+        return currentGame.getName();
+    }
+}
