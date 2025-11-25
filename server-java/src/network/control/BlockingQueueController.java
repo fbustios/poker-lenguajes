@@ -121,19 +121,21 @@ public final class BlockingQueueController implements Controller{
 
     private void buildRoundUpdateMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append("event: game_ended\n");
+        sb.append("event: update_round\n");
         GameState pokerGameState = game.getGameState();
         List<Player> activePlayers = pokerGameState.getPlayers();
         //length(mensaje)
-        //event: update_round
-        //gamemode: mode
-        //gamemode_round: round
-        //pot: p
-        //next_player: name
+        sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
+        sb.append("gamemode_round: " + "\n");
+        sb.append("pot:" + String.valueOf(pokerGameState.getPot()));
+        sb.append("next_player: ");
+        sb.append("dealer: ");
+        sb.append("players_left: " + String.valueOf(activePlayers.size()) + "\n");
         //dealer: name
         //players_left: n
         //n1: C5, CS, ?, ?, money
         //n2: DK, S4, ?, ?, money
+        pokerEventEmitter.emit(connectionMap.getConnections(),sb.toString());
     }
 
     private void buidGameStartedMessage() {
