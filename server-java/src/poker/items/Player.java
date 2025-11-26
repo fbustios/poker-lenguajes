@@ -19,6 +19,12 @@ public final class Player {
         this.isFolded = false;
     }
 
+    //añadí addMoney y removeMoney para manejar el dinero del
+    //jugador cuando se reparte el pot
+    public void addMoney(final int amount) { this.money += amount;}
+
+    public void removeMoney(final int amount) { this.money -= amount;}
+
     public void receiveCard(final Card card) {
         this.cards.add(card);
     }
