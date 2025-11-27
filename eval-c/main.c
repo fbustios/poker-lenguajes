@@ -443,13 +443,14 @@ int main(void) {
     } else if (gamemode == 'r') {
         findBestLowHandsForPlayers(players, numPlayers);
         decideWinnerLow(players, numPlayers);
-    } else if (gamemode == 'e') {
+    } else if (gamemode == 'e') {  //NOT WORKING
         findBestHighHandsForPlayers(players, numPlayers);
         decideWinnerHigh(players, numPlayers);
         findBestLowHandsForPlayers(players, numPlayers);
         decideWinnerLow(players, numPlayers);
-    } else {
 
+    } else {
+        /*
         char ** deck = malloc(7 * sizeof(char *));
 
         for (int i = 0; i < 7; i++) {
@@ -482,18 +483,21 @@ int main(void) {
             printf("%s"," ");
         }
         //printf("%d", isLowHand(findRanking(best),best));
-
+        */
     }
-    /*
+
     for (int i = 0; i < numPlayers; i++) {
-           for (int j = 0; j < 5; j++) {
-               printf("%s", players[i].bestHand[j]);
-               printf("%s"," ");
-           }
-           printf("%s", "\n");
+        if (players[i].winner) {
+            for (int j = 0; j < 5; j++) {
+                printf("%s", players[i].bestHand[j]);
+                printf("%s"," ");
+            }
+            printf("%s", "\n");
+        }
+
 
     }
-    */
+
     free(players);
 
     return 0;
