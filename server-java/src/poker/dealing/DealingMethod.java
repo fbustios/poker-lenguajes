@@ -4,6 +4,6 @@ import poker.items.Deck;
 import poker.table.PokerTable;
 
 
-public interface Dealer {
+public interface DealingMethod {
     void deal(PokerTable table, Deck deck);
 }

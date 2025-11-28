@@ -72,7 +72,7 @@ public final class CircularLinkedListPokerTable implements PokerTable{
     }
 
     @Override
-    public void setCurrentPlayer(int index) {
+    public void setCurrentPlayer(Player player) {
 
     }
 

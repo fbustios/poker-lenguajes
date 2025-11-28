@@ -10,4 +10,6 @@ public interface TurnManager {
     Optional<Player> nextTurn();
 
     void setStartingPlayer();
+
+    void setPendingAction(boolean value);
 }

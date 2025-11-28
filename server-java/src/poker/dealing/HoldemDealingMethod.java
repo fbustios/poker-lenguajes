@@ -7,12 +7,12 @@ import poker.table.PokerTable;
 
 import java.util.List;
 
-public final class HoldemDealer implements Dealer {
+public final class HoldemDealingMethod implements DealingMethod {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
     private Stage actualStage;
     private List<Card> communityCards;
 
-    public HoldemDealer(final List<Card> communityCards) {
+    public HoldemDealingMethod(final List<Card> communityCards) {
         actualStage = Stage.PRE_FLOP;
         this.communityCards = communityCards;
 

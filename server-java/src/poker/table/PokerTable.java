@@ -10,6 +10,6 @@ public interface PokerTable {
     List<Player> getActivePlayers();
     void resetTable();
     void moveDealer();
-    void setCurrentPlayer(final int index);
+    void setCurrentPlayer(Player player);
     Player getIthPlayerFromDealer(final int index);
 }

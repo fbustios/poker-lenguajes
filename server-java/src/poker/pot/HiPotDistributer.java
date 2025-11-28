@@ -10,10 +10,10 @@ public class HiPotDistributer implements PotDistributer{
 
     private final RankingSystem rankingSystem;
     private final PokerTable table;
-    private final Pot pot;
+    private final MapPot pot;
 
     public HiPotDistributer(final RankingSystem rankingSystem,
-                            final Pot pot,
+                            final MapPot pot,
                             final PokerTable table) {
         this.rankingSystem = rankingSystem;
         this.pot = pot;

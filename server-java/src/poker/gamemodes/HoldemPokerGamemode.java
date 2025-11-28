@@ -1,7 +1,6 @@
 package poker.gamemodes;
 
-import poker.GameState;
-import poker.dealing.Dealer;
+import poker.dealing.DealingMethod;
 import poker.items.Deck;
 import poker.items.Player;
 import poker.pot.PotDistributer;
@@ -10,18 +9,18 @@ import java.util.Optional;
 public final class HoldemPokerGamemode implements PokerGamemode {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
     private static final String name = "holdem";
-    private final Dealer dealer;
+    private final DealingMethod dealingMethod;
     private HoldemRound currentRound;
     private final TurnManager turnManager;
     private final PotDistributer potDistributer;
     private Deck deck;
     private final boolean gameStarted;
 
-    public HoldemPokerGamemode(Dealer dealer, TurnManager turnManager, PotDistributer pt, Deck deck) {
+    public HoldemPokerGamemode(DealingMethod dealingMethod, TurnManager turnManager, PotDistributer pt, Deck deck) {
         this.turnManager = turnManager;
         this.potDistributer = pt;
         this.gameStarted = false;
-        this.dealer = dealer;
+        this.dealingMethod = dealingMethod;
         this.deck = deck;
     }
 
@@ -31,7 +30,6 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         if (!checkAction()) {
             throw new IllegalStateException();
         }
-        if(!gameStarted) {}//raro corregir
         
         PlayerAction action = lastPokerAction.action();
         switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
@@ -50,10 +48,6 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public Optional<Player> getNextTurn() {
-        if(turnManager.isRoundOver()) {
-            nextRound();
-            //dealer.deal(table, deck);
-        }
         return turnManager.nextTurn();
     }
 
@@ -67,13 +61,6 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         potDistributer.distribute();
     }
 
-
-
-    private void nextRound() {
-        turnManager.setStartingPlayer();
-    }
-
-
     private void setUpGame() {
         deck.refill();
 
@@ -84,19 +71,24 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     private void handleRaise(Player player, int bet) {
+        turnManager.setPendingAction(false);
     }
 
     private void handleAllIn(Player player, int bet) {
+        turnManager.setPendingAction(false);
     }
 
     private void handleFold(Player player) {
+        turnManager.setPendingAction(false);
     }
 
 
     private void handleCheck(Player player) {
+        turnManager.setPendingAction(false);
     }
 
     private void handleCall(Player player) {
+        turnManager.setPendingAction(false);
     }
 
 

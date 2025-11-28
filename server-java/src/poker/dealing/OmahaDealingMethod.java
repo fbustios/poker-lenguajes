@@ -8,7 +8,7 @@ import poker.items.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OmahaDealer implements Dealer {
+public class OmahaDealingMethod implements DealingMethod {
 
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER}
 
@@ -24,15 +24,15 @@ public class OmahaDealer implements Dealer {
         switch (actualStage) {
             case PRE_FLOP -> {
                 preFlop(table, deck);
-                actualStage = OmahaDealer.Stage.FLOP;
+                actualStage = OmahaDealingMethod.Stage.FLOP;
             }
             case FLOP -> {
                 flop(deck);
-                actualStage = OmahaDealer.Stage.TURN;
+                actualStage = OmahaDealingMethod.Stage.TURN;
             }
             case TURN -> {
                 turn(deck);
-                actualStage = OmahaDealer.Stage.RIVER;
+                actualStage = OmahaDealingMethod.Stage.RIVER;
             }
             case RIVER -> river(deck);
         }

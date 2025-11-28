@@ -5,7 +5,7 @@ import poker.table.PokerTable;
 import poker.items.Player;
 
 
-public class StudRazzDealer implements Dealer {
+public class StudRazzDealingMethod implements DealingMethod {
     private enum Stage { THIRD, FOURTH, FIFTH, SIXTH, SEVENTH };
 
     private Stage currentStage = Stage.THIRD;

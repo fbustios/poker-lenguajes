@@ -1,15 +1,15 @@
 package poker.gamemodes;
 
+import poker.dealing.DealingMethod;
 import poker.items.Deck;
 import poker.items.Player;
 import poker.table.PokerTable;
-import poker.dealing.Dealer;
 
 import java.util.Optional;
 
 
 public class RazzPokerGamemode implements PokerGamemode{
-    private Dealer dealer;
+    private DealingMethod dealingMethod;
     private PokerTable table;
     private Deck deck;
 

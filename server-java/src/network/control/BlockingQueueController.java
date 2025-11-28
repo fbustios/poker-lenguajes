@@ -90,7 +90,7 @@ public final class BlockingQueueController implements Controller{
 
     private void handleAction(ClientMessage message) {
         String author = message.author();
-        Optional<Player> playerModel = connectionMap.getPlayerFromName(message.author());
+        Optional<Player> playerModel = connectionMap.getPlayerFromName(author);
         if (playerModel.isPresent()) {
             PokerAction action = new PokerAction(playerModel.get(), PlayerAction.CALL, 2);
             game.play(action);
@@ -114,7 +114,7 @@ public final class BlockingQueueController implements Controller{
         int money = 0;
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_ended\n");
-        sb.append("winner: " + playerName + "\n");
+        sb.append("winner: " + winner.getName() + "\n");
         sb.append("money_won: " + 0 + "\n");
         pokerEventEmitter.emit(connections, sb.toString());
     }
