@@ -39,8 +39,8 @@ public class ClientTestMain {
             if (event.equals("GAME_STARTED")) {
                 System.out.println("¡El juego ha comenzado!");
             } else if (event.equals("PLAYER_ACTION")) {
-                String player = message.get("player").getAsString();
-                String action = message.get("pokerAction").getAsString();
+                String player = message.get("player");
+                String action = message.get("pokerAction");
                 System.out.println(player + " realizó: " + action);
             }
         });
