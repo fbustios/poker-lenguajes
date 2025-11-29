@@ -8,7 +8,7 @@ public class MapPot implements Pot{
     private int totalAmount = 0;
 
 
-    private Map<Player, Integer> contributions = new HashMap<>();
+    private final Map<Player, Integer> contributions = new HashMap<>();
 
     private final List<Map<Player, Integer>> sidePots = new ArrayList<>();
 

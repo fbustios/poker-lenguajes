@@ -20,7 +20,7 @@ public final class HoldemDealingMethod implements DealingMethod {
 
     @Override
     public void deal(PokerTable table, Deck deck) {
-        List<Player> players = table.getPlayers();
+        List<Player> players = table.getActivePlayers();
         switch (actualStage) {
             case PRE_FLOP -> {
                 preFlop(table, deck);
@@ -40,13 +40,9 @@ public final class HoldemDealingMethod implements DealingMethod {
 
 
     private void preFlop(PokerTable table, Deck deck) {
-        int playerCount = table.getActivePlayers().size();
-        for(int i = 0; i < playerCount; i++){
-            Player player = table.next();
-            if (player != null) {
-                player.receiveCard(deck.draw());
-                player.receiveCard(deck.draw());
-            }
+        for (Player p : table.getActivePlayers()) {
+            p.receiveCard(deck.draw());
+            p.receiveCard(deck.draw());
         }
     }
 

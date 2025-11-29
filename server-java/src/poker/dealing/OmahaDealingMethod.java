@@ -41,14 +41,11 @@ public class OmahaDealingMethod implements DealingMethod {
 
     private void preFlop(PokerTable table, Deck deck) {
         int playerCount = table.getActivePlayers().size();
-        for(int i = 0; i < playerCount; i++){
-            Player player = table.next();
-            if (player != null) {
-                player.receiveCard(deck.draw());
-                player.receiveCard(deck.draw());
-                player.receiveCard(deck.draw());
-                player.receiveCard(deck.draw());
-            }
+        for (Player p : table.getActivePlayers()) {
+            p.receiveCard(deck.draw());
+            p.receiveCard(deck.draw());
+            p.receiveCard(deck.draw());
+            p.receiveCard(deck.draw());
         }
     }
 

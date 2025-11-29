@@ -4,6 +4,8 @@ import poker.items.Deck;
 import poker.table.PokerTable;
 import poker.items.Player;
 
+import java.util.List;
+
 
 public class StudRazzDealingMethod implements DealingMethod {
     private enum Stage { THIRD, FOURTH, FIFTH, SIXTH, SEVENTH };
@@ -42,30 +44,26 @@ public class StudRazzDealingMethod implements DealingMethod {
     }
 
     private void dealThirdStreet(PokerTable table, Deck deck){
-        int playerCount = table.getActivePlayers().size();
-        for(int i = 0; i < playerCount; i++){
-            Player player = table.next();
+        List<Player> players = table.getActivePlayers();
+        for (Player player : players) {
             player.receiveCard(deck.draw());
             player.receiveCard(deck.draw());
         }
     }
 
     private void dealOneUpCard(PokerTable table, Deck deck) {
-        int playerCount = table.getActivePlayers().size();
-        for (int i = 0; i < playerCount; i++) {
-            Player player = table.next();
-            if(!player.isFolded()) {
+        List<Player> players = table.getActivePlayers();
+        for (Player player : players) {
+            if (!player.isFolded()) {
                 player.receiveCard(deck.draw());
             }
         }
     }
 
     private void dealSeventhStreet(PokerTable table, Deck deck) {
-        int playerCount = table.getActivePlayers().size();
-        for (int i = 0; i < playerCount; i++) {
-            Player player = table.next();
+        List<Player> players = table.getActivePlayers();
+        for (Player player : players) {
             player.receiveCard(deck.draw());
-
         }
     }
 }
