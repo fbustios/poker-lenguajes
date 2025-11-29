@@ -129,8 +129,8 @@ public final class BlockingQueueController implements Controller{
         sb.append("gamemode_round: " + "\n");
         sb.append("pot:" + String.valueOf(pokerGameState.getPot()));
         sb.append("next_player: ");
-        sb.append("dealer: ");
         sb.append("players_left: " + String.valueOf(activePlayers.size()) + "\n");
+        string details = game.getGamemodeDetails();
         //dealer: name
         //players_left: n
         //n1: C5, CS, ?, ?, money

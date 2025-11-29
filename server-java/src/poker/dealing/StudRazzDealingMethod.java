@@ -1,6 +1,7 @@
 package poker.dealing;
 
 import poker.items.Deck;
+import poker.rounds.Street;
 import poker.table.PokerTable;
 import poker.items.Player;
 
@@ -8,9 +9,7 @@ import java.util.List;
 
 
 public class StudRazzDealingMethod implements DealingMethod {
-    private enum Stage { THIRD, FOURTH, FIFTH, SIXTH, SEVENTH };
-
-    private Stage currentStage = Stage.THIRD;
+    private Street currentStage = Street.THIRD;
 
     @Override
     public void deal(PokerTable table, Deck deck) {
@@ -18,20 +17,20 @@ public class StudRazzDealingMethod implements DealingMethod {
             case THIRD -> {
                 dealThirdStreet(table, deck);
                 dealOneUpCard(table, deck);
-                currentStage = Stage.FOURTH;
+                currentStage = Street.FOURTH;
             }
             case FOURTH -> {
                 dealOneUpCard(table, deck);
-                currentStage = Stage.FIFTH;
+                currentStage = Street.FIFTH;
             }
             case FIFTH -> {
                 dealOneUpCard(table, deck);
-                currentStage = Stage.SIXTH;
+                currentStage = Street.SIXTH;
             }
 
             case SIXTH -> {
                 dealOneUpCard(table, deck);
-                currentStage = Stage.SEVENTH;
+                currentStage = Street.SEVENTH;
             }
 
             case SEVENTH -> {

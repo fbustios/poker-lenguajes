@@ -1,4 +1,4 @@
-package poker.gamemodes;
+package poker.rounds;
 
 import poker.items.Player;
 
@@ -12,4 +12,5 @@ public interface TurnManager {
     void setStartingPlayer();
 
     void setPendingAction(boolean value);
+    void resetTurnsLeft();
 }

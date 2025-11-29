@@ -4,10 +4,12 @@ import poker.dealing.DealingMethod;
 import poker.items.Deck;
 import poker.items.Player;
 import poker.pot.PotDistributer;
+import poker.rounds.HoldemRound;
+import poker.rounds.TurnManager;
+
 import java.util.Optional;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
-    private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
     private static final String name = "holdem";
     private final DealingMethod dealingMethod;
     private HoldemRound currentRound;
@@ -17,6 +19,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     private final boolean gameStarted;
 
     public HoldemPokerGamemode(DealingMethod dealingMethod, TurnManager turnManager, PotDistributer pt, Deck deck) {
+        currentRound = HoldemRound.PRE_FLOP;
         this.turnManager = turnManager;
         this.potDistributer = pt;
         this.gameStarted = false;
@@ -71,14 +74,21 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     private void handleRaise(Player player, int bet) {
+        turnManager.resetTurnsLeft();
         turnManager.setPendingAction(false);
     }
 
     private void handleAllIn(Player player, int bet) {
+        int lastBet = 0;
+        if (bet > lastBet) {
+            turnManager.resetTurnsLeft();
+        }
+        player.setAllIn(true);
         turnManager.setPendingAction(false);
     }
 
     private void handleFold(Player player) {
+        player.setFolded(true);
         turnManager.setPendingAction(false);
     }
 

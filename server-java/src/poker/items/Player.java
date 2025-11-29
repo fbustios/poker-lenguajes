@@ -46,6 +46,7 @@ public final class Player {
     }
 
     public void setFolded(boolean folded) {
+        isActive = false;
         isFolded = folded;
     }
 
@@ -66,6 +67,7 @@ public final class Player {
     }
 
     public void setAllIn(final boolean allIn) {
+        isActive = false;
         isAllIn = allIn;
     }
 

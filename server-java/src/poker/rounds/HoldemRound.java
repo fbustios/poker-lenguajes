@@ -1,4 +1,4 @@
-package poker.gamemodes;
+package poker.rounds;
 
 public enum HoldemRound {
     PRE_FLOP,
