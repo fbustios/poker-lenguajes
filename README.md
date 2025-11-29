@@ -1,78 +1,30 @@
-## client -> server
+# Proyecto - `Poker Horse`
 
-```json
-{
-	"event": "JOIN_GAME",
-	"game_mode": "Holdem",
-	"player_name": "pepe"
-}
-{
-	"event": "PLACE_BET",
-	"game_mode": "Omaha",
-	"current_player": 0,
-	"player_action": "RAISE"
-	"bet": 5000
-},
-{
-	"event": "PLAY_CARD",
-	"game_mode": "Holdem",
-	"current_player": 0,
-	"card": {
-		"value": 2,
-		"suit": "hearts"
-	}
-},
-{
-	"event": "CHANGE_CARTS",
-	"current_player": 0,
-	"cards": [
-		{ "value": 3, "suit": "hearts" },
-		{ "value": 4, "suit": "hearts" },
-		{ "value": 5, "suit": "hearts" }
-	]
-}
-```
+Proyecto basado en los lenguajes `Java` y `C`. Con el objetivo de implementar el juego `POKER HORSE`
 
-## servidor -> cliente  
-  
-```json
-{
-	"event": "PLAYER_ACTION",
-	"game_mode": "Omaha",
-	"player": "aaron",
-	"next_player": "franco",
-	"pokerAction": "raise",
-	"dealingMethod": "p1",
-	"poker.pot": 800
-}
-{
-	"event": "ROUND_OVER",
-	"game_mode": "Holdem",
-	"next_round": "show",
-	"poker.pot": 500
-}
-{
-	"event": "GAME_STARTED",
-	"playerModels": [
-		{ "player": "aaron", "index": 0 },
-		{ "player": "franco", "index": 1 },
-		{ "player": "daniel", "index": 2 },
-		{ "player": "sergio", "index": 3 }
-	],
-	"game_mode": "Holdem",
-	"next_player": "aaron",
-	"dealingMethod": "Daniel",
-	"small_blind": "sergio",
-	"big_blind": "aaron"
-}
-{
-	"event": "GAME_ENDED",
-	"game_mode": "Holdem",
-	"winners": [
-		{
-			"player": "sergio",
-			"poker.pot": 300
-		}
-	]
-}
-```
+## Objetivo
+
+* Diseñar e implementar un sistema de Poker con la integración de dos paradigmas de programación.
+* Comunicación entre C y Java por medio de `Socket TCP`
+* Soportar entre 2 y 4 jugadores concurrentes
+* Administrar apuestas, pots, turnos y cambio de modo de juego cíclico
+
+## Arquitectura
+
+* `client-java`: implementa la interfaz gráfica y como el cliente interactua con el juego. Además, de comunicarse con el servidor.
+* `eval-c`: evaluador de manos de los jugadores actuales.
+* `server-java`: implementa la comunicacion entre el servidor y el cliente.
+
+## Variantes
+
+| Letra | Variante                | Descripción breve                                      |
+| ----- | ----------------------- | ------------------------------------------------------ |
+| H     | Hold'em                 | 2 cartas ocultas + 5 comunitarias.                     |
+| O     | Omaha Hi                | 4 cartas ocultas, usar exactamente 2 + 3 comunitarias. |
+| R     | Razz                    | Se busca la **peor** mano posible (mano baja).         |
+| S     | Seven Card Stud         | 7 cartas por jugador, sin cartas comunitarias.         |
+| E     | Eight or Better (Hi-Lo) | Premia mano alta y baja; la baja debe ser 8 o menos.   |
+
+## Rankeo de las manos
+
+<p align="center"><img alt="poker hand ranking" src="https://github.com/fbustios/poker-lenguajes/blob/main/pokerHandRanking.png"></p>
