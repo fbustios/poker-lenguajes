@@ -1,9 +1,9 @@
 package poker.pot;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.List;
 
 public interface PotDistributer {
-    List<PlayerModel> distribute(final List<PlayerModel> winners);
+    List<Player> distribute();
 }

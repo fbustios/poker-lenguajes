@@ -1,7 +1,7 @@
-package network.io;
+package network;
 
 public enum ClientEvent {
-    JOIN_GAME("join_game"), ACTION("action");
+    JOIN_GAME("join_game"), ACTION("action"), LEAVE_GAME("leave_game");
     private final String action;
 
     ClientEvent(String action) {

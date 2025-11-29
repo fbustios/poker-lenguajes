@@ -1,5 +1,5 @@
 import network.control.Controller;
-import network.PlayerConnection;
+import network.io.PlayerConnection;
 import poker.table.PokerTable;
 
 import java.util.List;

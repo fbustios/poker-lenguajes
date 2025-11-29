@@ -1,11 +1,15 @@
 package poker.table;
 
-import poker.items.PlayerModel;
+import poker.items.Player;
 
 import java.util.List;
 
 public interface PokerTable {
-    PlayerModel next();
-    List<PlayerModel> getPlayers();
+    Player next();
+    List<Player> getPlayers();
+    List<Player> getActivePlayers();
     void resetTable();
+    void moveDealer();
+    void setCurrentPlayer(Player player);
+    Player getIthPlayerFromDealer(final int index);
 }

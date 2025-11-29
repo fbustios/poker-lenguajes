@@ -1,23 +1,20 @@
+import network.ClientEvent;
 import network.control.BlockingQueueController;
 import network.control.Controller;
-import network.PlayerConnection;
-import network.io.ClientMessage;
-import network.io.LineScannerRequestParser;
-import network.io.RequestParser;
+import network.control.SequenceConnectionPlayerMapping;
+import network.io.*;
 import poker.HorsePokerGame;
 import poker.PokerGame;
-import poker.items.PlayerModel;
+import poker.gamemodes.Gamemode;
+import poker.gamemodes.HoldemPokerGamemode;
+import poker.items.Player;
 import poker.table.CircularLinkedListPokerTable;
-import poker.table.PokerTable;
-import poker.table.Seat;
-
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public final class PokerServer {
     private static final int ARGS_COUNT = 2;
@@ -38,32 +35,45 @@ public final class PokerServer {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Listening on " + port + "...");
             BlockingQueue<ClientMessage> queue = new LinkedBlockingQueue<>();
-            List<PlayerConnection> playerConnections = gatherConnections(serverSocket,queue);
-            //PokerGame game = new HorsePokerGame();
-            //Controller gameController = new BlockingQueueController(queue, game);
-            //gameController.start();
-            for(int i = 0; i < playerConnections.size(); i++ ) {
-                System.out.println(playerConnections.get(i).CONST);
-            }
-        } catch (IOException e) {
+            Map<Connection, Player> playerConnections = gatherConnections(serverSocket,queue);
+            System.out.println("Lobby built");
+            PokerGame game = new HorsePokerGame(List.of(new HoldemPokerGamemode(null, null, null, null)), null);
+            Controller gameController = new BlockingQueueController(new PokerEventEmitter(), queue,game, SequenceConnectionPlayerMapping.build(playerConnections));
+            gameController.start();
+        } catch (Exception e) {
             System.err.println("Could not listen on port " + this.port);
+            System.err.println(e.getMessage());
             System.exit(-1);
         }
     }
 
-    List<PlayerConnection> gatherConnections (ServerSocket socket, BlockingQueue<ClientMessage> queue) throws IOException {
-        RequestParser rq = new LineScannerRequestParser();
-        int currentPlayers = 0;
-        List<PlayerConnection> playerConnections = new ArrayList<>();
-        while(currentPlayers < this.maxPlayers) {
-            Socket playerSocket = socket.accept();
-            currentPlayers++;
-            PlayerConnection playerConnection = new PlayerConnection(playerSocket, queue, rq);
-            playerConnections.add(playerConnection);
-            new Thread(playerConnection).start();
+    Map<Connection, Player> gatherConnections (ServerSocket socket, BlockingQueue<ClientMessage> queue) {
+        try {
+            RequestParser rq = new LineScannerRequestParser();
+            int currentPlayers = 0;
+            Map<Connection, Player> playerConnections = new HashMap<>();
+            while(currentPlayers < this.maxPlayers) {
+                Socket playerSocket = socket.accept();
+                currentPlayers++;
+                Connection playerConnection = new PlayerConnection(playerSocket, queue,rq);
+                new Thread(playerConnection).start();
+                boolean sent = false;
+                while (!sent) {  //deberia ser toda una responsabilidad aparte, crear lobbys, pero bueno
+                    Optional<ClientMessage> event = Optional.ofNullable(queue.poll(100, TimeUnit.MILLISECONDS));
+                    if(event.isPresent()) {
+                        ClientMessage message = event.get();
+                        if (message.event().equals(ClientEvent.JOIN_GAME)) {
+                            sent = true;
+                            Player p = new Player(message.author(),List.of(),Integer.parseInt(message.details().get("bet")));
+                            playerConnections.put(playerConnection,p);
+                        }
+                    }
+                }
+            }
+            return playerConnections;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
-        return playerConnections;
+
     }
-
-
 }

@@ -1,0 +1,63 @@
+package poker.dealing;
+
+import poker.items.Card;
+import poker.items.Deck;
+import poker.items.Player;
+import poker.table.PokerTable;
+
+import java.util.List;
+
+public final class HoldemDealingMethod implements DealingMethod {
+    private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
+    private Stage actualStage;
+    private List<Card> communityCards;
+
+    public HoldemDealingMethod(final List<Card> communityCards) {
+        actualStage = Stage.PRE_FLOP;
+        this.communityCards = communityCards;
+
+    }
+
+    @Override
+    public void deal(PokerTable table, Deck deck) {
+        List<Player> players = table.getActivePlayers();
+        switch (actualStage) {
+            case PRE_FLOP -> {
+                preFlop(table, deck);
+                actualStage = Stage.FLOP;
+            }
+            case FLOP -> {
+                flop(deck);
+                actualStage = Stage.TURN;
+            }
+            case TURN -> {
+                turn(deck);
+                actualStage = Stage.RIVER;
+            }
+            case RIVER -> river(deck);
+        }
+    }
+
+
+    private void preFlop(PokerTable table, Deck deck) {
+        for (Player p : table.getActivePlayers()) {
+            p.receiveCard(deck.draw());
+            p.receiveCard(deck.draw());
+        }
+    }
+
+    private void flop(Deck deck) {
+        for (int i = 0; i < 3; i++){
+            communityCards.add(deck.draw());
+        }
+    }
+
+    private void turn(Deck deck) {
+        communityCards.add(deck.draw());
+    }
+
+    private void river(Deck deck) {
+        communityCards.add(deck.draw());
+
+    }
+}

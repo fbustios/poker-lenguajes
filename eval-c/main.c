@@ -27,17 +27,33 @@ struct Ranking {
 };
 
 struct Player {
-    char * name;
+    char name[5];
     char ** bestHand;
+    int winner;
 };
 
 char ** readHand(const int size) {
     char ** deck = malloc(size * sizeof(char *));
+
     for (int i = 0; i < size; i++) {
         deck[i] = malloc(3 * sizeof(char));
         scanf("%3s", deck[i]);
     }
+
     return deck;
+}
+
+struct Player* readPlayers(const int players) {
+    struct Player* playersList = malloc(sizeof(struct Player) * players);
+
+    for (int i = 0; i < players; i++) {
+        char playerName[5];
+        scanf("%4s", playerName);
+        char ** hand = readHand(FULL_HAND);
+        strncpy(playersList[i].name, playerName,4);
+        playersList[i].bestHand = hand;
+    }
+    return playersList;
 }
 
 int getCardValue(const char c, const int low) {
@@ -188,8 +204,6 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
     for (int i = 0; i < HAND_SIZE; i++) {
         int value = getCardValue(firstHand[i][1],0);
         int value2 = getCardValue(secondHand[i][1],0);
-        //printf("%d",value);
-        //printf("%d",value2);
         hand1_freq[value-1]++;
         hand2_freq[value2-1]++;
     }
@@ -202,8 +216,6 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
             if (cardValue >= max) {
                 max = cardValue;
                 winner = 2;
-                //printf("%d", cardValue);
-                //printf("%c", ' ');
             }
         }
 
@@ -211,20 +223,15 @@ char ** decideTieByHighCard(char ** firstHand, char ** secondHand) {
             if (cardValue >= max) {
                 max = cardValue;
                 winner = 1;
-                //printf("%d", cardValue);
-                //printf("%c", ' ');
             }
         }
     }
     free(hand1_freq);
     free(hand2_freq);
-    //printf("%s", "se decidió por highcard y ganó: ");
-    //printf("%d", winner);
-    //printf("%s", "\n");
     return winner == 1 ? firstHand : secondHand;
 }
 
-char ** decideTie(char ** firstHand, char ** secondHand) {
+char ** getBetterHighHand(char ** firstHand, char ** secondHand) {
     struct Ranking firstHandRanking = findRanking(firstHand);
     struct Ranking secondHandRanking = findRanking(secondHand);
     int rank1 = firstHandRanking.rank;
@@ -242,16 +249,6 @@ char ** decideTie(char ** firstHand, char ** secondHand) {
     return rank1 > rank2 ? firstHand : secondHand;
 }
 
-int weighLowHand(char ** hand, int handSize) {
-    int handWeight = 0;
-    for (int i = 0; i < handSize; i++) {
-        char cardNumber = hand[i][1];
-        int cardValue = cardNumber - '0';
-        handWeight -= cardValue;
-    }
-    return handWeight;
-}
-
 char ** copyHand(char ** originalHand, int size) {
     char ** copy = malloc(size * sizeof(char *));
     for (int i = 0; i < size; i++) {
@@ -261,12 +258,7 @@ char ** copyHand(char ** originalHand, int size) {
     return copy;
 }
 
-char ** mergeCards() {
-    return 0;
-}
-
-
-char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, int currentHandIndex, int currentIndex) {
+char ** findBestHighCombination_aux(char ** fullHand, char ** currentHand, int targetSize, int currentHandIndex, int currentIndex) {
     if (currentHandIndex == targetSize) return currentHand;
 
     if (targetSize - currentHandIndex == 7 - currentIndex) {
@@ -279,103 +271,234 @@ char ** getBestHandAux(char ** fullHand, char ** currentHand, int targetSize, in
     char ** copyCurrentHand = copyHand(currentHand, currentHandIndex);
     char ** copyCurrentHand2 = copyHand(currentHand, currentHandIndex);
     copyCurrentHand[currentHandIndex] = fullHand[currentIndex];
-    char ** takingOption = getBestHandAux(fullHand, copyCurrentHand, targetSize, currentHandIndex + 1, currentIndex + 1);
-    char ** skippingOption = getBestHandAux(fullHand, copyCurrentHand2, targetSize, currentHandIndex, currentIndex + 1);
-    return decideTie(takingOption, skippingOption);
+    char ** takingOption = findBestHighCombination_aux(fullHand, copyCurrentHand, targetSize, currentHandIndex + 1, currentIndex + 1);
+    char ** skippingOption = findBestHighCombination_aux(fullHand, copyCurrentHand2, targetSize, currentHandIndex, currentIndex + 1);
+    return getBetterHighHand(takingOption, skippingOption);
+}
+
+int isLowHand(struct Ranking handRaking, char ** hand) {
+    if (handRaking.rank == ONE_PAIR || handRaking.rank == TWO_PAIR || handRaking.rank == THREE_OF_A_KIND || handRaking.rank == FOUR_OF_A_KIND) return 0;
+    for (int i = 0; i < HAND_SIZE; i++) {
+        int cardNumber = getCardValue(hand[i][1],1);
+        if (cardNumber > 8) return 0;
+    }
+    return 1;
+}
+
+char ** getBetterLowHand(char ** firstHand, char ** secondHand) {
+    struct Ranking firstHandRanking = findRanking(firstHand);
+    struct Ranking secondHandRanking = findRanking(secondHand);
+    //resumible en dos variables xd
+    if (!isLowHand(firstHandRanking, firstHand) && isLowHand(secondHandRanking, secondHand)) return secondHand;
+    if (!isLowHand(secondHandRanking, secondHand) && isLowHand(firstHandRanking, firstHand)) return firstHand;
+
+    return decideTieByHighCard(firstHand, secondHand) == firstHand ? secondHand : firstHand;
 }
 
 
-char ** getBestHand(char ** fullHand, const int targetSize) {
+char ** findBestLowCombination_aux(char ** fullHand, char ** currentHand, int targetSize, int currentHandIndex, int currentIndex) {
+    if (currentHandIndex == targetSize) return currentHand;
+
+    if (targetSize - currentHandIndex == 7 - currentIndex) {
+        char ** newHand = copyHand(currentHand,5);
+        for (int i = currentIndex; i < FULL_HAND ; i++) {
+            newHand[currentHandIndex++] = fullHand[i];
+        }
+        return newHand;
+    }
+    char ** copyCurrentHand = copyHand(currentHand, currentHandIndex);
+    char ** copyCurrentHand2 = copyHand(currentHand, currentHandIndex);
+    copyCurrentHand[currentHandIndex] = fullHand[currentIndex];
+    char ** takingOption = findBestLowCombination_aux(fullHand, copyCurrentHand, targetSize, currentHandIndex + 1, currentIndex + 1);
+    char ** skippingOption = findBestLowCombination_aux(fullHand, copyCurrentHand2, targetSize, currentHandIndex, currentIndex + 1);
+    return getBetterLowHand(takingOption, skippingOption);
+}
+
+
+char ** findBestHighCombination(char ** fullHand, const int targetSize) {
     char ** currentHand = calloc(targetSize, sizeof(char *));
     for (int i = 0; i < targetSize; i++) {
         currentHand[i] = calloc(2, sizeof(char));
     }
-    return getBestHandAux(fullHand, currentHand, targetSize, 0, 0);
+    return findBestHighCombination_aux(fullHand, currentHand, targetSize, 0, 0);
 }
 
-char ** decideWinners(const struct Player * playerArray, const int players) {
-    char ** winners = malloc(players * sizeof(char *));
-    for (int i = 0; i < players; i++) {
-        winners[i] = malloc(5 * sizeof(char));
-        winners[i] = NULL;
+char ** findBestLowCombination(char ** fullHand, const int targetSize) {
+    char ** currentHand = calloc(targetSize, sizeof(char *));
+    for (int i = 0; i < targetSize; i++) {
+        currentHand[i] = calloc(2, sizeof(char));
     }
-    for (int i = 0; i < players; i++) {
-        struct Player p = playerArray[i];
-    }
-    return winners;
+    return findBestLowCombination_aux(fullHand, currentHand, targetSize, 0, 0);
 }
-int main(void) {
-    int players;
-    char gamemode[10];
-    int deckSize;
-    //scanf("%d", &players);
-    //scanf("%d", &deckSize);
-    //scanf("%s", gamemode);
-    //char ** communityCards = readHand(5);
-    //free(communityCards);
-    char ** deck = malloc(5 * sizeof(char *));
-    for (int i = 0; i < 5; i++) {
-        deck[i] = malloc(3 * sizeof(char));
+
+int same(char ** firstHand, char ** secondHand) {
+    int * hand1_freq = calloc(CARDS,sizeof(int));
+    int * hand2_freq = calloc(CARDS,sizeof(int));
+    for (int i = 0; i < HAND_SIZE; i++) {
+        int value = getCardValue(firstHand[i][1],0);
+        int value2 = getCardValue(secondHand[i][1],0);
+        hand1_freq[value-1]++;
+        hand2_freq[value2-1]++;
     }
-    deck[0] = "SA";
-    deck[1] = "DA";
-    deck[2] = "C5";
-    deck[3] = "H3";
-    deck[4] = "D1";
 
-    char ** deck2 = malloc(5 * sizeof(char *));
-    for (int i = 0; i < 5; i++) {
-        deck2[i] = malloc(3 * sizeof(char));
-    }
-    deck2[0] = "SA";
-    deck2[1] = "DA";
-    deck2[2] = "H2";
-    deck2[3] = "D5";
-    deck2[4] = "D1";
-
-    //struct Ranking score = findRanking(deck);
-    //struct Ranking score2 = findRanking(deck2);
-    //decideTie(deck, deck2);
-    //printf("%d", score.rank);
-    //printf("%c", '\n');
-    //printf("%d", score2.rank);
-
-    char ** fullHand = malloc(5 * sizeof(char *));
-    for (int i = 0; i < 5; i++) {
-        fullHand[i] = malloc(3 * sizeof(char));
-    }
-    fullHand[0] = "HA";
-    fullHand[1] = "HK";
-    fullHand[2] = "HQ";
-    fullHand[3] = "HJ";
-    fullHand[4] = "HT";
-    fullHand[5] = "CA";
-    fullHand[6] = "SA";
-
-    char ** best = getBestHand(fullHand,5);
-    printf("%s", "\n");
-    for (int i = 0; i < 5; i++) {
-        printf("%s", best[i]);
-        printf("%c", ' ');
-    }
-    free(fullHand);
-    free(deck2);
-    free(deck);
-    /*
-    for(int i = 0; i < players; i++) {
-        char ** playerDeck = readHand(deckSize);
-        if (strcmp(gamemode, "omaha") || strcmp(gamemode,"holdem")) {
-            //char ** communityCards = readCommunityCards(5);
-            mergeCards();
-
-            //return weighHighHand(,7);
+    for (int i = 0; i < CARDS; i++) {
+        if (!hand1_freq[i] && hand2_freq[i]) {
+            free(hand1_freq);
+            free(hand2_freq);
+            return 0;
         }
-        if (strcmp(gamemode, "razz") || strcmp(gamemode,"omaha-hilo")) {
-            //int lowHand = weighLowHand(,7);
-            //return lowHand;
+
+        if (hand1_freq[i] && !hand2_freq[i]) {
+            free(hand1_freq);
+            free(hand2_freq);
+            return 0;
         }
     }
-    */
+    free(hand1_freq);
+    free(hand2_freq);
+    return 1;
+}
+
+int totalTie(char ** firstHand, char ** secondHand) {
+    struct Ranking firstHandRanking = findRanking(firstHand);
+    struct Ranking secondHandRanking = findRanking(secondHand);
+    int rank1 = firstHandRanking.rank;
+    int rank2 = secondHandRanking.rank;
+    int score1 = firstHandRanking.score;
+    int score2 = secondHandRanking.score;
+    if ((rank1 == rank2) && (score1 == score2)) {
+        return same(firstHand,secondHand);
+    };
     return 0;
 }
 
+void findBestHighHandsForPlayers(struct Player * players, int sizePlayers) {
+    printf("%s", "llegue6");
+    for (int i = 0; i < sizePlayers; i ++) {
+        players[i].bestHand = findBestHighCombination(players[i].bestHand, 5);
+        printf("%s", "\n");
+    }
+
+}
+
+void findBestLowHandsForPlayers(struct Player * players, int sizePlayers) {
+    printf("%s", "llegue6");
+    for (int i = 0; i < sizePlayers; i ++) {
+        players[i].bestHand = findBestLowCombination(players[i].bestHand, 5);
+        printf("%s", "\n");
+    }
+
+}
+
+void decideWinnerHigh(struct Player * players, const int numPlayers) {
+    struct Player best = players[0];
+    for (int i = 0; i < numPlayers; i++) {
+        if (getBetterHighHand(best.bestHand, players[i].bestHand) != best.bestHand) {
+            best = players[i];
+        }
+    }
+    for (int i = 0; i < numPlayers; i++) {
+        if (totalTie(best.bestHand, players[i].bestHand)) {
+            players[i].winner = 1;
+        } else {
+            players[i].winner = 0;
+        }
+    }
+}
+
+void decideWinnerLow(struct Player * players, const int numPlayers) { //falta revisar
+    struct Player best = players[0];
+    for (int i = 0; i < numPlayers; i++) {
+        if (getBetterLowHand(best.bestHand, players[i].bestHand) != best.bestHand) {
+            best = players[i];
+        }
+    }
+    if (!isLowHand(findRanking(best.bestHand),best.bestHand)) {
+        return;
+    }
+    for (int i = 0; i < numPlayers; i++) {
+        if (totalTie(best.bestHand, players[i].bestHand)) {
+            players[i].winner = 1;
+        } else {
+            players[i].winner = 0;
+        }
+    }
+}
+
+
+
+int main(void) {
+    int numPlayers;
+    char gamemode;
+    int deckSize;
+    scanf("%d", &numPlayers);
+    scanf("%d", &deckSize);
+    getchar();
+    scanf("%c", &gamemode);
+
+    struct Player * players = readPlayers(numPlayers);
+    if (gamemode == 'h' || gamemode == 'o' || gamemode == 's') {
+        findBestHighHandsForPlayers(players, numPlayers);
+        decideWinnerHigh(players, numPlayers);
+    } else if (gamemode == 'r') {
+        findBestLowHandsForPlayers(players, numPlayers);
+        decideWinnerLow(players, numPlayers);
+    } else if (gamemode == 'e') {  //NOT WORKING
+        findBestHighHandsForPlayers(players, numPlayers);
+        decideWinnerHigh(players, numPlayers);
+        findBestLowHandsForPlayers(players, numPlayers);
+        decideWinnerLow(players, numPlayers);
+
+    } else {
+        /*
+        char ** deck = malloc(7 * sizeof(char *));
+
+        for (int i = 0; i < 7; i++) {
+            deck[i] = malloc(3 * sizeof(char));
+        }
+
+        char ** deck2 = malloc(5 * sizeof(char *));
+
+        for (int i = 0; i < 5; i++) {
+            deck2[i] = malloc(3 * sizeof(char));
+        }
+        deck[0] = "C2";
+        deck[1] = "DK";
+        deck[2] = "S2";
+        deck[3] = "H2";
+        deck[4] = "D5";
+        deck[5] = "SA";
+        deck[6] = "HA";
+
+        deck2[0] = "C2";
+        deck2[1] = "D2";
+        deck2[2] = "H2";
+        deck2[3] = "S2";
+        deck2[4] = "D6";
+        //char ** best = decideTieByHighCard(deck2, deck);
+        char ** best = findBestHighCombination(players[0].bestHand,5);
+        //findBestHighHandsForPlayers(players,numPlayers);
+        for (int j = 0; j < 5; j++) {
+            printf("%s", best[j]);
+            printf("%s"," ");
+        }
+        //printf("%d", isLowHand(findRanking(best),best));
+        */
+    }
+
+    for (int i = 0; i < numPlayers; i++) {
+        if (players[i].winner) {
+            for (int j = 0; j < 5; j++) {
+                printf("%s", players[i].bestHand[j]);
+                printf("%s"," ");
+            }
+            printf("%s", "\n");
+        }
+
+
+    }
+
+    free(players);
+
+    return 0;
+}

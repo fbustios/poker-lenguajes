@@ -41,8 +41,8 @@
 	"game_mode": "Omaha",
 	"player": "aaron",
 	"next_player": "franco",
-	"action": "raise",
-	"dealer": "p1",
+	"pokerAction": "raise",
+	"dealingMethod": "p1",
 	"poker.pot": 800
 }
 {
@@ -61,7 +61,7 @@
 	],
 	"game_mode": "Holdem",
 	"next_player": "aaron",
-	"dealer": "Daniel",
+	"dealingMethod": "Daniel",
 	"small_blind": "sergio",
 	"big_blind": "aaron"
 }
