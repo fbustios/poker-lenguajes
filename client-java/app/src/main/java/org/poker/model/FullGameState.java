@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FullGameState {
-    public String gameMode;
-    public String currentRound;
-    public int pot;
-    public String dealer;
-    public String nextPlayer;
-    public String smallBlind;
-    public String bigBlind;
-    public List<PlayerInfo> players;
-    public List<Card> communityCards;
+    private String gameMode;
+    private String currentRound;
+    private int pot;
+    private String dealer;
+    private String nextPlayer;
+    private String smallBlind;
+    private String bigBlind;
+    private List<PlayerInfo> players;
+    private List<Card> communityCards;
 
     public FullGameState() {
         this.players = new ArrayList<>();

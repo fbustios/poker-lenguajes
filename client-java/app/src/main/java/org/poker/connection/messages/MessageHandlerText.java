@@ -10,14 +10,14 @@ public final class MessageHandlerText implements MessageHandler {
     private final BufferedReader in;
     private final PrintWriter out;
 
-    public MessageHandlerText(BufferedReader in, PrintWriter out) {
+    public MessageHandlerText(final BufferedReader in, final PrintWriter out) {
         this.in = in;
         this.out = out;
     }
 
     @Override
     public void sendMessage(Map<String, String> data) {
-        StringBuilder messageBuilder = new StringBuilder();
+        final StringBuilder messageBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : data.entrySet()) {
             messageBuilder.append(entry.getKey())
                     .append(": ")
@@ -25,8 +25,8 @@ public final class MessageHandlerText implements MessageHandler {
                     .append("\n");
         }
 
-        String messageBody = messageBuilder.toString();
-        int messageLength = messageBody.length();
+        final String messageBody = messageBuilder.toString();
+        final int messageLength = messageBody.length();
 
 
         out.println(messageLength);
@@ -40,13 +40,13 @@ public final class MessageHandlerText implements MessageHandler {
     @Override
     public Optional<String> receiveMessage() {
         try {
-            Optional<String> lengthLine = Optional.ofNullable(in.readLine());
+            final Optional<String> lengthLine = Optional.ofNullable(in.readLine());
 
             if (lengthLine.isEmpty()) {
                 return Optional.empty();
             }
 
-            int messageLength;
+            final int messageLength;
             try {
                 messageLength = Integer.parseInt(lengthLine.get().trim());
             } catch (NumberFormatException e) {
@@ -54,17 +54,17 @@ public final class MessageHandlerText implements MessageHandler {
                 return Optional.empty();
             }
 
-            char[] buffer = new char[messageLength];
+            final char[] buffer = new char[messageLength];
             int totalRead = 0;
             while (totalRead < messageLength) {
-                int read = in.read(buffer, totalRead, messageLength - totalRead);
+                final int read = in.read(buffer, totalRead, messageLength - totalRead);
                 if (read == -1) {
                     throw new IOException("Conexión cerrada mientras se leía el mensaje");
                 }
                 totalRead += read;
             }
 
-            String message = new String(buffer);
+            final String message = new String(buffer);
             System.out.println("Recibido (" + messageLength + " bytes):\n" + message);
 
             return Optional.of(message);

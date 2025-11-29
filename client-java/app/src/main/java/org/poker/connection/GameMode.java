@@ -9,7 +9,7 @@ public enum GameMode {
 
     private final String name;
 
-    GameMode(String name) {
+    GameMode(final String name) {
         this.name = name;
     }
 

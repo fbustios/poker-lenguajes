@@ -7,19 +7,24 @@ import org.poker.connection.PokerClientTCP;
 
 import java.util.Scanner;
 
-public class ClientTestMain {
+public final class ClientTestMain {
+    private ClientTestMain() {
+
+    }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        final Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== CLIENTE DE POKER HORSE - MODO PRUEBA ===\n");
 
         System.out.print("Nombre del jugador: ");
-        String playerName = scanner.nextLine();
+        final String playerName = scanner.nextLine();
 
         System.out.print("Host del servidor (default: localhost): ");
         String host = scanner.nextLine();
-        if (host.isEmpty()) host = "localhost";
+        if (host.isEmpty()) {
+            host = "localhost";
+        }
 
         System.out.print("Puerto (default: 5000): ");
         String portStr = scanner.nextLine();
@@ -92,7 +97,7 @@ public class ClientTestMain {
 
                     case "2":
                         if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().gameMode, 0, "CALL", 0);
+                            client.placeBet(client.getGameState().getGameMode(), 0, "CALL", 0);
                             System.out.println("✓ CALL enviado");
                         }
                         break;
@@ -101,21 +106,21 @@ public class ClientTestMain {
                         if (checkMyTurn(client)) {
                             System.out.print("Cantidad a apostar: ");
                             int amount = Integer.parseInt(scanner.nextLine());
-                            client.placeBet(client.getGameState().gameMode, 0, "RAISE", amount);
+                            client.placeBet(client.getGameState().getGameMode(), 0, "RAISE", amount);
                             System.out.println("✓ RAISE de " + amount + " enviado");
                         }
                         break;
 
                     case "4":
                         if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().gameMode, 0, "FOLD", 0);
+                            client.placeBet(client.getGameState().getGameMode(), 0, "FOLD", 0);
                             System.out.println("✓ FOLD enviado");
                         }
                         break;
 
                     case "5":
                         if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().gameMode, 0, "CHECK", 0);
+                            client.placeBet(client.getGameState().getGameMode(), 0, "CHECK", 0);
                             System.out.println("✓ CHECK enviado");
                         }
                         break;
@@ -169,19 +174,19 @@ public class ClientTestMain {
         System.out.println("\n╔════════════════════════════════════╗");
         System.out.println("║      ESTADO ACTUAL DEL JUEGO       ║");
         System.out.println("╠════════════════════════════════════╣");
-        System.out.println("║ Modo: " + padRight(state.gameMode, 28) + " ║");
-        System.out.println("║ Ronda: " + padRight(state.gameModeRound, 27) + " ║");
-        System.out.println("║ Pot: $" + padRight(String.valueOf(state.pot), 27) + " ║");
-        System.out.println("║ Dealer: " + padRight(state.dealer, 26) + " ║");
-        System.out.println("║ Siguiente: " + padRight(state.nextPlayer, 23) + " ║");
+        System.out.println("║ Modo: " + padRight(state.getGameMode(), 28) + " ║");
+        System.out.println("║ Ronda: " + padRight(state.getGameModeRound(), 27) + " ║");
+        System.out.println("║ Pot: $" + padRight(String.valueOf(state.getPot()), 27) + " ║");
+        System.out.println("║ Dealer: " + padRight(state.getDealer(), 26) + " ║");
+        System.out.println("║ Siguiente: " + padRight(state.getNextPlayer(), 23) + " ║");
         System.out.println("║ ¿Es mi turno?: " + padRight(client.isMyTurn() ? "SÍ" : "NO", 19) + " ║");
-        System.out.println("║ Jugadores: " + padRight(String.valueOf(state.players.size()), 23) + " ║");
+        System.out.println("║ Jugadores: " + padRight(String.valueOf(state.getPlayers().size()), 23) + " ║");
         System.out.println("╚════════════════════════════════════╝");
 
-        if (!state.players.isEmpty()) {
+        if (!state.getPlayers().isEmpty()) {
             System.out.println("\nJugadores en la partida:");
-            for (PlayerModel player : state.players) {
-                System.out.println("  • " + player.name + " (índice: " + player.index + ")");
+            for (PlayerModel player : state.getPlayers()) {
+                System.out.println("  • " + player.getName() + " (índice: " + player.getIndex() + ")");
             }
         }
     }

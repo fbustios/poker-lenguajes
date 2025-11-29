@@ -4,17 +4,89 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GameState {
-    public String gameMode;
-    public String gameModeRound;
-    public String nextPlayer;
-    public String dealer;
-    public String smallBlind;
-    public String bigBlind;
-    public int pot;
-    public List<PlayerModel> players;
+    private String gameMode;
+    private String gameModeRound;
+    private String nextPlayer;
+    private String dealer;
+    private String smallBlind;
+    private String bigBlind;
+    private int pot;
+    private List<PlayerModel> players;
 
     public GameState() {
         this.players = new ArrayList<>();
         this.pot = 0;
+    }
+
+    public void setGameMode(String mode) {
+        this.gameMode = mode;
+    }
+
+    public void setGameModeRound(String roundMode) {
+        this.gameModeRound = roundMode;
+    }
+
+    public void setNextPlayer(String player) {
+        this.nextPlayer = player;
+    }
+
+    public void setDealer(String player) {
+        this.dealer = player;
+    }
+
+    public void setSmallBlind(String small) {
+        this.smallBlind = small;
+    }
+
+    public void setBigBlind(String big) {
+        this.bigBlind = big;
+    }
+
+    public void setPot(int money) {
+        this.pot = money;
+    }
+
+    public void setPlayers(List<PlayerModel> gamers) {
+        this.players = gamers;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public String getGameModeRound() {
+        return gameModeRound;
+    }
+
+    public String getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public String getDealer() {
+        return dealer;
+    }
+
+    public String getSmallBlind() {
+        return smallBlind;
+    }
+
+    public String getBigBlind() {
+        return bigBlind;
+    }
+
+    public int getPot() {
+        return pot;
+    }
+
+    public List<PlayerModel> getPlayers() {
+        return players;
+    }
+
+    public void playersClear() {
+        this.players.clear();
+    }
+
+    public void playersAdd(PlayerModel player) {
+        this.players.add(player);
     }
 }
