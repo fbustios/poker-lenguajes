@@ -6,14 +6,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Optional;
 
-public final class MessageHandlerText implements MessageHandler {
-    private final BufferedReader in;
-    private final PrintWriter out;
-
-    public MessageHandlerText(final BufferedReader in, final PrintWriter out) {
-        this.in = in;
-        this.out = out;
-    }
+public record MessageHandlerText(BufferedReader in, PrintWriter out) implements MessageHandler {
 
     @Override
     public void sendMessage(Map<String, String> data) {
