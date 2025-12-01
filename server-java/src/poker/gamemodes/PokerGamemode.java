@@ -9,6 +9,6 @@ public interface PokerGamemode {
     boolean isOver();
     void play(PokerAction lastPokerAction);
     Optional<Player> getNextTurn();
-    String getName();
+    Gamemode getName();
     void distributePot();
 }

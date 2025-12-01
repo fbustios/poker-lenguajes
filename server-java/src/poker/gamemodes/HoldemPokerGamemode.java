@@ -3,6 +3,7 @@ package poker.gamemodes;
 import poker.dealing.DealingMethod;
 import poker.items.Deck;
 import poker.items.Player;
+import poker.pot.Pot;
 import poker.pot.PotDistributer;
 import poker.rounds.HoldemRound;
 import poker.rounds.TurnManager;
@@ -10,19 +11,23 @@ import poker.rounds.TurnManager;
 import java.util.Optional;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
-    private static final String name = "holdem";
+    private final Gamemode name = Gamemode.HOLD_EM;
     private final DealingMethod dealingMethod;
     private HoldemRound currentRound;
     private final TurnManager turnManager;
     private final PotDistributer potDistributer;
+    private final Pot pot;
     private Deck deck;
-    private final boolean gameStarted;
 
-    public HoldemPokerGamemode(DealingMethod dealingMethod, TurnManager turnManager, PotDistributer pt, Deck deck) {
+    public HoldemPokerGamemode(final DealingMethod dealingMethod,
+                               final TurnManager turnManager,
+                               final PotDistributer pt,
+                               final Pot pot,
+                               final Deck deck) {
+        this.pot = pot;
         currentRound = HoldemRound.PRE_FLOP;
         this.turnManager = turnManager;
         this.potDistributer = pt;
-        this.gameStarted = false;
         this.dealingMethod = dealingMethod;
         this.deck = deck;
     }
@@ -37,7 +42,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         PlayerAction action = lastPokerAction.action();
         switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
             case RAISE -> handleRaise(lastPokerAction.player(),lastPokerAction.bet());
-            case CALL -> handleCall(lastPokerAction.player());
+            case CALL -> handleCall(lastPokerAction.player(), lastPokerAction.bet());
             case CHECK -> handleCheck(lastPokerAction.player());
             case ALL_IN -> handleAllIn(lastPokerAction.player(), lastPokerAction.bet());
             case FOLD -> handleFold(lastPokerAction.player());
@@ -46,7 +51,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public boolean isOver() {
-        return false;
+        return turnManager.isRoundOver();
     }
 
     @Override
@@ -55,7 +60,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     @Override
-    public String getName() {
+    public Gamemode getName() {
         return name;
     }
 
@@ -66,7 +71,6 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     private void setUpGame() {
         deck.refill();
-
     }
 
     private boolean checkAction() {
@@ -74,6 +78,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     private void handleRaise(Player player, int bet) {
+        player.addMoney(-bet);
         turnManager.resetTurnsLeft();
         turnManager.setPendingAction(false);
     }
@@ -83,6 +88,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         if (bet > lastBet) {
             turnManager.resetTurnsLeft();
         }
+        player.addMoney(-player.getMoney());
         player.setAllIn(true);
         turnManager.setPendingAction(false);
     }
@@ -97,7 +103,8 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         turnManager.setPendingAction(false);
     }
 
-    private void handleCall(Player player) {
+    private void handleCall(Player player, int bet) {
+        player.addMoney(-bet);
         turnManager.setPendingAction(false);
     }
 

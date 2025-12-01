@@ -14,6 +14,7 @@ import poker.items.Player;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 
 public final class BlockingQueueController implements Controller{
@@ -33,16 +34,13 @@ public final class BlockingQueueController implements Controller{
 
 
     public void start() {
-        ServerEvent startEvent = ServerEvent.GAME_STARTED;
         //falta clase que construya los mensajes del server;
-        ServerMessage startMessage = new ServerMessage();
-        // game.startGame();
+        game.startGame();
         sendMessage(ServerEvent.GAME_STARTED);
-        /*
+
         while(true) {
             try {
                 Optional<ClientMessage> event = Optional.ofNullable(eventQueue.poll(100, TimeUnit.MILLISECONDS));
-                //if (game.isNotStarted) serverEvent update y mando con el jugador que tiene que jugar
                 if (game.isGamemodeOver()) {
                     sendMessage(ServerEvent.MODE_CHANGED);
                 }
@@ -56,9 +54,7 @@ public final class BlockingQueueController implements Controller{
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
-
         }
-         */
     }
 
 
@@ -92,7 +88,7 @@ public final class BlockingQueueController implements Controller{
         String author = message.author();
         Optional<Player> playerModel = connectionMap.getPlayerFromName(author);
         if (playerModel.isPresent()) {
-            PokerAction action = new PokerAction(playerModel.get(), PlayerAction.CALL, 2);
+            PokerAction action = new PokerAction(playerModel.get(), PlayerAction.CALL, 0);
             game.play(action);
             System.out.println("Player is here, not skipped");
         }
@@ -123,6 +119,7 @@ public final class BlockingQueueController implements Controller{
         StringBuilder sb = new StringBuilder();
         sb.append("event: update_round\n");
         GameState pokerGameState = game.getGameState();
+        Optional<Player> player = game.nextTurn();
         List<Player> activePlayers = pokerGameState.getPlayers();
         //length(mensaje)
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
@@ -130,23 +127,26 @@ public final class BlockingQueueController implements Controller{
         sb.append("pot:" + String.valueOf(pokerGameState.getPot()));
         sb.append("next_player: ");
         sb.append("players_left: " + String.valueOf(activePlayers.size()) + "\n");
-        string details = game.getGamemodeDetails();
+        //string details = game.getGamemodeDetails();
         //dealer: name
         //players_left: n
         //n1: C5, CS, ?, ?, money
         //n2: DK, S4, ?, ?, money
         pokerEventEmitter.emit(connectionMap.getConnections(),sb.toString());
+
     }
 
     private void buidGameStartedMessage() {
         List<Connection> connections = connectionMap.getConnections();
-        //Optional<Player> playerOptional = game.nextTurn();
-        String playerName = " ";
+        Optional<Player> playerOptional = game.nextTurn();
+        if (playerOptional.isEmpty()) throw new IllegalStateException();
+        String playerName = playerOptional.get().getName();
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_started\n");
         sb.append("next-player: " + playerName + "\n");
-        String playerList = ",,,";
-        sb.append("players: " + playerList + "\n");
+        //for(int i = 0; i <)
+        //String playerList = ",,,";
+        //sb.append("players: " + playerList + "\n");
         pokerEventEmitter.emit(connections, sb.toString());
     }
 

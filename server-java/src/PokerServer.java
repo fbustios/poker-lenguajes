@@ -36,7 +36,7 @@ public final class PokerServer {
             BlockingQueue<ClientMessage> queue = new LinkedBlockingQueue<>();
             Map<Connection, Player> playerConnections = gatherConnections(serverSocket,queue);
             System.out.println("Lobby built");
-            PokerGame game = new HorsePokerGame(List.of(new HoldemPokerGamemode(null, null, null, null)), null);
+            PokerGame game = new HorsePokerGame(List.of(new HoldemPokerGamemode(null, null, null, null, null)), null);
             Controller gameController = new BlockingQueueController(new PokerEventEmitter(), queue,game, SequenceConnectionPlayerMapping.build(playerConnections));
             gameController.start();
         } catch (Exception e) {

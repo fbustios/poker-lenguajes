@@ -6,7 +6,7 @@ import java.util.*;
 
 public class MapPot implements Pot{
     private int totalAmount = 0;
-
+    private int lastBet = 0;
 
     private final Map<Player, Integer> contributions = new HashMap<>();
 

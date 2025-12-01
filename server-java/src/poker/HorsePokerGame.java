@@ -1,5 +1,6 @@
 package poker;
 
+import poker.gamemodes.Gamemode;
 import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
@@ -13,11 +14,9 @@ public class HorsePokerGame implements PokerGame, GameState{
     private PokerGamemode currentGame;
     private final List<PokerGamemode> modes;
     private final PokerTable table;
-    private boolean gameFinished;
 
     public HorsePokerGame(List<PokerGamemode> modes, PokerTable table) {
         this.modes = modes;
-        this.gameFinished = false;
         this.table = table;
         this.currentGameIndex = 0;
     }
@@ -37,7 +36,7 @@ public class HorsePokerGame implements PokerGame, GameState{
             throw new IllegalStateException("Acción inválida");
         }
         currentGame.play(lastPokerAction);
-        if(!currentGame.isOver()) {
+        if(currentGame.isOver()) {
             currentGame.distributePot();
             setNextMode();
         }
@@ -45,7 +44,7 @@ public class HorsePokerGame implements PokerGame, GameState{
 
     @Override
     public boolean isGameFinished() {
-        return this.gameFinished;
+        return false;
     }
 
 
@@ -98,7 +97,7 @@ public class HorsePokerGame implements PokerGame, GameState{
     }
 
     @Override
-    public String getCurrentGamemode() {
+    public Gamemode getCurrentGamemode() {
         return currentGame.getName();
     }
 }
