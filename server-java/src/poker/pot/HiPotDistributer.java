@@ -28,7 +28,7 @@ public class HiPotDistributer implements PotDistributer{
         if (activePlayers.isEmpty() || pot.isEmpty()) {return List.of();}
 
         final List<Player> ranked = rankingSystem.rank(activePlayers, gamemode);
-        final Player winner = ranked.get(0);
+        final Player winner = ranked.getFirst();
 
         final int totalAmount = pot.takeAll();
         winner.addMoney(totalAmount);

@@ -37,6 +37,7 @@ public class CircularArrayPokerTable implements PokerTable {
                 player.setFolded(false);
                 player.setActive(true);
                 player.setAllIn(false);
+                player.setCards(new ArrayList<>());
             }
         }
     }
