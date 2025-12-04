@@ -11,4 +11,5 @@ public interface PokerGamemode {
     Optional<Player> getNextTurn();
     Gamemode getName();
     void distributePot();
+    String getDetails();
 }

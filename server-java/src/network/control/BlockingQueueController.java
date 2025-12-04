@@ -132,10 +132,12 @@ public final class BlockingQueueController implements Controller{
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
         sb.append("gamemode_round: " + "\n");
         sb.append("pot:" + pokerGameState.getPot());
-        sb.append("last_rasie: " + "\n");
+        sb.append("last_raise: " + "\n");
         sb.append("next_player: ");
         List<Connection> connections = connectionMap.getConnections();
         List<Player> players = connectionMap.getPlayers();
+        String details = pokerGameState.getDetails();
+        sb.append(details);
         sb.append("players_left: " + activePlayers.size() + "\n");
         sb.append("next-player: " + playerName + "\n");
         sb.append("players_left: " + players.size() + "\n");
@@ -152,10 +154,8 @@ public final class BlockingQueueController implements Controller{
             hand.append("\n");
             sb.append(currentPlayer.getName() + ": " + hand);
         }
-        //dealer: name
-        //bigblid: name
-        //smallblind: name
-        pokerEventEmitter.emit(connectionMap.getConnections(),sb.toString());
+
+        pokerEventEmitter.emit(connectionMap.getConnections(),sb.length() + "\n" + sb);
 
     }
 

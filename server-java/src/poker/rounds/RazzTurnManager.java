@@ -83,4 +83,9 @@ public class RazzTurnManager implements TurnManager {
         System.out.println("turns reset");
         this.turnsLeft = table.getActivePlayers().size() - 1;
     }
+
+    @Override
+    public String getDetails() {
+        return "";
+    }
 }

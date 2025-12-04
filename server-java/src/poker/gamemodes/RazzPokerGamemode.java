@@ -39,4 +39,9 @@ public final class RazzPokerGamemode implements PokerGamemode{
     public void distributePot() {
 
     }
+
+    @Override
+    public String getDetails() {
+        return turnManager.getDetails();
+    }
 }

@@ -38,6 +38,11 @@ public class OmahaDealingMethod implements DealingMethod {
         }
     }
 
+    @Override
+    public List<Card> getCommunityCards() {
+        return this.communityCards;
+    }
+
 
     private void preFlop(PokerTable table, Deck deck) {
         int playerCount = table.getActivePlayers().size();

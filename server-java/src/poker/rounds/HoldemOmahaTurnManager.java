@@ -11,6 +11,8 @@ public class HoldemOmahaTurnManager implements TurnManager {
     private final PokerTable table;
     private int turnsLeft;
     private int dealer;
+    private int smallBlind;
+    private int bigBlind;
 
     public HoldemOmahaTurnManager(List<HoldemRound> rounds, PokerTable table) {
         this.rounds = rounds;
@@ -54,8 +56,8 @@ public class HoldemOmahaTurnManager implements TurnManager {
         if (currentRound == 0) {
             this.dealer = table.nextActivePlayerIndex(dealer);
             this.turnsLeft = table.getActivePlayers().size();
-            int smallBlind = table.nextActivePlayerIndex(dealer);
-            int bigBlind = table.nextActivePlayerIndex(smallBlind);
+            this.smallBlind = table.nextActivePlayerIndex(dealer);
+            this.bigBlind = table.nextActivePlayerIndex(smallBlind);
             table.setCurrentPlayer(bigBlind);
             return;
         }
@@ -74,5 +76,14 @@ public class HoldemOmahaTurnManager implements TurnManager {
     public void resetTurnsLeft() {
         System.out.println("turns reset");
         this.turnsLeft = table.getActivePlayers().size() - 1;
+    }
+
+    @Override
+    public String getDetails() {
+        List<Player> players = table.getPlayers();
+        String dealer = players.get(this.dealer).getName();
+        String smallBlind = players.get(this.smallBlind).getName();
+        String bigBlind = players.get(this.bigBlind).getName();
+        return "dealer: " + dealer + "\n" + "small_blind: " + smallBlind + "\n" + "big_blind: " + bigBlind + "\n";
     }
 }

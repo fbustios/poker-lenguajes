@@ -9,4 +9,5 @@ public interface GameState {
     List<Player> getPlayers();
     int getPot();
     Gamemode getCurrentGamemode();
+    String getDetails();
 }

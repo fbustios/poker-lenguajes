@@ -104,4 +104,9 @@ public class HorsePokerGame implements PokerGame, GameState{
     public Gamemode getCurrentGamemode() {
         return currentGame.getName();
     }
+
+    @Override
+    public String getDetails() {
+        return currentGame.getDetails();
+    }
 }

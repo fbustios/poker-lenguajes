@@ -50,4 +50,9 @@ public class OmahaPokerGamemode implements PokerGamemode {
     public void distributePot() {
 
     }
+
+    @Override
+    public String getDetails() {
+        return turnManager.getDetails();
+    }
 }

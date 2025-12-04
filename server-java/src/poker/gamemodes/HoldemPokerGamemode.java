@@ -75,6 +75,12 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         potDistributer.distribute();
     }
 
+    @Override
+    public String getDetails() {
+        turnManager.getDetails();
+        return "";
+    }
+
     private boolean checkAction() {
         return true;
     }
