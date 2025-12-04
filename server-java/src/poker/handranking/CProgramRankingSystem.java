@@ -18,7 +18,7 @@ public class CProgramRankingSystem implements RankingSystem {
     @Override
     public List<Player> rank(List<Player> players, char gameMode) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("/home/franco/CLionProjects/poker-lenguajes/eval-c/cmake-build-debug/poker_lenguajes");
+            ProcessBuilder processBuilder = new ProcessBuilder("src/poker/handranking/main");
             Process process = processBuilder.start();
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
