@@ -13,6 +13,7 @@ public interface PokerGame { //aqui hay cosas que solapan responsabilidades con 
     void play(PokerAction player);
     Optional<Player> nextTurn();
     GameState getGameState();
+    void setNextMode();
 
 }
 

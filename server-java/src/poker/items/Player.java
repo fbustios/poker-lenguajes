@@ -9,6 +9,7 @@ public final class Player {
     private boolean isActive;
     private boolean isFolded;
     private boolean isAllIn;
+    private boolean isConnected;
 
     public Player(final String name, List<Card> cardList, final int initialBet) {
         this.name = name;
@@ -17,6 +18,14 @@ public final class Player {
         this.isAllIn = false;
         this.money = initialBet;
         this.isFolded = false;
+    }
+
+    public void setConnected(boolean value) {
+        this.setConnected(value);
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
     //añadí addMoney y removeMoney para manejar el dinero del

@@ -65,4 +65,9 @@ public class OmahaPokerGamemode implements PokerGamemode {
     public void deal() {
 
     }
+
+    @Override
+    public void setStartingPlayer() {
+        turnManager.setStartingPlayer();
+    }
 }

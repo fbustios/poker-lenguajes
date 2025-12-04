@@ -54,4 +54,9 @@ public final class RazzPokerGamemode implements PokerGamemode{
     public void deal() {
 
     }
+
+    @Override
+    public void setStartingPlayer() {
+        turnManager.setStartingPlayer();
+    }
 }

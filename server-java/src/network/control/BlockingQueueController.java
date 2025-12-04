@@ -41,17 +41,25 @@ public final class BlockingQueueController implements Controller{
         while(true) {
             try {
                 Optional<ClientMessage> event = Optional.ofNullable(eventQueue.poll(100, TimeUnit.MILLISECONDS));
+
+                if (game.isGamemodeOver()) {
+                    System.out.println("cambie de modo bien");
+                    game.setNextMode();
+                    sendMessage(ServerEvent.MODE_CHANGED);
+                }
                 if (event.isPresent()) {
                     processEvent(event.get());
-                }
-                if (game.isGamemodeOver()) {
-                    sendMessage(ServerEvent.MODE_CHANGED);
                 }
                 if (game.isGameFinished()) {
                     sendMessage(ServerEvent.GAME_ENDED);
                     return;
                 }
             } catch (Exception e) {
+                System.out.println("aqui fue el error");
+                System.out.println(e.getMessage());
+                System.out.println(e.getStackTrace());
+                System.out.println(e.getCause());
+                System.out.println(e.fillInStackTrace());
                 throw new RuntimeException(e.getMessage());
             }
         }
@@ -118,7 +126,24 @@ public final class BlockingQueueController implements Controller{
     }
 
     private void buildModeChangedMessage() {
-        System.out.println("wawswewaw");
+        StringBuilder sb = new StringBuilder();
+        sb.append("event: gamemode_changed\n");
+        sb.append("gamemode: " + game.getGameState().getCurrentGamemode() + "\n");
+        GameState pokerGameState = game.getGameState();
+        List<Player> activePlayers = pokerGameState.getPlayers();
+        sb.append("players_left: " + activePlayers.size() + "\n");
+        for(int i = 0; i < activePlayers.size(); i++) {
+            Player currentPlayer = activePlayers.get(i);
+            StringBuilder hand = new StringBuilder();
+            for(int j = 0; j < currentPlayer.getCards().size(); j++) {
+                hand.append(currentPlayer.getCards().get(j).toString() + ",");
+            }
+            hand.append(currentPlayer.getMoney());
+            hand.append("\n");
+            sb.append(currentPlayer.getName() + ": " + hand);
+        }
+
+        pokerEventEmitter.emit(connectionMap.getConnections(),sb.length() + "\n" + sb);
     }
 
     private void buildGameEndedMessage() {
@@ -139,19 +164,17 @@ public final class BlockingQueueController implements Controller{
         System.out.println("round update");
         Optional<Player> playerOptional = game.nextTurn();
 
-        if (playerOptional.isEmpty()) throw new IllegalStateException();
+        if (playerOptional.isEmpty()) return;
         String playerName = playerOptional.get().getName();
         //length(mensaje)
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
         sb.append("pot:" + pokerGameState.getPot() + "\n");
-        List<Connection> connections = connectionMap.getConnections();
-        List<Player> players = connectionMap.getPlayers();
         String details = pokerGameState.getDetails();
         sb.append(details);
         sb.append("next_player: " + playerName + "\n");
-        sb.append("players_left: " + players.size() + "\n");
-        for(int i = 0; i < connections.size(); i++) {
-            Player currentPlayer = players.get(i);
+        sb.append("players_left: " + activePlayers.size() + "\n");
+        for(int i = 0; i < activePlayers.size(); i++) {
+            Player currentPlayer = activePlayers.get(i);
             StringBuilder hand = new StringBuilder();
             for(int j = 0; j < currentPlayer.getCards().size(); j++) {
                     hand.append(currentPlayer.getCards().get(j).toString() + ",");
