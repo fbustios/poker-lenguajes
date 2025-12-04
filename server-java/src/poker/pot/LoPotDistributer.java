@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LoPotDistributer implements PotDistributer{
     @Override
-    public List<Player> distribute() {
+    public List<Player> distribute(char gamemode) {
         return List.of();
     }
 }

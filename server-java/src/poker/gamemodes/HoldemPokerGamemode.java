@@ -85,7 +85,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
                         .collect(Collectors.toCollection(ArrayList::new)));
             }
         }
-        potDistributer.distribute();
+        potDistributer.distribute('h');
     }
 
     @Override
