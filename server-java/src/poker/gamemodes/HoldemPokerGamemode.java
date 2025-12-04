@@ -73,6 +73,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public void distributePot() {
         List<Card> communityCards = dealingMethod.getCommunityCards();
+        turnManager.getTable();
         if (!communityCards.isEmpty()) {
 
         }

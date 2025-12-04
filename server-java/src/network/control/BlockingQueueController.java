@@ -127,8 +127,8 @@ public final class BlockingQueueController implements Controller{
 
     private void buildModeChangedMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append("event: gamemode_changed\n");
-        sb.append("gamemode: " + game.getGameState().getCurrentGamemode() + "\n");
+        sb.append("event: mode_changed\n");
+        sb.append("game_mode: " + game.getGameState().getCurrentGamemode() + "\n");
         GameState pokerGameState = game.getGameState();
         List<Player> activePlayers = pokerGameState.getPlayers();
         sb.append("players_left: " + activePlayers.size() + "\n");
@@ -167,7 +167,7 @@ public final class BlockingQueueController implements Controller{
         if (playerOptional.isEmpty()) return;
         String playerName = playerOptional.get().getName();
         //length(mensaje)
-        sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
+        sb.append("game_mode: " + pokerGameState.getCurrentGamemode() + "\n");
         sb.append("pot:" + pokerGameState.getPot() + "\n");
         String details = pokerGameState.getDetails();
         sb.append(details);
