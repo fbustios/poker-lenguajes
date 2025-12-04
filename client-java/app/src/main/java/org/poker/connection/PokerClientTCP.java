@@ -41,11 +41,13 @@ public final class PokerClientTCP implements PokerClient {
         message.put("bet", String.valueOf(bet));
 
         if (connected) {
+            System.err.println("miau");
             messageHandler.sendMessage(message);
             System.out.println("Solicitando unirse al juego: " + gameMode);
         } else {
             System.err.println("No conectado al servidor");
         }
+
     }
 
     @Override
