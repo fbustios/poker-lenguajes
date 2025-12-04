@@ -80,7 +80,7 @@ public final class ComponentFactory {
         final TurnManager turnManager = new HoldemOmahaTurnManager(rounds, table);
         final PotDistributer potDistributer = buildHiPotDistributer(pot, buildRankingSystem(map),table);
 
-        return new OmahaPokerGamemode(dealingMethod, turnManager, potDistributer, pot);
+        return new OmahaPokerGamemode(dealingMethod, turnManager, potDistributer, pot, rounds);
     }
 
     private static PokerGamemode buildRazz(PokerTable table, Pot pot, Deck deck) {
