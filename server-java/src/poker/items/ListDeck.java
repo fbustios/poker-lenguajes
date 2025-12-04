@@ -25,7 +25,7 @@ public class ListDeck implements Deck{
 
     @Override
     public void refill() {
-        this.cards = List.copyOf(fullCards);
+        this.cards = new ArrayList<>(fullCards);
         shuffle();
     }
 

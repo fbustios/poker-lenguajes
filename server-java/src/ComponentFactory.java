@@ -61,8 +61,10 @@ public final class ComponentFactory {
         rounds.addLast(HoldemRound.RIVER);
         final TurnManager turnManager = new HoldemOmahaTurnManager(rounds, table);
         final PotDistributer potDistributer = buildHiPotDistributer(pot, buildRankingSystem(mapping),table);
+        List<HoldemRound> rounds1 = new ArrayList<>(rounds);
+        rounds1.addLast(HoldemRound.SHOWDOWN);
 
-        return new HoldemPokerGamemode(dealingMethod, turnManager, potDistributer, pot, buildDeck());
+        return new HoldemPokerGamemode(dealingMethod, turnManager, potDistributer, pot, buildDeck(), rounds1);
     }
 
     private static PokerGamemode buildOmaha(PokerTable table, Pot pot, Deck deck) {

@@ -15,7 +15,8 @@ import java.util.Optional;
 public final class HoldemPokerGamemode implements PokerGamemode {
     private final Gamemode name = Gamemode.holdem;
     private final DealingMethod dealingMethod;
-    private HoldemRound currentRound;
+    private int currentRound;
+    private List<HoldemRound> rounds;
     private final TurnManager turnManager;
     private final PotDistributer potDistributer;
     private final Pot pot;
@@ -25,9 +26,11 @@ public final class HoldemPokerGamemode implements PokerGamemode {
                                final TurnManager turnManager,
                                final PotDistributer pt,
                                final Pot pot,
-                               final Deck deck) {
+                               final Deck deck,
+                               final List<HoldemRound> rounds) {
         this.pot = pot;
-        currentRound = HoldemRound.PRE_FLOP;
+        this.rounds = rounds;
+        currentRound = 0;
         this.turnManager = turnManager;
         this.potDistributer = pt;
         this.dealingMethod = dealingMethod;
@@ -53,7 +56,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public boolean isOver() {
-        return false;
+        return currentRound == (rounds.size() - 1);
     }
 
     @Override
@@ -77,7 +80,8 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public String getDetails() {
-        return turnManager.getDetails();
+        //aqui deberia agregar las cartas comunitarias
+        return turnManager.getDetails() + rounds.get(currentRound) + "\n";
     }
 
     @Override

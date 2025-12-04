@@ -6,6 +6,8 @@ import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
 import poker.pot.Pot;
 import poker.table.PokerTable;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +56,9 @@ public class HorsePokerGame implements PokerGame, GameState{
         currentGame.play(lastPokerAction);
         if(currentGame.isRoundOver()) {
             currentGame.deal();
+            System.out.println("im dealing");
         }
+
         if(currentGame.isOver()) {
             currentGame.distributePot();
             setNextMode();
@@ -75,7 +79,7 @@ public class HorsePokerGame implements PokerGame, GameState{
     @Override
     public Player getWinner() {
         final List<Player> players = table.getPlayers();
-        Player winner = new Player("t", List.of(),0);
+        Player winner = new Player("t", new ArrayList<>(),0);
         for (Player currentPlayer : players) {
             winner = currentPlayer.getMoney() > winner.getMoney() ? currentPlayer : winner;
         }

@@ -134,21 +134,17 @@ public final class BlockingQueueController implements Controller{
         String playerName = playerOptional.get().getName();
         //length(mensaje)
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
-        sb.append("gamemode_round: " + "\n");
-        sb.append("pot:" + pokerGameState.getPot());
+        sb.append("pot:" + pokerGameState.getPot() + "\n");
         sb.append("last_raise: " + "\n");
-        sb.append("next_player: ");
         List<Connection> connections = connectionMap.getConnections();
         List<Player> players = connectionMap.getPlayers();
         String details = pokerGameState.getDetails();
         sb.append(details);
-        sb.append("players_left: " + activePlayers.size() + "\n");
-        sb.append("next-player: " + playerName + "\n");
+        sb.append("next_player: " + playerName + "\n");
         sb.append("players_left: " + players.size() + "\n");
         for(int i = 0; i < connections.size(); i++) {
             Player currentPlayer = players.get(i);
             StringBuilder hand = new StringBuilder();
-            System.out.println("tamano: " + currentPlayer.getCards().size());
             for(int j = 0; j < currentPlayer.getCards().size(); j++) {
                     hand.append(currentPlayer.getCards().get(j).toString() + ",");
             }

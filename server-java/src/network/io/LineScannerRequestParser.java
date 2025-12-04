@@ -52,7 +52,7 @@ public final class LineScannerRequestParser implements RequestParser {
     private Optional<Map<String, String>> parseDetails(String details) {
         final Map<String, String> parsedDetails = new HashMap<>();
         final String[] parts = details.split("\n");
-        int currentLineIndex = 1;
+        int currentLineIndex = 0;
         String currentLine;
         while (currentLineIndex < parts.length && !(parts[currentLineIndex]).isEmpty()) {
             currentLine = parts[currentLineIndex];
