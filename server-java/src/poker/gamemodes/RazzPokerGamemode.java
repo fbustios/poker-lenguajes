@@ -44,4 +44,14 @@ public final class RazzPokerGamemode implements PokerGamemode{
     public String getDetails() {
         return turnManager.getDetails();
     }
+
+    @Override
+    public boolean isRoundOver() {
+        return false;
+    }
+
+    @Override
+    public void deal() {
+
+    }
 }

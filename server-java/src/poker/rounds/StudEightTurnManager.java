@@ -113,4 +113,9 @@ public class StudEightTurnManager implements TurnManager{
     public String getDetails() {
         return "";
     }
+
+    @Override
+    public PokerTable getTable() {
+        return null;
+    }
 }

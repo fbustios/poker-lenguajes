@@ -53,7 +53,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public boolean isOver() {
-        return turnManager.isRoundOver();
+        return false;
     }
 
     @Override
@@ -78,6 +78,16 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public String getDetails() {
         return turnManager.getDetails();
+    }
+
+    @Override
+    public boolean isRoundOver() {
+        return turnManager.isRoundOver();
+    }
+
+    @Override
+    public void deal() {
+        dealingMethod.deal(turnManager.getTable(),deck);
     }
 
     private boolean checkAction() {

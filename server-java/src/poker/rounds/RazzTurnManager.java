@@ -88,4 +88,9 @@ public class RazzTurnManager implements TurnManager {
     public String getDetails() {
         return "";
     }
+
+    @Override
+    public PokerTable getTable() {
+        return table;
+    }
 }

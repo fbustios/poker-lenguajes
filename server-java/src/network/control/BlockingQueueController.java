@@ -118,8 +118,6 @@ public final class BlockingQueueController implements Controller{
     private void buildGameEndedMessage() {
         Player winner = game.getWinner();
         List<Connection> connections = connectionMap.getConnections();
-        String playerName = " ";
-        int money = 0;
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_ended\n");
         sb.append("winner: " + winner.getName() + "\n");

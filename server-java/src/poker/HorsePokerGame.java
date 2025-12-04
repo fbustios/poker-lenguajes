@@ -26,6 +26,7 @@ public class HorsePokerGame implements PokerGame, GameState{
         if (table.getPlayers().size() < MIN_PLAYERS_TO_START) {
             System.out.println("no puedo empezar");
         }
+        currentGame.deal();
         this.currentGame = this.modes.get(currentGameIndex);
     }
 
@@ -37,6 +38,9 @@ public class HorsePokerGame implements PokerGame, GameState{
         }
         currentGame.play(lastPokerAction);
         System.out.println("hello");
+        if(currentGame.isRoundOver()) {
+            currentGame.deal();
+        }
         if(currentGame.isOver()) {
             currentGame.distributePot();
             setNextMode();

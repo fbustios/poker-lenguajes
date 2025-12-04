@@ -12,4 +12,6 @@ public interface PokerGamemode {
     Gamemode getName();
     void distributePot();
     String getDetails();
+    boolean isRoundOver();
+    void deal();
 }

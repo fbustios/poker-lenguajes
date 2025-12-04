@@ -86,4 +86,10 @@ public class HoldemOmahaTurnManager implements TurnManager {
         String bigBlind = players.get(this.bigBlind).getName();
         return "dealer: " + dealer + "\n" + "small_blind: " + smallBlind + "\n" + "big_blind: " + bigBlind + "\n";
     }
+
+    @Override
+    public PokerTable getTable(){
+        return this.table;
+    }
+
 }
