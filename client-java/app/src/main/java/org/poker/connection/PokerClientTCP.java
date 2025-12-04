@@ -61,7 +61,7 @@ public final class PokerClientTCP implements PokerClient {
     public void placeBet(String gameMode, int currentPlayer, String action, int bet) {
         final Map<String, String> message = new LinkedHashMap<>();
         message.put("event", "action");
-        message.put("game_mode", gameMode);
+        message.put("author", playerName);
         message.put("player_action", action);
         message.put("bet", String.valueOf(bet));
 
