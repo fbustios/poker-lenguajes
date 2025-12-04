@@ -48,8 +48,10 @@ public final class HoldemDealingMethod implements DealingMethod {
 
     private void preFlop(PokerTable table, Deck deck) {
         for (Player p : table.getActivePlayers()) {
-            p.receiveCard(deck.draw());
-            p.receiveCard(deck.draw());
+            Card c  = deck.draw();
+            Card c2  = deck.draw();
+            p.receiveCard(c2.faceUp());
+            p.receiveCard(c.faceUp());
         }
     }
 
