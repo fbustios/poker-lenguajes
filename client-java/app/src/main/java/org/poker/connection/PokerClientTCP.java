@@ -20,24 +20,25 @@ public final class PokerClientTCP implements PokerClient {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    private final String playerName;
     private final GameState gameState;
     private boolean connected = false;
     private MessageListener messageListener;
 
     private MessageHandler messageHandler;
 
-    public PokerClientTCP(final String host, final int port) {
+    public PokerClientTCP(final String host, final int port, final String playerName) {
+        this.playerName = playerName;
         this.gameState = new GameState();
         connect(host, port);
     }
 
     @Override
-    public void joinGame(String gameMode, String playerName, int money) {
+    public void joinGame(String gameMode) {
         final Map<String, String> message = new HashMap<>();
-        message.put("event", "join_game");
+        message.put("event", "JOIN_GAME");
         message.put("game_mode", gameMode);
         message.put("player_name", playerName);
-        message.put("money", String.valueOf(money));
 
         if (connected) {
             messageHandler.sendMessage(message);
@@ -48,9 +49,9 @@ public final class PokerClientTCP implements PokerClient {
     }
 
     @Override
-    public void leaveGame(String playerName) {
+    public void leaveGame() {
         final Map<String, String> message = new HashMap<>();
-        message.put("event", "leave_game");
+        message.put("event", "LEAVE_GAME");
         message.put("player_name", playerName);
 
         messageHandler.sendMessage(message);
@@ -58,11 +59,11 @@ public final class PokerClientTCP implements PokerClient {
     }
 
     @Override
-    public void placeBet(String gameMode, String playerName, String action, int bet) {
+    public void placeBet(String gameMode, int currentPlayer, String action, int bet) {
         final Map<String, String> message = new HashMap<>();
-        message.put("event", "place_bet");
+        message.put("event", "PLACE_BET");
         message.put("game_mode", gameMode);
-        message.put("current_player", playerName);
+        message.put("current_player", String.valueOf(currentPlayer));
         message.put("player_action", action);
         message.put("bet", String.valueOf(bet));
 
@@ -85,12 +86,17 @@ public final class PokerClientTCP implements PokerClient {
     }
 
     @Override
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    @Override
     public GameState getGameState() {
         return gameState;
     }
 
     @Override
-    public boolean isMyTurn(String playerName) {
+    public boolean isMyTurn() {
         return gameState.getNextPlayer() != null && gameState.getNextPlayer().equals(playerName);
     }
 
