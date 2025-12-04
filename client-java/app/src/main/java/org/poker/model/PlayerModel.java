@@ -54,6 +54,30 @@ public final class PlayerModel {
         return sb.toString();
     }
 
+    public void setCardsFromString(String cardsString) {
+        this.cards.clear();
+
+        if (cardsString == null || cardsString.isEmpty()) {
+            return;
+        }
+
+        String[] cardTokens = cardsString.split(",");
+        for (String token : cardTokens) {
+            token = token.trim();
+            if (token.isEmpty() || token.equals("?")) {
+                this.cards.add(new Card(null, null, true));
+            } else if (token.length() >= 2) {
+                char suitChar = token.charAt(0);
+                String valueStr = token.substring(1);
+
+                String suit = parseSuit(suitChar);
+                String value = parseValue(valueStr);
+
+                this.cards.add(new Card(suit, value, false));
+            }
+        }
+    }
+
     private String parseSuit(char suitChar) {
         return switch (suitChar) {
             case 'H' -> "Hearts";

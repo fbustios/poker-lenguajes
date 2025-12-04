@@ -168,7 +168,9 @@ public final class BlockingQueueController implements Controller{
         List<Connection> connections = connectionMap.getConnections();
         List<Player> players = connectionMap.getPlayers();
         Optional<Player> playerOptional = game.nextTurn();
-        if (playerOptional.isEmpty()) throw new IllegalStateException();
+        if (playerOptional.isEmpty()) {
+            throw new IllegalStateException("Game could not start: nextTurn() returned empty. Check TurnManager state.");
+        }
         String playerName = playerOptional.get().getName();
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_started\n");

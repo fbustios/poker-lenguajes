@@ -62,32 +62,29 @@ public final class PokerActionHandler {
     }
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
-        gameState.setNextPlayer(data.get(NEXT_PLAYER));
-        gameState.setPlayers_left(Integer.parseInt(data.get(PLAYERS_LEFT)));
-        gameState.setPot(Integer.parseInt(data.get(POT)));
-        gameState.setDealer(data.get(DEALER));
-        gameState.setSmallBlind(data.get(SMALL_BLIND));
-        gameState.setBigBlind(data.get(BIG_BLIND));
+        gameState.setPot(getInt(data, POT, 0));
+        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
 
         gameState.playersClear();
-        int playerCount = 0;
-        while (data.containsKey(PLAYER_PREFIX + playerCount)) {
-            final PlayerModel pm = new PlayerModel();
-            pm.setName(data.get(PLAYER_PREFIX + playerCount));
-            pm.setIndex(playerCount);
+        for (int i = 0; i < playersLeft; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String cards = MessageParser.getPlayerCards(data, playerName);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+
+            PlayerModel pm = new PlayerModel();
+            pm.setName(playerName);
+            pm.setIndex(i);
+            pm.setMoney(getInt(money));
+            pm.setCardsFromString(cards);
+
             gameState.playersAdd(pm);
-            playerCount++;
         }
 
-        System.out.println("\n=== JUEGO INICIADO ===");
-        System.out.println("Modo: " + gameState.getGameMode());
-        System.out.println("Dealer: " + gameState.getDealer());
-        System.out.println("Small Blind: " + gameState.getSmallBlind());
-        System.out.println("Big Blind: " + gameState.getBigBlind());
-        System.out.println("Jugadores: " + gameState.getPlayers().size());
-        System.out.println("Siguiente: " + gameState.getNextPlayer());
+        for (PlayerModel player : gameState.getPlayers()) {
+            System.out.println("  • " + player.getName() + " - $" + player.getMoney() +
+                    " - Cartas: " + player.getCardsString());
+        }
     }
-
     private static void handlePlayerAction(Map<String, String> data, GameState gameState) {
         final String player = data.get("player");
         final String nextPlayer = data.get(NEXT_PLAYER);
@@ -133,22 +130,32 @@ public final class PokerActionHandler {
             winnerCount++;
         }
     }
-
     private static void handleUpdateRound(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setGameModeRound(data.get(GAME_MODE_ROUND));
-        gameState.setPot(parseInt(data.get(POT), 0));
-        gameState.setNextPlayer(data.get(NEXT_PLAYER));
+        gameState.setPot(getInt(data, POT, 0));
+        gameState.setNextPlayer(data.get(TURN));
         gameState.setDealer(data.get(DEALER));
-        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        gameState.setSmallBlind(data.get(SMALL_BLIND));
+        gameState.setBigBlind(data.get(BIG_BLIND));
 
-        System.out.println("\n=== ACTUALIZACIÓN DE RONDA ===");
-        System.out.println("Modo: " + gameState.getGameMode());
-        System.out.println("Ronda: " + gameState.getGameModeRound());
-        System.out.println("Pot: " + gameState.getPot());
-        System.out.println("Dealer: " + gameState.getDealer());
-        System.out.println("Siguiente: " + gameState.getNextPlayer());
-        System.out.println("Jugadores restantes: " + playersLeft);
+        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        final int lastRaise = getInt(data, LAST_RAISE, 0);
+
+        gameState.playersClear();
+        for (int i = 0; i < playersLeft; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String cards = MessageParser.getPlayerCards(data, playerName);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+
+            PlayerModel pm = new PlayerModel();
+            pm.setName(playerName);
+            pm.setIndex(i);
+            pm.setMoney(getInt(money));
+            pm.setCardsFromString(cards);
+
+            gameState.playersAdd(pm);
+        }
     }
 
     private static int getInt(Map<String, String> data, String key, int defaultValue) {
