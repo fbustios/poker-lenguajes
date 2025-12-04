@@ -10,6 +10,7 @@ public class ListDeck implements Deck{
 
     private ListDeck(List<Card> fullCards) {
         this.fullCards = fullCards;
+        this.cards = fullCards;
     }
 
     @Override
