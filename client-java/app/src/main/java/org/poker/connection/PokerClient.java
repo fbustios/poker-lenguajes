@@ -4,7 +4,7 @@ import org.poker.connection.messages.MessageListener;
 import org.poker.model.GameState;
 
 public interface PokerClient {
-    void joinGame(String gameMode);
+    void joinGame(String gameMode, int bet);
     void leaveGame();
     void placeBet(String gameMode, int currentPlayer, String action, int bet);
     void startListening();

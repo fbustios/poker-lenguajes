@@ -12,7 +12,7 @@ public class LoginDisplay extends JFrame {
     private JButton btnConnect, btnJoinGame, btnExitGame;
     private Image backgroundImage;
     private Image buttonTexture;
-
+    private int bet = 0;
     private boolean connected = false;
 
     private PokerClient pokerClient;
@@ -86,7 +86,7 @@ public class LoginDisplay extends JFrame {
 
         try {
             System.out.println("Joining game mode automatically: " + selectedMode);
-            pokerClient.joinGame(selectedMode);
+            pokerClient.joinGame(selectedMode,bet);
 
             if (joinGameAction != null) {
                 joinGameAction.run();
@@ -100,12 +100,15 @@ public class LoginDisplay extends JFrame {
 
     private void performConnection() {
         JTextField nameField = new JTextField();
+        JTextField betField = new JTextField("0");
         JTextField hostField = new JTextField("localhost");
         JTextField portField = new JTextField("5000");
 
         JPanel inputPanel = new JPanel(new GridLayout(0, 1));
         inputPanel.add(new JLabel("Player Name:"));
         inputPanel.add(nameField);
+        inputPanel.add(new JLabel("Bet:"));
+        inputPanel.add(betField);
         inputPanel.add(new JLabel("Host (default: localhost):"));
         inputPanel.add(hostField);
         inputPanel.add(new JLabel("Port (default: 5000):"));
@@ -113,7 +116,7 @@ public class LoginDisplay extends JFrame {
 
         int result = JOptionPane.showConfirmDialog(this, inputPanel,
                 "Server Connection", JOptionPane.OK_CANCEL_OPTION);
-
+        bet = Integer.parseInt(String.valueOf(betField.getText()));
         if (result == JOptionPane.OK_OPTION) {
             String name = nameField.getText().trim();
             String host = hostField.getText().trim();

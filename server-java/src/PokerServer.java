@@ -26,7 +26,7 @@ public final class PokerServer {
     }
 
     public static void main(String[] args) {
-        final PokerServer app = new PokerServer(8080,1);
+        final PokerServer app = new PokerServer(5000,1);
         app.run();
     }
 
