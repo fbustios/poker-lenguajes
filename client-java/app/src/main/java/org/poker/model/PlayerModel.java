@@ -14,13 +14,7 @@ public final class PlayerModel {
     }
 
 
-    public List<Card> getCards() {
-        return cards;
-    }
 
-    public int getMoney() {
-        return money;
-    }
 
     public String getName() {
         return name;
@@ -42,40 +36,9 @@ public final class PlayerModel {
         return money;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
 
     public List<Card> getCards() {
         return cards;
-    }
-
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
-
-    public void setCardsFromString(String cardsString) {
-        this.cards.clear();
-
-        if (cardsString == null || cardsString.isEmpty()) {
-            return;
-        }
-
-        String[] cardTokens = cardsString.split(",");
-        for (String token : cardTokens) {
-            token = token.trim();
-            if (token.isEmpty() || token.equals("?")) {
-                this.cards.add(new Card(null, null, true));
-            } else if (token.length() >= 2) {
-                char suitChar = token.charAt(0);
-                String valueStr = token.substring(1);
-
-                String suit = parseSuit(suitChar);
-                String value = parseValue(valueStr);
-
-                this.cards.add(new Card(suit, value, false));
-            }
-        }
     }
 
     public String getCardsString() {

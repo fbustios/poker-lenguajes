@@ -34,11 +34,11 @@ public final class PokerClientTCP implements PokerClient {
     }
 
     @Override
-    public void joinGame(String gameMode) {
+    public void joinGame(String gameMode, int bet) {
         final Map<String, String> message = new HashMap<>();
         message.put("event", "JOIN_GAME");
-        message.put("game_mode", gameMode);
         message.put("player_name", playerName);
+        message.put("bet", String.valueOf(bet));
 
         if (connected) {
             messageHandler.sendMessage(message);
