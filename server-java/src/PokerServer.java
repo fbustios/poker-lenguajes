@@ -60,6 +60,7 @@ public final class PokerServer {
                 while (!sent) {  //deberia ser toda una responsabilidad aparte, crear lobbys, pero bueno
                     Optional<ClientMessage> event = Optional.ofNullable(queue.poll(100, TimeUnit.MILLISECONDS));
                     if(event.isPresent()) {
+                        System.out.println("agarre un mensaje");
                         ClientMessage message = event.get();
                         if (message.event().equals(ClientEvent.JOIN_GAME)) {
                             sent = true;
@@ -67,7 +68,6 @@ public final class PokerServer {
                             playerConnections.put(playerConnection,p);
                         }
                     }
-                    System.out.println("llegue12");
                 }
             }
 

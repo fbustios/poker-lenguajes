@@ -34,6 +34,7 @@ public final class PlayerConnection implements Connection{
             while (this.alive) {
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
+
                     clientEventQueue.add(message.get());
                     System.out.println(message.get().event());
                     System.out.println(outputQueue.size());
@@ -67,6 +68,7 @@ public final class PlayerConnection implements Connection{
     private Optional<ClientMessage> read() {
         try {
             if (inputStream.available() != 0) {
+                System.out.println("habia algo en el inputstream");
                 DataInputStream dis = new DataInputStream(inputStream);
                 int len = dis.readInt();
                 byte[] data = new byte[len];
