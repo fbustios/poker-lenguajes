@@ -21,13 +21,13 @@ public class HiPotDistributer implements PotDistributer{
     }
 
     @Override
-    public List<Player> distribute() {
+    public List<Player> distribute(char gamemode) {
 
         final List<Player> activePlayers = table.getActivePlayers();
 
         if (activePlayers.isEmpty() || pot.isEmpty()) {return List.of();}
 
-        final List<Player> ranked = rankingSystem.rank(activePlayers, 'h');
+        final List<Player> ranked = rankingSystem.rank(activePlayers, gamemode);
         final Player winner = ranked.get(0);
 
         final int totalAmount = pot.takeAll();

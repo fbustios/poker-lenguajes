@@ -5,5 +5,5 @@ import poker.items.Player;
 import java.util.List;
 
 public interface PotDistributer {
-    List<Player> distribute();
+    List<Player> distribute(char gamemode);
 }
