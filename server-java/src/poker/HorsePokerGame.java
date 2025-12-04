@@ -15,10 +15,11 @@ public class HorsePokerGame implements PokerGame, GameState{
     private final List<PokerGamemode> modes;
     private final PokerTable table;
 
-    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table) {
+    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode) {
         this.modes = modes;
         this.table = table;
         this.currentGameIndex = 0;
+        this.currentGame = gamemode;
     }
 
     @Override

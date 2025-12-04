@@ -49,7 +49,7 @@ public final class ComponentFactory {
         final PokerTable table = buildPokerTable(players);
         final PokerGamemode holdem = buildHoldem(table, pot, deck,  mapping);
         modes.addFirst(holdem);
-        return new HorsePokerGame(modes, table);
+        return new HorsePokerGame(modes, table, holdem);
     }
 
     private static PokerGamemode buildHoldem(PokerTable table, Pot pot, Deck deck, ConnectionPlayerMapping mapping) {
