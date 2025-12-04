@@ -12,18 +12,22 @@ import static java.lang.Integer.parseInt;
 
 public final class PokerActionHandler {
     private static final String EVENT = "event";
-    private static final String GAME_MODE = "game_mode";
-    private static final String NEXT_PLAYER = "next_player";
+    private static final String GAME_MODE = "gamemode";
+    private static final String TURN = "turn";
     private static final String DEALER = "dealer";
     private static final String SMALL_BLIND = "small_blind";
     private static final String BIG_BLIND = "big_blind";
     private static final String POT = "pot";
-    private static final String PLAYER_PREFIX = "player_";
-    private static final String WINNER_PREFIX = "winner_";
-    private static final String PRIZE_PREFIX = "prize_";
     private static final String PLAYERS_LEFT = "players_left";
-    private static final String GAME_MODE_ROUND = "game_mode_round";
-    private static final String NEXT_ROUND = "next_round";
+    private static final String GAME_MODE_ROUND = "gamemode_round";
+    private static final String LAST_RAISE = "last_raise";
+    private static final String WINNER = "winner";
+
+    private static final String EVENT_GAME_STARTED = "game_started";
+    private static final String EVENT_PLAYER_ACTION = "player_action";
+    private static final String EVENT_ROUND_OVER = "round_over";
+    private static final String EVENT_GAME_OVER = "game_over";
+    private static final String EVENT_ROUND_UPDATE = "round_update";
 
     private PokerActionHandler() {
 
@@ -38,19 +42,19 @@ public final class PokerActionHandler {
             return;
         }
         switch (event.get()) {
-            case "GAME_STARTED":
+            case EVENT_GAME_STARTED:
                 handleGameStarted(data, gameState);
                 break;
-            case "PLAYER_ACTION":
+            case EVENT_PLAYER_ACTION:
                 handlePlayerAction(data, gameState);
                 break;
-            case "ROUND_OVER":
+            case EVENT_ROUND_OVER:
                 handleRoundOver(data, gameState);
                 break;
-            case "GAME_ENDED":
+            case EVENT_GAME_OVER:
                 handleGameEnded(data);
                 break;
-            case "UPDATE_ROUND":
+            case EVENT_ROUND_UPDATE:
                 handleUpdateRound(data, gameState);
                 break;
             default:
@@ -62,104 +66,177 @@ public final class PokerActionHandler {
     }
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
-        gameState.setNextPlayer(data.get(NEXT_PLAYER));
-        gameState.setDealer(data.get(DEALER));
-        gameState.setSmallBlind(data.get(SMALL_BLIND));
-        gameState.setBigBlind(data.get(BIG_BLIND));
+        gameState.setPot(getInt(data, POT, 0));
 
         gameState.playersClear();
-        int playerCount = 0;
-        while (data.containsKey(PLAYER_PREFIX + playerCount)) {
-            final PlayerModel pm = new PlayerModel();
-            pm.setName(data.get(PLAYER_PREFIX + playerCount));
-            pm.setIndex(playerCount);
+        int playerCount = MessageParser.getPlayerCount(data);
+
+        for (int i = 0; i < playerCount; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String cards = MessageParser.getPlayerCards(data, playerName);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+
+            PlayerModel pm = new PlayerModel();
+            pm.setName(playerName);
+            pm.setIndex(i);
+            pm.setMoney(getInt(money));
+            pm.setCardsFromString(cards);
+
             gameState.playersAdd(pm);
-            playerCount++;
         }
 
-        System.out.println("\n=== JUEGO INICIADO ===");
-        System.out.println("Modo: " + gameState.getGameMode());
-        System.out.println("Dealer: " + gameState.getDealer());
-        System.out.println("Small Blind: " + gameState.getSmallBlind());
-        System.out.println("Big Blind: " + gameState.getBigBlind());
-        System.out.println("Jugadores: " + gameState.getPlayers().size());
-        System.out.println("Siguiente: " + gameState.getNextPlayer());
+        System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║         JUEGO INICIADO             ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Modo: " + pad(gameState.getGameMode(), 28) + " ║");
+        System.out.println("║ Pot: $" + pad(String.valueOf(gameState.getPot()), 27) + " ║");
+        System.out.println("║ Jugadores: " + pad(String.valueOf(playerCount), 23) + " ║");
+        System.out.println("╚════════════════════════════════════╝");
+
+        for (PlayerModel player : gameState.getPlayers()) {
+            System.out.println("  • " + player.getName() + " - $" + player.getMoney() +
+                    " - Cartas: " + player.getCardsString());
+        }
     }
 
     private static void handlePlayerAction(Map<String, String> data, GameState gameState) {
         final String player = data.get("player");
-        final String nextPlayer = data.get(NEXT_PLAYER);
         final String action = data.get("action");
-        final String dealer = data.get(DEALER);
+        final String turn = data.get(TURN);
         final int pot = getInt(data, POT, gameState.getPot());
 
-        gameState.setNextPlayer(nextPlayer);
-        gameState.setDealer(dealer);
+        gameState.setNextPlayer(turn);
         gameState.setPot(pot);
 
-        System.out.println("\n=== ACCIÓN DE JUGADOR ===");
-        System.out.println("Jugador: " + player + " -> " + action);
-        System.out.println("Pot: " + pot);
-        System.out.println("Siguiente: " + nextPlayer);
+        System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║        ACCIÓN DE JUGADOR           ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Jugador: " + pad(player, 25) + " ║");
+        System.out.println("║ Acción: " + pad(action, 26) + " ║");
+        System.out.println("║ Pot: $" + pad(String.valueOf(pot), 27) + " ║");
+        System.out.println("║ Siguiente: " + pad(turn, 23) + " ║");
+        System.out.println("╚════════════════════════════════════╝");
     }
 
     private static void handleRoundOver(Map<String, String> data, GameState gameState) {
         final String gameMode = data.get(GAME_MODE);
-        final String nextRound = data.get(NEXT_ROUND);
         final int pot = getInt(data, POT, gameState.getPot());
 
         gameState.setPot(pot);
 
-        System.out.println("\n=== RONDA TERMINADA ===");
-        System.out.println("Modo: " + gameMode);
-        System.out.println("Siguiente ronda: " + nextRound);
-        System.out.println("Pot: " + pot);
+        System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║         RONDA TERMINADA            ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Modo: " + pad(gameMode, 28) + " ║");
+        System.out.println("║ Pot: $" + pad(String.valueOf(pot), 27) + " ║");
+        System.out.println("╚════════════════════════════════════╝");
     }
 
     private static void handleGameEnded(Map<String, String> data) {
-        final String gameMode = data.get(GAME_MODE);
+        final String winner = data.get(WINNER);
+        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
 
-        System.out.println("\n=== JUEGO TERMINADO ===");
-        System.out.println("Modo: " + gameMode);
-        System.out.println("Ganadores:");
+        System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║         JUEGO TERMINADO            ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Ganador: " + pad(winner, 25) + " ║");
+        System.out.println("║ Jugadores restantes: " + pad(String.valueOf(playersLeft), 13) + " ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║         DINERO FINAL               ║");
+        System.out.println("╠════════════════════════════════════╣");
 
-        int winnerCount = 0;
-        while (data.containsKey(WINNER_PREFIX + winnerCount)) {
-            final String winner = data.get(WINNER_PREFIX + winnerCount);
-            final int prize = parseInt(data.get(PRIZE_PREFIX + winnerCount), 0);
-            System.out.println("  - " + winner + ": $" + prize);
-            winnerCount++;
+        int playerCount = MessageParser.getPlayerCount(data);
+        for (int i = 0; i < playerCount; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+            System.out.println("║ " + pad(playerName + ": $" + money, 35) + " ║");
         }
+
+        System.out.println("╚════════════════════════════════════╝");
     }
 
     private static void handleUpdateRound(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setGameModeRound(data.get(GAME_MODE_ROUND));
-        gameState.setPot(parseInt(data.get(POT), 0));
-        gameState.setNextPlayer(data.get(NEXT_PLAYER));
+        gameState.setPot(getInt(data, POT, 0));
+        gameState.setNextPlayer(data.get(TURN));
         gameState.setDealer(data.get(DEALER));
-        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        gameState.setSmallBlind(data.get(SMALL_BLIND));
+        gameState.setBigBlind(data.get(BIG_BLIND));
 
-        System.out.println("\n=== ACTUALIZACIÓN DE RONDA ===");
-        System.out.println("Modo: " + gameState.getGameMode());
-        System.out.println("Ronda: " + gameState.getGameModeRound());
-        System.out.println("Pot: " + gameState.getPot());
-        System.out.println("Dealer: " + gameState.getDealer());
-        System.out.println("Siguiente: " + gameState.getNextPlayer());
-        System.out.println("Jugadores restantes: " + playersLeft);
+        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        final int lastRaise = getInt(data, LAST_RAISE, 0);
+
+        gameState.playersClear();
+        int playerCount = MessageParser.getPlayerCount(data);
+
+        for (int i = 0; i < playerCount; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String cards = MessageParser.getPlayerCards(data, playerName);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+
+            PlayerModel pm = new PlayerModel();
+            pm.setName(playerName);
+            pm.setIndex(i);
+            pm.setMoney(getInt(money));
+            pm.setCardsFromString(cards);
+
+            gameState.playersAdd(pm);
+        }
+
+        System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║      ACTUALIZACIÓN DE RONDA        ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Modo: " + pad(gameState.getGameMode(), 28) + " ║");
+        System.out.println("║ Ronda: " + pad(gameState.getGameModeRound(), 27) + " ║");
+        System.out.println("║ Pot: $" + pad(String.valueOf(gameState.getPot()), 27) + " ║");
+        System.out.println("║ Última subida: $" + pad(String.valueOf(lastRaise), 19) + " ║");
+        System.out.println("║ Dealer: " + pad(gameState.getDealer(), 26) + " ║");
+        System.out.println("║ Small Blind: " + pad(gameState.getSmallBlind(), 21) + " ║");
+        System.out.println("║ Big Blind: " + pad(gameState.getBigBlind(), 23) + " ║");
+        System.out.println("║ Turno: " + pad(gameState.getNextPlayer(), 27) + " ║");
+        System.out.println("║ Jugadores: " + pad(String.valueOf(playersLeft), 23) + " ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║           JUGADORES                ║");
+        System.out.println("╠════════════════════════════════════╣");
+
+        for (PlayerModel player : gameState.getPlayers()) {
+            String playerInfo = player.getName() + " $" + player.getMoney();
+            System.out.println("║ " + pad(playerInfo, 35) + " ║");
+            player.getCardsString();
+            if (!player.getCardsString().isEmpty()) {
+                System.out.println("║   Cartas: " + pad(player.getCardsString(), 26) + " ║");
+            }
+        }
+
+        System.out.println("╚════════════════════════════════════╝");
     }
 
     private static int getInt(Map<String, String> data, String key, int defaultValue) {
         final String s = data.get(key);
-        if (s == null) {
+        return getInt(s, defaultValue);
+    }
+
+    private static int getInt(String s) {
+        return getInt(s, 0);
+    }
+
+    private static int getInt(String s, int defaultValue) {
+        if (s == null || s.isEmpty()) {
             return defaultValue;
         }
 
         try {
             return Integer.parseInt(s.trim());
         } catch (NumberFormatException e) {
-            System.err.println("Valor numérico inválido para clave '" + key + "': " + s);
+            System.err.println("Valor numérico inválido: " + s);
             return defaultValue;
         }
+    }
+
+    private static String pad(String s, int length) {
+        if (s == null) s = "N/A";
+        if (s.length() >= length) return s.substring(0, length);
+        return String.format("%-" + length + "s", s);
     }
 }

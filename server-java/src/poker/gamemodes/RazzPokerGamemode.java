@@ -3,12 +3,14 @@ package poker.gamemodes;
 import poker.dealing.DealingMethod;
 import poker.items.Deck;
 import poker.items.Player;
+import poker.rounds.TurnManager;
 import poker.table.PokerTable;
 
 import java.util.Optional;
 
 
-public class RazzPokerGamemode implements PokerGamemode{
+public final class RazzPokerGamemode implements PokerGamemode{
+    private TurnManager turnManager;
     private DealingMethod dealingMethod;
     private PokerTable table;
     private Deck deck;
@@ -29,12 +31,17 @@ public class RazzPokerGamemode implements PokerGamemode{
     }
 
     @Override
-    public String getName() {
-        return "";
+    public Gamemode getName() {
+        return null;
     }
 
     @Override
     public void distributePot() {
 
+    }
+
+    @Override
+    public String getDetails() {
+        return turnManager.getDetails();
     }
 }

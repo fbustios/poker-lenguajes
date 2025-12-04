@@ -8,6 +8,8 @@ import org.poker.connection.PokerClientTCP;
 import java.util.Scanner;
 
 public final class ClientTestMain {
+    private static final String PLAYER_NAME_MSG = "Nombre del jugador (4 letras exactas): ";
+
     private ClientTestMain() {
 
     }
@@ -16,9 +18,6 @@ public final class ClientTestMain {
         final Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== CLIENTE DE POKER HORSE - MODO PRUEBA ===\n");
-
-        System.out.print("Nombre del jugador: ");
-        final String playerName = scanner.nextLine();
 
         System.out.print("Host del servidor (default: localhost): ");
         String host = scanner.nextLine();
@@ -30,7 +29,7 @@ public final class ClientTestMain {
         String portStr = scanner.nextLine();
         int port = portStr.isEmpty() ? 5000 : Integer.parseInt(portStr);
 
-        PokerClient client = new PokerClientTCP(host, port, playerName);
+        PokerClient client = new PokerClientTCP(host, port);
 
         if (!client.isConnected()) {
             System.err.println("No se pudo conectar al servidor.");
@@ -41,9 +40,9 @@ public final class ClientTestMain {
         client.setMessageListener((event, message) -> {
             System.out.println("\n[EVENTO] " + event);
 
-            if (event.equals("GAME_STARTED")) {
+            if (event.equals("game_started")) {
                 System.out.println("¡El juego ha comenzado!");
-            } else if (event.equals("PLAYER_ACTION")) {
+            } else if (event.equals("player_action")) {
                 String player = message.get("player");
                 String action = message.get("pokerAction");
                 System.out.println(player + " realizó: " + action);
@@ -70,6 +69,7 @@ public final class ClientTestMain {
 
             String option = scanner.nextLine().trim();
 
+            String playerName;
             try {
                 switch (option) {
                     case "1":
@@ -91,42 +91,69 @@ public final class ClientTestMain {
                             default -> modeChoice;
                         };
 
-                        client.joinGame(mode);
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        System.out.print("Dinero: ");
+                        final int money = scanner.nextInt();
+
+                        client.joinGame(mode, playerName, money);
                         System.out.println("✓ Solicitud enviada para unirse a " + mode);
                         break;
 
                     case "2":
-                        if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().getGameMode(), 0, "CALL", 0);
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        if (checkMyTurn(client, playerName)) {
+                            client.placeBet(client.getGameState().getGameMode(), playerName, "call", 0);
                             System.out.println("✓ CALL enviado");
                         }
                         break;
 
                     case "3":
-                        if (checkMyTurn(client)) {
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        if (checkMyTurn(client, playerName)) {
                             System.out.print("Cantidad a apostar: ");
                             int amount = Integer.parseInt(scanner.nextLine());
-                            client.placeBet(client.getGameState().getGameMode(), 0, "RAISE", amount);
+                            client.placeBet(client.getGameState().getGameMode(), playerName, "raise", amount);
                             System.out.println("✓ RAISE de " + amount + " enviado");
                         }
                         break;
 
                     case "4":
-                        if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().getGameMode(), 0, "FOLD", 0);
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        if (checkMyTurn(client, playerName)) {
+                            client.placeBet(client.getGameState().getGameMode(), playerName, "fold", 0);
                             System.out.println("✓ FOLD enviado");
                         }
                         break;
 
                     case "5":
-                        if (checkMyTurn(client)) {
-                            client.placeBet(client.getGameState().getGameMode(), 0, "CHECK", 0);
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        if (checkMyTurn(client, playerName)) {
+                            client.placeBet(client.getGameState().getGameMode(), playerName, "check", 0);
                             System.out.println("✓ CHECK enviado");
                         }
                         break;
 
                     case "6":
-                        showGameState(client);
+                        System.out.print(PLAYER_NAME_MSG);
+                        playerName = scanner.nextLine();
+                        playerName = playerName.toLowerCase();
+
+                        showGameState(client, playerName);
                         break;
 
                     case "7":
@@ -160,15 +187,15 @@ public final class ClientTestMain {
         scanner.close();
     }
 
-    private static boolean checkMyTurn(PokerClient client) {
-        if (!client.isMyTurn()) {
+    private static boolean checkMyTurn(PokerClient client, String playerName) {
+        if (!client.isMyTurn(playerName)) {
             System.out.println("⚠ No es tu turno. Espera a que te toque jugar.");
             return false;
         }
         return true;
     }
 
-    private static void showGameState(PokerClient client) {
+    private static void showGameState(PokerClient client, String playerName) {
         GameState state = client.getGameState();
 
         System.out.println("\n╔════════════════════════════════════╗");
@@ -179,7 +206,7 @@ public final class ClientTestMain {
         System.out.println("║ Pot: $" + padRight(String.valueOf(state.getPot()), 27) + " ║");
         System.out.println("║ Dealer: " + padRight(state.getDealer(), 26) + " ║");
         System.out.println("║ Siguiente: " + padRight(state.getNextPlayer(), 23) + " ║");
-        System.out.println("║ ¿Es mi turno?: " + padRight(client.isMyTurn() ? "SÍ" : "NO", 19) + " ║");
+        System.out.println("║ ¿Es mi turno?: " + padRight(client.isMyTurn(playerName) ? "SÍ" : "NO", 19) + " ║");
         System.out.println("║ Jugadores: " + padRight(String.valueOf(state.getPlayers().size()), 23) + " ║");
         System.out.println("╚════════════════════════════════════╝");
 

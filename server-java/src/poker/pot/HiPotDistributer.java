@@ -10,10 +10,10 @@ public class HiPotDistributer implements PotDistributer{
 
     private final RankingSystem rankingSystem;
     private final PokerTable table;
-    private final MapPot pot;
+    private final Pot pot;
 
     public HiPotDistributer(final RankingSystem rankingSystem,
-                            final MapPot pot,
+                            final Pot pot,
                             final PokerTable table) {
         this.rankingSystem = rankingSystem;
         this.pot = pot;
@@ -27,7 +27,7 @@ public class HiPotDistributer implements PotDistributer{
 
         if (activePlayers.isEmpty() || pot.isEmpty()) {return List.of();}
 
-        final List<Player> ranked = rankingSystem.rank(activePlayers);
+        final List<Player> ranked = rankingSystem.rank(activePlayers, 'h');
         final Player winner = ranked.get(0);
 
         final int totalAmount = pot.takeAll();

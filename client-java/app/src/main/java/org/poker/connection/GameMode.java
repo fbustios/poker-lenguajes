@@ -1,11 +1,11 @@
 package org.poker.connection;
 
 public enum GameMode {
-    HOLDEM("Holdem"),
-    OMAHA("Omaha"),
-    RAZZ("Razz"),
-    STUD("Stud"),
-    EIGHT("Eight");
+    HOLDEM("holdem"),
+    OMAHA("omaha"),
+    RAZZ("razz"),
+    STUD("stud"),
+    EIGHT("eight");
 
     private final String name;
 

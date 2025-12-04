@@ -1,5 +1,6 @@
 package poker;
 
+import poker.gamemodes.Gamemode;
 import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
@@ -8,16 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class HorsePokerGame implements PokerGame, GameState{
-    private final static int MIN_PLAYERS_TO_START = 2;
+    private final static int MIN_PLAYERS_TO_START = 0;
     private int currentGameIndex;
     private PokerGamemode currentGame;
     private final List<PokerGamemode> modes;
     private final PokerTable table;
-    private boolean gameFinished;
 
     public HorsePokerGame(List<PokerGamemode> modes, PokerTable table) {
         this.modes = modes;
-        this.gameFinished = false;
         this.table = table;
         this.currentGameIndex = 0;
     }
@@ -37,7 +36,8 @@ public class HorsePokerGame implements PokerGame, GameState{
             throw new IllegalStateException("Acción inválida");
         }
         currentGame.play(lastPokerAction);
-        if(!currentGame.isOver()) {
+        System.out.println("hello");
+        if(currentGame.isOver()) {
             currentGame.distributePot();
             setNextMode();
         }
@@ -45,7 +45,7 @@ public class HorsePokerGame implements PokerGame, GameState{
 
     @Override
     public boolean isGameFinished() {
-        return this.gameFinished;
+        return currentGame.isOver() && (currentGameIndex == modes.size() - 1);
     }
 
 
@@ -82,8 +82,11 @@ public class HorsePokerGame implements PokerGame, GameState{
     }
 
     private void setNextMode() {
-        this.currentGameIndex +=1;
-        this.currentGame = modes.get(currentGameIndex);
+        if (currentGameIndex < (modes.size() - 1)) {
+            this.currentGameIndex +=1;
+            this.currentGame = modes.get(currentGameIndex);
+        }
+
     }
 
 
@@ -98,7 +101,12 @@ public class HorsePokerGame implements PokerGame, GameState{
     }
 
     @Override
-    public String getCurrentGamemode() {
+    public Gamemode getCurrentGamemode() {
         return currentGame.getName();
+    }
+
+    @Override
+    public String getDetails() {
+        return currentGame.getDetails();
     }
 }

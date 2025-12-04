@@ -13,4 +13,5 @@ public interface TurnManager {
 
     void setPendingAction(boolean value);
     void resetTurnsLeft();
+    String getDetails();
 }

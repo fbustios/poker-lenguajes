@@ -12,4 +12,27 @@ public enum Rank {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        if (value == 10) {
+            return "T";
+        }
+        if (value == 11) {
+            return "J";
+        }
+        if (value == 12) {
+            return "Q";
+        }
+        if (value == 13) {
+            return "K";
+        }
+        if (value == 14) {
+            return "A";
+        }
+        if (value == 1) {
+            return "A";
+        }
+        return String.valueOf(value);
+    }
 }

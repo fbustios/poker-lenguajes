@@ -5,12 +5,12 @@ import poker.items.Player;
 
 import java.util.*;
 
-public class SequenceConnectionPlayerMapping implements ConnectionPlayerMapping{
+public class MapPlayerMapping implements ConnectionPlayerMapping{
     private final Map<String, Connection> connectionMap;
     private final Map<String, Player> playerMap;
 
-    private SequenceConnectionPlayerMapping(final Map<String, Connection> connectionMap,
-                                            final Map<String, Player> playerMap) {
+    private MapPlayerMapping(final Map<String, Connection> connectionMap,
+                             final Map<String, Player> playerMap) {
         this.connectionMap = connectionMap;
         this.playerMap = playerMap;
     }
@@ -36,17 +36,22 @@ public class SequenceConnectionPlayerMapping implements ConnectionPlayerMapping{
     public List<Connection> getConnections() {
         return new ArrayList<>(connectionMap.values());
     }
+    @Override
+    public List<Player> getPlayers() {
+        return new ArrayList<>(playerMap.values());
+    }
 
-    public static SequenceConnectionPlayerMapping build(Map<Connection, Player> mapping) {
+    public static MapPlayerMapping build(Map<Connection, Player> mapping) {
         Map<String, Connection> connectionMap2 = new HashMap<>();
         Map<String, Player> playerMap2 = new HashMap<>();
         for (Map.Entry<Connection, Player> entry : mapping.entrySet()) {
             connectionMap2.put(entry.getValue().getName(), entry.getKey());
-            connectionMap2.put(entry.getValue().getName(), entry.getKey());
+            playerMap2.put(entry.getValue().getName(), entry.getValue());
         }
-        return new SequenceConnectionPlayerMapping(connectionMap2, playerMap2);
+        System.out.println(connectionMap2.values().size());
+        System.out.println(playerMap2.values().size());
+
+        return new MapPlayerMapping(connectionMap2, playerMap2);
     }
-
-
 
 }

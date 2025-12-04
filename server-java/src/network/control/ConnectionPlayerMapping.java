@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface ConnectionPlayerMapping {
     Optional<Connection> getConnectionFromName(String name);
     Optional<Player> getPlayerFromName(String name);
+    List<Player> getPlayers();
     void deleteConnection(String name);
     List<Connection> getConnections();
 }

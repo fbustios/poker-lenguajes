@@ -1,5 +1,6 @@
 package poker.dealing;
 
+import poker.items.Card;
 import poker.items.Deck;
 import poker.rounds.Street;
 import poker.table.PokerTable;
@@ -40,6 +41,11 @@ public class StudRazzDealingMethod implements DealingMethod {
 
         }
 
+    }
+
+    @Override
+    public List<Card> getCommunityCards() {
+        return List.of();
     }
 
     private void dealThirdStreet(PokerTable table, Deck deck){
