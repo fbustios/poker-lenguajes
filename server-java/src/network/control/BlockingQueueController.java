@@ -45,7 +45,6 @@ public final class BlockingQueueController implements Controller{
                 }
                 if (event.isPresent()) {
                     processEvent(event.get());
-                    System.out.println("me llego un evento");
                 }
                 if (game.isGameFinished()) {
                     sendMessage(ServerEvent.GAME_ENDED);
@@ -149,11 +148,9 @@ public final class BlockingQueueController implements Controller{
         for(int i = 0; i < connections.size(); i++) {
             Player currentPlayer = players.get(i);
             StringBuilder hand = new StringBuilder();
+            System.out.println("tamano: " + currentPlayer.getCards().size());
             for(int j = 0; j < currentPlayer.getCards().size(); j++) {
-                if (j < (currentPlayer.getCards().size() - 1)) {
                     hand.append(currentPlayer.getCards().get(j).toString() + ",");
-                }
-
             }
             hand.append(currentPlayer.getMoney());
             hand.append("\n");
@@ -183,10 +180,7 @@ public final class BlockingQueueController implements Controller{
             Player currentPlayer = players.get(i);
             StringBuilder hand = new StringBuilder();
             for(int j = 0; j < currentPlayer.getCards().size(); j++) {
-                if (j < (currentPlayer.getCards().size() - 1)) {
                     hand.append(currentPlayer.getCards().get(j).toString() + ",");
-                }
-
             }
             hand.append(currentPlayer.getMoney());
             hand.append("\n");

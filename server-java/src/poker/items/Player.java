@@ -10,7 +10,7 @@ public final class Player {
     private boolean isFolded;
     private boolean isAllIn;
 
-    public Player(final String name, final List<Card> cardList, final int initialBet) {
+    public Player(final String name, List<Card> cardList, final int initialBet) {
         this.name = name;
         this.cards = cardList;
         this.isActive = true;

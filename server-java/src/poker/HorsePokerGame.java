@@ -4,6 +4,7 @@ import poker.gamemodes.Gamemode;
 import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
+import poker.pot.Pot;
 import poker.table.PokerTable;
 import java.util.List;
 import java.util.Optional;
@@ -12,12 +13,15 @@ public class HorsePokerGame implements PokerGame, GameState{
     private final static int MIN_PLAYERS_TO_START = 0;
     private int currentGameIndex;
     private PokerGamemode currentGame;
-    private final List<PokerGamemode> modes;
+    private List<PokerGamemode> modes;
     private final PokerTable table;
+    private final Pot pot;
 
-    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode) {
+
+    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode, Pot pot) {
         this.modes = modes;
         this.table = table;
+        this.pot = pot;
         this.currentGameIndex = 0;
         this.currentGame = gamemode;
     }
@@ -27,7 +31,17 @@ public class HorsePokerGame implements PokerGame, GameState{
         if (table.getPlayers().size() < MIN_PLAYERS_TO_START) {
             System.out.println("no puedo empezar");
         }
-        currentGame.deal();
+        try {
+            currentGame.deal();
+        } catch (Exception e) {
+            System.out.println("me meti");
+            System.out.println(e.getMessage());
+            System.out.println(e.fillInStackTrace());
+            System.out.println(e.getCause());
+            System.out.println(e.getStackTrace());
+
+        }
+
         this.currentGame = this.modes.get(currentGameIndex);
     }
 
@@ -38,7 +52,6 @@ public class HorsePokerGame implements PokerGame, GameState{
             throw new IllegalStateException("Acción inválida");
         }
         currentGame.play(lastPokerAction);
-        System.out.println("hello");
         if(currentGame.isRoundOver()) {
             currentGame.deal();
         }
@@ -102,7 +115,7 @@ public class HorsePokerGame implements PokerGame, GameState{
 
     @Override
     public int getPot() {
-        return 0;
+        return pot.getAmount();
     }
 
     @Override
