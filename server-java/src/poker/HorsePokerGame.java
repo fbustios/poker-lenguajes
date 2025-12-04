@@ -12,7 +12,7 @@ public class HorsePokerGame implements PokerGame, GameState{
     private final static int MIN_PLAYERS_TO_START = 0;
     private int currentGameIndex;
     private PokerGamemode currentGame;
-    private final List<PokerGamemode> modes;
+    private List<PokerGamemode> modes;
     private final PokerTable table;
 
     public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode) {
@@ -27,7 +27,17 @@ public class HorsePokerGame implements PokerGame, GameState{
         if (table.getPlayers().size() < MIN_PLAYERS_TO_START) {
             System.out.println("no puedo empezar");
         }
-        currentGame.deal();
+        try {
+            currentGame.deal();
+        } catch (Exception e) {
+            System.out.println("me meti");
+            System.out.println(e.getMessage());
+            System.out.println(e.fillInStackTrace());
+            System.out.println(e.getCause());
+            System.out.println(e.getStackTrace());
+
+        }
+
         this.currentGame = this.modes.get(currentGameIndex);
     }
 

@@ -64,7 +64,7 @@ public final class PokerServer {
                         ClientMessage message = event.get();
                         if (message.event().equals(ClientEvent.JOIN_GAME)) {
                             sent = true;
-                            Player p = new Player(message.author(),List.of(),1000);
+                            Player p = new Player(message.author(),new ArrayList<>(),1000);
                             playerConnections.put(playerConnection,p);
                         }
                     }

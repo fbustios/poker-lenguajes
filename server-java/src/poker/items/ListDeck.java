@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public class ListDeck implements Deck{
-    private final List<Card> fullCards;
+    private List<Card> fullCards;
     private List<Card> cards;
 
     private ListDeck(List<Card> fullCards) {

@@ -88,6 +88,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public void deal() {
         dealingMethod.deal(turnManager.getTable(),deck);
+        System.out.println("llegue despues del deal");
     }
 
     private boolean checkAction() {
