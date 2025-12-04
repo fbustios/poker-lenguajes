@@ -23,6 +23,8 @@ public final class HoldemDealingMethod implements DealingMethod {
     public void deal(PokerTable table, Deck deck) {
         switch (actualStage) {
             case PRE_FLOP -> {
+                deck.refill();
+                deck.shuffle();
                 preFlop(table, deck);
                 actualStage = Stage.FLOP;
             }
@@ -53,16 +55,20 @@ public final class HoldemDealingMethod implements DealingMethod {
 
     private void flop(Deck deck) {
         for (int i = 0; i < 3; i++){
-            communityCards.add(deck.draw());
+            Card c  = deck.draw();
+            communityCards.add(c.faceUp());
         }
     }
 
     private void turn(Deck deck) {
-        communityCards.add(deck.draw());
+        Card c  = deck.draw();
+        communityCards.add(c.faceUp());
     }
 
     private void river(Deck deck) {
-        communityCards.add(deck.draw());
+        Card c  = deck.draw();
+        communityCards.add(c.faceUp());
 
     }
 }
+

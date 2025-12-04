@@ -49,26 +49,28 @@ public class StudRazzDealingMethod implements DealingMethod {
     }
 
     private void dealThirdStreet(PokerTable table, Deck deck){
-        List<Player> players = table.getActivePlayers();
-        for (Player player : players) {
+        deck.refill();
+        deck.shuffle();
+        for (Player player : table.getActivePlayers()) {
             player.receiveCard(deck.draw());
             player.receiveCard(deck.draw());
         }
     }
 
     private void dealOneUpCard(PokerTable table, Deck deck) {
-        List<Player> players = table.getActivePlayers();
-        for (Player player : players) {
+        for (Player player : table.getActivePlayers()) {
             if (!player.isFolded()) {
-                player.receiveCard(deck.draw());
+                Card c = deck.draw();
+                player.receiveCard(c.faceUp());
             }
         }
     }
 
     private void dealSeventhStreet(PokerTable table, Deck deck) {
-        List<Player> players = table.getActivePlayers();
-        for (Player player : players) {
-            player.receiveCard(deck.draw());
+        for (Player player : table.getActivePlayers()) {
+            Card c = deck.draw();
+            player.receiveCard(c.faceUp());
         }
     }
 }
+

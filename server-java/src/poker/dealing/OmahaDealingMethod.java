@@ -45,7 +45,8 @@ public class OmahaDealingMethod implements DealingMethod {
 
 
     private void preFlop(PokerTable table, Deck deck) {
-        int playerCount = table.getActivePlayers().size();
+        deck.refill();
+        deck.shuffle();
         for (Player p : table.getActivePlayers()) {
             p.receiveCard(deck.draw());
             p.receiveCard(deck.draw());
@@ -56,16 +57,18 @@ public class OmahaDealingMethod implements DealingMethod {
 
     private void flop(Deck deck) {
         for (int i = 0; i < 3; i++){
-            communityCards.add(deck.draw());
+            Card c  = deck.draw();
+            communityCards.add(c.faceUp());
         }
     }
 
     private void turn(Deck deck) {
-        communityCards.add(deck.draw());
+        Card c  = deck.draw();
+        communityCards.add(c.faceUp());
     }
 
     private void river(Deck deck) {
-        communityCards.add(deck.draw());
-
+        Card c  = deck.draw();
+        communityCards.add(c.faceUp());
     }
 }
