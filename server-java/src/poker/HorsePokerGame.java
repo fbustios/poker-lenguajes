@@ -4,6 +4,7 @@ import poker.gamemodes.Gamemode;
 import poker.gamemodes.PokerAction;
 import poker.gamemodes.PokerGamemode;
 import poker.items.Player;
+import poker.pot.Pot;
 import poker.table.PokerTable;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,13 @@ public class HorsePokerGame implements PokerGame, GameState{
     private PokerGamemode currentGame;
     private List<PokerGamemode> modes;
     private final PokerTable table;
+    private final Pot pot;
 
-    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode) {
+
+    public HorsePokerGame(List<PokerGamemode> modes, PokerTable table, PokerGamemode gamemode, Pot pot) {
         this.modes = modes;
         this.table = table;
+        this.pot = pot;
         this.currentGameIndex = 0;
         this.currentGame = gamemode;
     }
@@ -48,7 +52,6 @@ public class HorsePokerGame implements PokerGame, GameState{
             throw new IllegalStateException("Acción inválida");
         }
         currentGame.play(lastPokerAction);
-        System.out.println("hello");
         if(currentGame.isRoundOver()) {
             currentGame.deal();
         }
@@ -112,7 +115,7 @@ public class HorsePokerGame implements PokerGame, GameState{
 
     @Override
     public int getPot() {
-        return 0;
+        return pot.getAmount();
     }
 
     @Override

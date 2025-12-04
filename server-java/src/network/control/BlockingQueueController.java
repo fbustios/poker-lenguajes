@@ -45,7 +45,6 @@ public final class BlockingQueueController implements Controller{
                 }
                 if (event.isPresent()) {
                     processEvent(event.get());
-                    System.out.println("me llego un evento");
                 }
                 if (game.isGameFinished()) {
                     sendMessage(ServerEvent.GAME_ENDED);

@@ -88,7 +88,6 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public void deal() {
         dealingMethod.deal(turnManager.getTable(),deck);
-        System.out.println("llegue despues del deal");
     }
 
     private boolean checkAction() {
@@ -97,6 +96,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     private void handleRaise(Player player, int bet) {
         player.addMoney(-bet);
+        pot.add(bet);
         turnManager.resetTurnsLeft();
         turnManager.setPendingAction(false);
     }
@@ -108,6 +108,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         }
         player.addMoney(-player.getMoney());
         player.setAllIn(true);
+        pot.add(bet);
         turnManager.setPendingAction(false);
     }
 
@@ -123,6 +124,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     private void handleCall(Player player, int bet) {
         player.addMoney(-bet);
+        pot.add(bet);
         turnManager.setPendingAction(false);
     }
 

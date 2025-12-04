@@ -68,7 +68,6 @@ public final class PlayerConnection implements Connection{
     private Optional<ClientMessage> read() {
         try {
             if (inputStream.available() != 0) {
-                System.out.println("habia algo en el inputstream");
                 DataInputStream dis = new DataInputStream(inputStream);
                 int len = dis.readInt();
                 byte[] data = new byte[len];
@@ -79,7 +78,6 @@ public final class PlayerConnection implements Connection{
             return Optional.empty();
 
         } catch (Exception e) {
-            System.out.println("error aca");
             throw new RuntimeException(e.getMessage());
         }
 
