@@ -34,7 +34,7 @@ public final class PlayerConnection implements Connection{
             while (this.alive) {
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
-
+                    System.out.println("tengo un mensaje");
                     clientEventQueue.add(message.get());
                     System.out.println(message.get().event());
                     System.out.println(outputQueue.size());
