@@ -88,7 +88,14 @@ public final class BlockingQueueController implements Controller{
         String author = message.author();
         Optional<Player> playerModel = connectionMap.getPlayerFromName(author);
         if (playerModel.isPresent()) {
-            PokerAction action = new PokerAction(playerModel.get(), PlayerAction.CALL, 0);
+            PokerAction action;
+            switch (message.details().get("player_action")) {
+                case "call" -> action = new PokerAction(playerModel.get(), PlayerAction.CALL, 0);
+                case "check" -> action = new PokerAction(playerModel.get(), PlayerAction.CHECK, 0);
+                case "all_in" -> action = new PokerAction(playerModel.get(), PlayerAction.ALL_IN, 0);
+                case "fold" -> action = new PokerAction(playerModel.get(), PlayerAction.FOLD, 0);
+                default -> throw new IllegalStateException("no existe tal accion");
+            }
             game.play(action);
             System.out.println("Player is here, not skipped");
         }
