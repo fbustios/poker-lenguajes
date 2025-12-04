@@ -45,6 +45,7 @@ public final class BlockingQueueController implements Controller{
                 if (game.isGamemodeOver()) {
                     System.out.println("cambie de modo bien");
                     game.setNextMode();
+                    System.out.println("sali");
                     sendMessage(ServerEvent.MODE_CHANGED);
                 }
                 if (event.isPresent()) {
