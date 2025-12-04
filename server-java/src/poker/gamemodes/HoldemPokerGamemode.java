@@ -152,7 +152,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     }
 
     private void handleCall(Player player, int bet) {
-        player.addMoney(-bet);
+        player.addMoney(-pot.getLastRaise());
         pot.add(bet);
         turnManager.setPendingAction(false);
     }
