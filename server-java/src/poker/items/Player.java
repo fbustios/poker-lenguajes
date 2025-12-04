@@ -18,6 +18,7 @@ public final class Player {
         this.isAllIn = false;
         this.money = initialBet;
         this.isFolded = false;
+        this.isConnected = true;
     }
 
     public void setConnected(boolean value) {
