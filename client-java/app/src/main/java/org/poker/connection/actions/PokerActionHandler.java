@@ -25,14 +25,16 @@ public final class PokerActionHandler {
     private static final String NEXT_ROUND = "next_round";
     private static final String TURN = "turn";
     private static final String LAST_RAISE = "last_raise";
-    private static final String WINNER = "winner";
     private static final String EVENT_GAME_STARTED = "game_started";
     private static final String EVENT_PLAYER_ACTION = "player_action";
     private static final String EVENT_ROUND_OVER = "round_over";
     private static final String EVENT_GAME_ENDED = "game_ended";
     private static final String EVENT_ROUND_UPDATE = "update_round";
     private static final String COMMUNITY_CARDS = "community_cards";
+    private static final String MODE_CHANGED = "mode_changed";
 
+    private
+    
     private PokerActionHandler() {
 
     }
@@ -61,6 +63,8 @@ public final class PokerActionHandler {
             case EVENT_ROUND_UPDATE:
                 handleUpdateRound(data, gameState);
                 break;
+            case MODE_CHANGED:
+                handleModeChange(data, gameState);
             default:
                 System.out.println("Evento desconocido: " + event);
         }
@@ -68,6 +72,31 @@ public final class PokerActionHandler {
             messageListener.onMessageReceived(event.get(), data);
         }
     }
+
+    private static void handleModeChange(Map<String, String> data, GameState gameState) {
+        gameState.setGameMode(data.get(GAME_MODE));
+
+        final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        gameState.playersClear();
+        for (int i = 0; i < playersLeft; i++) {
+            String playerName = MessageParser.getPlayerName(data, i);
+            String cards = MessageParser.getPlayerCards(data, playerName);
+            String money = MessageParser.getPlayerMoney(data, playerName);
+
+            PlayerModel pm = new PlayerModel();
+            pm.setName(playerName);
+            pm.setMoney(getInt(money));
+            pm.setCardsFromString(cards);
+
+            gameState.playersAdd(pm);
+        }
+
+        for (PlayerModel player : gameState.getPlayers()) {
+            System.out.println("  • " + player.getName() + " - $" + player.getMoney() +
+                    " - Cartas: " + player.getCardsString());
+        }
+    }
+
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setNextPlayer(data.get(NEXT_PLAYER));
@@ -142,6 +171,7 @@ public final class PokerActionHandler {
             winnerCount++;
         }
     }
+
     private static void handleUpdateRound(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setGameModeRound(data.get(GAME_MODE_ROUND));
@@ -155,7 +185,7 @@ public final class PokerActionHandler {
         gameState.setCommunityCardsFromString(data.get(COMMUNITY_CARDS));
 
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
-  
+
         gameState.playersClear();
         for (int i = 0; i < playersLeft; i++) {
             String playerName = MessageParser.getPlayerName(data, i);
