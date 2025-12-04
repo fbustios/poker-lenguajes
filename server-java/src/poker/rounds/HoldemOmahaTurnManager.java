@@ -18,6 +18,7 @@ public class HoldemOmahaTurnManager implements TurnManager {
         this.dealer = 0;
         this.table = table;
         this.pendingAction = false;
+        setStartingPlayer();
     }
 
     @Override

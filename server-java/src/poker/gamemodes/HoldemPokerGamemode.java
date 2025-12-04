@@ -1,6 +1,7 @@
 package poker.gamemodes;
 
 import poker.dealing.DealingMethod;
+import poker.items.Card;
 import poker.items.Deck;
 import poker.items.Player;
 import poker.pot.Pot;
@@ -8,6 +9,7 @@ import poker.pot.PotDistributer;
 import poker.rounds.HoldemRound;
 import poker.rounds.TurnManager;
 
+import java.util.List;
 import java.util.Optional;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
@@ -38,7 +40,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         if (!checkAction()) {
             throw new IllegalStateException();
         }
-        
+
         PlayerAction action = lastPokerAction.action();
         switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
             case RAISE -> handleRaise(lastPokerAction.player(),lastPokerAction.bet());
@@ -66,11 +68,11 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public void distributePot() {
-        potDistributer.distribute();
-    }
+        List<Card> communityCards = dealingMethod.getCommunityCards();
+        if (!communityCards.isEmpty()) {
 
-    private void setUpGame() {
-        deck.refill();
+        }
+        potDistributer.distribute();
     }
 
     private boolean checkAction() {

@@ -5,22 +5,22 @@ import poker.items.Deck;
 import poker.items.Player;
 import poker.table.PokerTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class HoldemDealingMethod implements DealingMethod {
     private enum Stage {PRE_FLOP, FLOP, TURN, RIVER};
     private Stage actualStage;
-    private List<Card> communityCards;
+    private final List<Card> communityCards;
 
-    public HoldemDealingMethod(final List<Card> communityCards) {
+    public HoldemDealingMethod() {
         actualStage = Stage.PRE_FLOP;
-        this.communityCards = communityCards;
+        this.communityCards = new ArrayList<>();
 
     }
 
     @Override
     public void deal(PokerTable table, Deck deck) {
-        List<Player> players = table.getActivePlayers();
         switch (actualStage) {
             case PRE_FLOP -> {
                 preFlop(table, deck);
@@ -36,6 +36,11 @@ public final class HoldemDealingMethod implements DealingMethod {
             }
             case RIVER -> river(deck);
         }
+    }
+
+    @Override
+    public List<Card> getCommunityCards() {
+        return this.communityCards;
     }
 
 

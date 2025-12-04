@@ -1,7 +1,7 @@
 import network.ClientEvent;
 import network.control.BlockingQueueController;
 import network.control.Controller;
-import network.control.SequenceConnectionPlayerMapping;
+import network.control.MapPlayerMapping;
 import network.io.*;
 import poker.HorsePokerGame;
 import poker.PokerGame;
@@ -36,10 +36,9 @@ public final class PokerServer {
             BlockingQueue<ClientMessage> queue = new LinkedBlockingQueue<>();
             Map<Connection, Player> playerConnections = gatherConnections(serverSocket,queue);
             System.out.println("Lobby built");
-            PokerGame game = new HorsePokerGame(List.of(new HoldemPokerGamemode(null, null, null, null, null)), null);
-            Controller gameController = new BlockingQueueController(new PokerEventEmitter(), queue,game, SequenceConnectionPlayerMapping.build(playerConnections));
+            Controller gameController = ComponentFactory.buildController(playerConnections, queue);
             gameController.start();
-        } catch (Exception e) {
+        } catch (Exception e){
             System.err.println("Could not listen on port " + this.port);
             System.err.println(e.getMessage());
             System.exit(-1);
@@ -56,6 +55,7 @@ public final class PokerServer {
                 currentPlayers++;
                 Connection playerConnection = new PlayerConnection(playerSocket, queue,rq);
                 new Thread(playerConnection).start();
+
                 boolean sent = false;
                 while (!sent) {  //deberia ser toda una responsabilidad aparte, crear lobbys, pero bueno
                     Optional<ClientMessage> event = Optional.ofNullable(queue.poll(100, TimeUnit.MILLISECONDS));

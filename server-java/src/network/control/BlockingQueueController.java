@@ -4,7 +4,6 @@ import network.ClientEvent;
 import network.io.Connection;
 import network.io.EventEmitter;
 import network.ServerEvent;
-import network.ServerMessage;
 import network.io.ClientMessage;
 import poker.GameState;
 import poker.PokerGame;
@@ -46,6 +45,7 @@ public final class BlockingQueueController implements Controller{
                 }
                 if (event.isPresent()) {
                     processEvent(event.get());
+                    System.out.println("me llego un evento");
                 }
                 if (game.isGameFinished()) {
                     sendMessage(ServerEvent.GAME_ENDED);
@@ -100,7 +100,12 @@ public final class BlockingQueueController implements Controller{
             case GAME_STARTED -> buidGameStartedMessage();
             case ROUND_UPDATE -> buildRoundUpdateMessage();
             case GAME_ENDED -> buildGameEndedMessage();
+            case MODE_CHANGED -> buildModeChangedMessage();
         }
+    }
+
+    private void buildModeChangedMessage() {
+
     }
 
     private void buildGameEndedMessage() {
@@ -119,34 +124,65 @@ public final class BlockingQueueController implements Controller{
         StringBuilder sb = new StringBuilder();
         sb.append("event: update_round\n");
         GameState pokerGameState = game.getGameState();
-        Optional<Player> player = game.nextTurn();
         List<Player> activePlayers = pokerGameState.getPlayers();
+        Optional<Player> playerOptional = game.nextTurn();
+        if (playerOptional.isEmpty()) throw new IllegalStateException();
+        String playerName = playerOptional.get().getName();
         //length(mensaje)
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
         sb.append("gamemode_round: " + "\n");
-        sb.append("pot:" + String.valueOf(pokerGameState.getPot()));
+        sb.append("pot:" + pokerGameState.getPot());
+        sb.append("last_rasie: " + "\n");
         sb.append("next_player: ");
-        sb.append("players_left: " + String.valueOf(activePlayers.size()) + "\n");
-        //string details = game.getGamemodeDetails();
+        List<Connection> connections = connectionMap.getConnections();
+        List<Player> players = connectionMap.getPlayers();
+        sb.append("players_left: " + activePlayers.size() + "\n");
+        sb.append("next-player: " + playerName + "\n");
+        sb.append("players_left: " + players.size() + "\n");
+        for(int i = 0; i < connections.size(); i++) {
+            Player currentPlayer = players.get(i);
+            StringBuilder hand = new StringBuilder();
+            for(int j = 0; j < currentPlayer.getCards().size(); j++) {
+                if (j < (currentPlayer.getCards().size() - 1)) {
+                    hand.append(currentPlayer.getCards().get(j).toString() + ",");
+                }
+
+            }
+            hand.append(currentPlayer.getMoney());
+            hand.append("\n");
+            sb.append(currentPlayer.getName() + ": " + hand);
+        }
         //dealer: name
-        //players_left: n
-        //n1: C5, CS, ?, ?, money
-        //n2: DK, S4, ?, ?, money
+        //bigblid: name
+        //smallblind: name
         pokerEventEmitter.emit(connectionMap.getConnections(),sb.toString());
 
     }
 
     private void buidGameStartedMessage() {
         List<Connection> connections = connectionMap.getConnections();
+        List<Player> players = connectionMap.getPlayers();
         Optional<Player> playerOptional = game.nextTurn();
         if (playerOptional.isEmpty()) throw new IllegalStateException();
         String playerName = playerOptional.get().getName();
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_started\n");
         sb.append("next-player: " + playerName + "\n");
-        //for(int i = 0; i <)
-        //String playerList = ",,,";
-        //sb.append("players: " + playerList + "\n");
+        sb.append("players_left: " + players.size() + "\n");
+        for(int i = 0; i < connections.size(); i++) {
+            Player currentPlayer = players.get(i);
+            StringBuilder hand = new StringBuilder();
+            for(int j = 0; j < currentPlayer.getCards().size(); j++) {
+                if (j < (currentPlayer.getCards().size() - 1)) {
+                    hand.append(currentPlayer.getCards().get(j).toString() + ",");
+                }
+
+            }
+            hand.append(currentPlayer.getMoney());
+            hand.append("\n");
+            sb.append(currentPlayer.getName() + ": " + hand);
+        }
+
         pokerEventEmitter.emit(connections, sb.toString());
     }
 
