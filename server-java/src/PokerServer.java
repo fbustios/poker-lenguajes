@@ -63,12 +63,15 @@ public final class PokerServer {
                         ClientMessage message = event.get();
                         if (message.event().equals(ClientEvent.JOIN_GAME)) {
                             sent = true;
-                            Player p = new Player(message.author(),List.of(),Integer.parseInt(message.details().get("bet")));
+                            Player p = new Player(message.author(),List.of(),1000);
                             playerConnections.put(playerConnection,p);
                         }
                     }
+                    System.out.println("llegue12");
                 }
             }
+
+
             return playerConnections;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
