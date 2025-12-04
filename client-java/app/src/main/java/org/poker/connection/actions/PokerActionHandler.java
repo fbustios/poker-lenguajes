@@ -37,11 +37,6 @@ public final class PokerActionHandler {
             System.err.println("Mensaje sin evento");
             return;
         }
-
-        if (messageListener != null) {
-            messageListener.onMessageReceived(event.get(), data);
-        }
-
         switch (event.get()) {
             case "GAME_STARTED":
                 handleGameStarted(data, gameState);
@@ -61,8 +56,10 @@ public final class PokerActionHandler {
             default:
                 System.out.println("Evento desconocido: " + event);
         }
+        if (messageListener != null) {
+            messageListener.onMessageReceived(event.get(), data);
+        }
     }
-
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setNextPlayer(data.get(NEXT_PLAYER));

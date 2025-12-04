@@ -12,10 +12,24 @@ public final class GameState {
     private String bigBlind;
     private int pot;
     private List<PlayerModel> players;
-
+    private List<Card> communityCards;
     public GameState() {
         this.players = new ArrayList<>();
         this.pot = 0;
+    }
+
+    public List<Card> getCommunityCards() {
+        return communityCards;
+    }
+
+    public void setCommunityCards(List<Card> cards) {
+        this.communityCards = cards;
+    }
+
+    public void addCommunityCard(Card card) {
+        if (this.communityCards != null) {
+            this.communityCards.add(card);
+        }
     }
 
     public void setGameMode(String mode) {

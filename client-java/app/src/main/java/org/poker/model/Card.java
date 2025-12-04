@@ -11,6 +11,16 @@ public record Card(int value, String suit) {
     private static final int KING_VALUE = 13;
     private static final int ACE_VALUE = 14;
 
+    public String getImageKey() {
+        String normalizedSuit = suit.toUpperCase();
+        int imageIndex = value;
+        if (value == ACE_VALUE) {
+            imageIndex = 1;
+        }
+
+        return normalizedSuit + "_" + imageIndex;
+    }
+
     @Override
     public String toString() {
         final String valueStr = switch (value) {

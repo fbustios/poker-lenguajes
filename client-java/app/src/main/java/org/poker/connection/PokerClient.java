@@ -9,6 +9,7 @@ public interface PokerClient {
     void placeBet(String gameMode, int currentPlayer, String action, int bet);
     void startListening();
     GameState getGameState();
+    String getPlayerName();
     boolean isMyTurn();
     void disconnect();
     boolean isConnected();

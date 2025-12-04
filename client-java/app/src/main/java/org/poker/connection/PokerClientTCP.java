@@ -86,6 +86,11 @@ public final class PokerClientTCP implements PokerClient {
     }
 
     @Override
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    @Override
     public GameState getGameState() {
         return gameState;
     }

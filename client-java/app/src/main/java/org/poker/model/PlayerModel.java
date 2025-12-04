@@ -13,6 +13,15 @@ public final class PlayerModel {
         this.cards = new ArrayList<>();
     }
 
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
     public String getName() {
         return name;
     }
@@ -27,5 +36,13 @@ public final class PlayerModel {
 
     public void setIndex(int playerIndex) {
         this.index = playerIndex;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 }
