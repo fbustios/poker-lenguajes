@@ -70,7 +70,6 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         };
         setContentPane(mainPanel);
 
-        // Etiqueta de estado (Es tu turno / Esperando)
         infoLabel = new JLabel("Esperando inicio de partida...", SwingConstants.CENTER);
         infoLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         infoLabel.setForeground(Color.YELLOW);
@@ -130,7 +129,10 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         sb.append("Pot (Bote): $").append(s.getPot()).append("\n");
         sb.append("Ronda: ").append(s.getGameModeRound()).append("\n");
         sb.append("Turno actual: ").append(s.getNextPlayer()).append("\n");
-        sb.append("Dealer: ").append(s.getDealer()).append("\n\n");
+        sb.append("Dealer: ").append(s.getDealer()).append("\n");
+        sb.append("Big Blind: ").append(s.getBigBlind()).append("\n");
+        sb.append("Small Blind: ").append(s.getSmallBlind()).append("\n");
+        sb.append("Last Raise: ").append(s.getLastRaise()).append("\n\n");
 
         sb.append("--- CARTAS COMUNITARIAS ---\n");
         if (s.getCommunityCards() != null && !s.getCommunityCards().isEmpty()) {

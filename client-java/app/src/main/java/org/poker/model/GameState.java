@@ -30,6 +30,11 @@ public final class GameState {
         this.last_raise = last_raise;
     }
 
+    public int getLastRaise() {
+        return last_raise;
+    }
+
+
     public void setPlayers_left(int players_left) {
         this.players_left = players_left;
     }
@@ -53,10 +58,19 @@ public final class GameState {
     public void setSmallBlind(String small) {
         this.smallBlind = small;
     }
+    public String getSmallBlind() {
+        return smallBlind;
+    }
+
 
     public void setBigBlind(String big) {
         this.bigBlind = big;
     }
+    public String getBigBlind() {
+        return bigBlind;
+    }
+
+
 
     public void setPot(int money) {
         this.pot = money;
