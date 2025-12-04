@@ -44,10 +44,13 @@ public final class PokerActionHandler {
         final Map<String, String> data = MessageParser.parse(message);
         final Optional<String> event = Optional.ofNullable(data.get(EVENT));
 
+        System.out.println(event);
+
         if (event.isEmpty()) {
             System.err.println(MSG_WITHOUT_EVENT);
             return;
         }
+
         switch (event.get()) {
             case EVENT_GAME_STARTED:
                 handleGameStarted(data, gameState);
@@ -65,6 +68,7 @@ public final class PokerActionHandler {
                 handleUpdateRound(data, gameState);
                 break;
             case MODE_CHANGED:
+                System.out.println("holaaaa");
                 handleModeChange(data, gameState);
             default:
                 System.out.println(MSG_UNKNOWN_EVENT + event);
