@@ -48,9 +48,15 @@ public final class ComponentFactory {
         final Deck deck = buildDeck();
         final PokerTable table = buildPokerTable(players);
         final PokerGamemode holdem = buildHoldem(table, pot, deck,  mapping);
+        final PokerGamemode holdem2 = buildHoldem(table, pot, deck,  mapping);
+        final PokerGamemode holdem3 = buildHoldem(table, pot, deck,  mapping);
+        final PokerGamemode holdem4 = buildHoldem(table, pot, deck,  mapping);
+        final PokerGamemode holdem5 = buildHoldem(table, pot, deck,  mapping);
         final PokerGamemode omaha = buildOmaha(table, pot, deck, mapping);
         modes.addFirst(holdem);
-        modes.addLast(omaha);
+        modes.addLast(holdem2);
+        modes.addLast(holdem3);
+        modes.addLast(holdem5);
         modes.addLast(buildRazz(table,pot,deck));
         return new HorsePokerGame(modes, table, holdem, pot);
     }
