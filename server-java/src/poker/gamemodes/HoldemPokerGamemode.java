@@ -116,6 +116,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public void setStartingPlayer() {
         turnManager.setStartingPlayer();
+        pot.setLastBet(0);
     }
 
     private boolean checkAction() {
