@@ -62,7 +62,7 @@ public class OmahaPokerGamemode implements PokerGamemode {
 
     @Override
     public Gamemode getName() {
-        return null;
+        return Gamemode.omaha;
     }
 
     @Override
