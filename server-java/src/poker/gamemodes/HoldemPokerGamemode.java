@@ -8,9 +8,13 @@ import poker.pot.Pot;
 import poker.pot.PotDistributer;
 import poker.rounds.HoldemRound;
 import poker.rounds.TurnManager;
+import poker.table.PokerTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
     private final Gamemode name = Gamemode.holdem;
@@ -73,9 +77,13 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     @Override
     public void distributePot() {
         List<Card> communityCards = dealingMethod.getCommunityCards();
-        turnManager.getTable();
+        PokerTable table = turnManager.getTable();
         if (!communityCards.isEmpty()) {
-
+            List<Player> players = table.getActivePlayers();
+            for(Player p: players) {
+                p.setCards(Stream.concat(p.getCards().stream(), communityCards.stream())
+                        .collect(Collectors.toCollection(ArrayList::new)));
+            }
         }
         potDistributer.distribute();
     }
