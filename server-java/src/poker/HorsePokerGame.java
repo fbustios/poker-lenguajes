@@ -101,7 +101,7 @@ public class HorsePokerGame implements PokerGame, GameState{
         final Player player = pokerAction.player();
         final int playerMoney = player.getMoney();
         final int actionBet = pokerAction.bet();
-
+        System.out.println(playerMoney + " > " + actionBet);
         return player.isActive() && !player.isAllIn() && (playerMoney >= actionBet);
     }
     @Override
