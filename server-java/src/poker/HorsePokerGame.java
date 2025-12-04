@@ -110,7 +110,7 @@ public class HorsePokerGame implements PokerGame, GameState{
             this.currentGameIndex +=1;
             this.currentGame = modes.get(currentGameIndex);
             table.resetTable();
-            this.currentGame.setStartingPlayer();
+            //this.currentGame.setStartingPlayer();
         }
     }
 
