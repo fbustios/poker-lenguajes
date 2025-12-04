@@ -23,6 +23,11 @@ public class RazzTurnManager implements TurnManager {
     }
 
     @Override
+    public boolean isGameOver() {
+        return false;
+    }
+
+    @Override
     public boolean isRoundOver() {
         return !pendingAction && (turnsLeft <= 0);
     }

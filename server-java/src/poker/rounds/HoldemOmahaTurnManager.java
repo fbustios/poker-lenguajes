@@ -34,6 +34,11 @@ public class HoldemOmahaTurnManager implements TurnManager {
             return Optional.empty();
         }
 
+        if (isGameOver()) {
+            System.out.println("gamemode ended");
+            return Optional.empty();
+        }
+
         if (isRoundOver()) {
             System.out.println("Round Ended");
             this.currentRound+=1;
@@ -41,13 +46,13 @@ public class HoldemOmahaTurnManager implements TurnManager {
             setStartingPlayer();
         }
 
-        if (currentRound == rounds.size() - 1) {
-            System.out.println("gamemode ended");
-            return Optional.empty();
-        }
+
         this.turnsLeft--;
         this.pendingAction = true;
         return Optional.of(table.next());
+    }
+    public boolean isGameOver() {
+        return (currentRound == (rounds.size() - 1)) && isRoundOver();
     }
 
     @Override
@@ -63,7 +68,7 @@ public class HoldemOmahaTurnManager implements TurnManager {
         this.dealer = table.nextActivePlayerIndex(dealer);
         this.turnsLeft = table.getActivePlayers().size();
         //System.out.println(dealer);
-        table.setCurrentPlayer(dealer);
+        table.setCurrentPlayer(smallBlind);
     }
 
     @Override

@@ -54,13 +54,15 @@ public class HorsePokerGame implements PokerGame, GameState{
             throw new IllegalStateException("Acción inválida");
         }
         currentGame.play(lastPokerAction);
-        if(currentGame.isRoundOver()) {
+        if(currentGame.isRoundOver() && !currentGame.isOver()) {
             currentGame.deal();
             System.out.println("im dealing");
         }
 
         if(currentGame.isOver()) {
+            System.out.println("termino el modo, pasando al siguiente");
             currentGame.distributePot();
+            table.resetTable();
             setNextMode();
         }
     }
@@ -104,11 +106,10 @@ public class HorsePokerGame implements PokerGame, GameState{
     }
 
     private void setNextMode() {
-        if (currentGameIndex < (modes.size() - 1)) {
+        if (currentGameIndex < (modes.size()-1)) {
             this.currentGameIndex +=1;
             this.currentGame = modes.get(currentGameIndex);
         }
-
     }
 
 

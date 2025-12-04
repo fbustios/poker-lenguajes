@@ -34,7 +34,6 @@ public final class GameState {
         return last_raise;
     }
 
-
     public void setPlayers_left(int players_left) {
         this.players_left = players_left;
     }
@@ -62,15 +61,13 @@ public final class GameState {
         return smallBlind;
     }
 
-
     public void setBigBlind(String big) {
         this.bigBlind = big;
     }
+
     public String getBigBlind() {
         return bigBlind;
     }
-
-
 
     public void setPot(int money) {
         this.pot = money;

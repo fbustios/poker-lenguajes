@@ -1,8 +1,8 @@
 package org.poker.connection.messages;
+import org.poker.model.Card;
 
 import java.util.HashMap;
 import java.util.Map;
-
 public final class MessageParser {
     private MessageParser() {
 
@@ -28,9 +28,12 @@ public final class MessageParser {
             String key = line.substring(0, colonIndex).trim();
             String value = line.substring(colonIndex + 1).trim();
 
-            if (isPlayerData(value)) {
+            if (isPlayerData(key, value)) {
                 parsePlayerData(data, key, value, playerIndex);
                 playerIndex++;
+            }
+            else if (isCommunityCardsData(key, value)) {
+                parseCommunityCards(data, key, value);
             } else {
                 data.put(key, value);
             }
@@ -77,7 +80,7 @@ public final class MessageParser {
             if (i > 0) cardsBuilder.append(", ");
             cardsBuilder.append(card);
 
-            data.put("community_card_" + i, card);
+            data.put("community_card" + i, card);
         }
 
         data.put(key, cardsBuilder.toString());
@@ -95,7 +98,11 @@ public final class MessageParser {
         return data.get(playerName + "_money");
     }
 
-    private static boolean isPlayerData(String value) {
-        return value.contains(",");
+    private static boolean isPlayerData(String key, String value) {
+        return key.length() == 4 && value.contains(",");
+    }
+
+    private static boolean isCommunityCardsData(String key, String value) {
+        return key.equals("community_card");
     }
 }

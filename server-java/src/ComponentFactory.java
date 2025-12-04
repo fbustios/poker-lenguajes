@@ -48,7 +48,10 @@ public final class ComponentFactory {
         final Deck deck = buildDeck();
         final PokerTable table = buildPokerTable(players);
         final PokerGamemode holdem = buildHoldem(table, pot, deck,  mapping);
+        final PokerGamemode omaha = buildOmaha(table, pot, deck, mapping);
         modes.addFirst(holdem);
+        modes.addLast(omaha);
+        modes.addLast(buildRazz(table,pot,deck));
         return new HorsePokerGame(modes, table, holdem, pot);
     }
 
@@ -64,10 +67,10 @@ public final class ComponentFactory {
         List<HoldemRound> rounds1 = new ArrayList<>(rounds);
         rounds1.addLast(HoldemRound.SHOWDOWN);
 
-        return new HoldemPokerGamemode(dealingMethod, turnManager, potDistributer, pot, buildDeck(), rounds1);
+        return new HoldemPokerGamemode(dealingMethod, turnManager, potDistributer, pot, buildDeck(), rounds);
     }
 
-    private static PokerGamemode buildOmaha(PokerTable table, Pot pot, Deck deck) {
+    private static PokerGamemode buildOmaha(PokerTable table, Pot pot, Deck deck, ConnectionPlayerMapping map) {
         final DealingMethod dealingMethod = new OmahaDealingMethod();
         List<HoldemRound> rounds = new ArrayList<>();
         rounds.addFirst(HoldemRound.PRE_FLOP);
@@ -75,7 +78,7 @@ public final class ComponentFactory {
         rounds.addLast(HoldemRound.TURN);
         rounds.addLast(HoldemRound.RIVER);
         final TurnManager turnManager = new HoldemOmahaTurnManager(rounds, table);
-        final PotDistributer potDistributer = buildHiPotDistributer(pot, buildRankingSystem(null),table);
+        final PotDistributer potDistributer = buildHiPotDistributer(pot, buildRankingSystem(map),table);
 
         return new OmahaPokerGamemode(dealingMethod, turnManager, potDistributer, pot);
     }

@@ -29,6 +29,11 @@ public class StudEightTurnManager implements TurnManager{
     }
 
     @Override
+    public boolean isGameOver() {
+        return false;
+    }
+
+    @Override
     public Optional<Player> nextTurn() {
         if (this.pendingAction) {
             return Optional.empty();

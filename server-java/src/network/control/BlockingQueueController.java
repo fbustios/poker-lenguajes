@@ -11,6 +11,7 @@ import poker.gamemodes.PlayerAction;
 import poker.gamemodes.PokerAction;
 import poker.items.Player;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -40,11 +41,11 @@ public final class BlockingQueueController implements Controller{
         while(true) {
             try {
                 Optional<ClientMessage> event = Optional.ofNullable(eventQueue.poll(100, TimeUnit.MILLISECONDS));
-                if (game.isGamemodeOver()) {
-                    sendMessage(ServerEvent.MODE_CHANGED);
-                }
                 if (event.isPresent()) {
                     processEvent(event.get());
+                }
+                if (game.isGamemodeOver()) {
+                    sendMessage(ServerEvent.MODE_CHANGED);
                 }
                 if (game.isGameFinished()) {
                     sendMessage(ServerEvent.GAME_ENDED);
@@ -85,15 +86,17 @@ public final class BlockingQueueController implements Controller{
 
     private void handleAction(ClientMessage message) {
         String author = message.author();
+        Map<String, String> details = message.details();
         Optional<Player> playerModel = connectionMap.getPlayerFromName(author);
+        int bet = details.get("bet") == null ? 100 : Integer.parseInt(details.get("bet"));
         if (playerModel.isPresent()) {
             PokerAction action;
             switch (message.details().get("player_action")) {
-                case "call" -> action = new PokerAction(playerModel.get(), PlayerAction.CALL, 0);
-                case "check" -> action = new PokerAction(playerModel.get(), PlayerAction.CHECK, 0);
-                case "all_in" -> action = new PokerAction(playerModel.get(), PlayerAction.ALL_IN, 0);
-                case "fold" -> action = new PokerAction(playerModel.get(), PlayerAction.FOLD, 0);
-                case "raise" -> action = new PokerAction(playerModel.get(), PlayerAction.RAISE, 0);
+                case "call" -> action = new PokerAction(playerModel.get(), PlayerAction.CALL, bet);
+                case "check" -> action = new PokerAction(playerModel.get(), PlayerAction.CHECK, bet);
+                case "all_in" -> action = new PokerAction(playerModel.get(), PlayerAction.ALL_IN, bet);
+                case "fold" -> action = new PokerAction(playerModel.get(), PlayerAction.FOLD, bet);
+                case "raise" -> action = new PokerAction(playerModel.get(), PlayerAction.RAISE, bet);
                 default -> throw new IllegalStateException("no existe tal accion");
             }
             game.play(action);
@@ -115,7 +118,7 @@ public final class BlockingQueueController implements Controller{
     }
 
     private void buildModeChangedMessage() {
-
+        System.out.println("wawswewaw");
     }
 
     private void buildGameEndedMessage() {
@@ -135,7 +138,7 @@ public final class BlockingQueueController implements Controller{
         List<Player> activePlayers = pokerGameState.getPlayers();
         System.out.println("round update");
         Optional<Player> playerOptional = game.nextTurn();
-        
+
         if (playerOptional.isEmpty()) throw new IllegalStateException();
         String playerName = playerOptional.get().getName();
         //length(mensaje)

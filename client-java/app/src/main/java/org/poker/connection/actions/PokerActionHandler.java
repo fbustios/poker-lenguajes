@@ -152,12 +152,10 @@ public final class PokerActionHandler {
         gameState.setBigBlind(data.get(BIG_BLIND));
         gameState.setNextPlayer(data.get(NEXT_PLAYER));
         gameState.setLast_raise(getInt(data, LAST_RAISE, 0));
+        gameState.setCommunityCardsFromString(data.get(COMMUNITY_CARDS));
 
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
-        final String communityCards = data.get(COMMUNITY_CARDS);
-
-        gameState.setCommunityCardsFromString(communityCards);
-
+  
         gameState.playersClear();
         for (int i = 0; i < playersLeft; i++) {
             String playerName = MessageParser.getPlayerName(data, i);
@@ -189,7 +187,7 @@ public final class PokerActionHandler {
         try {
             return Integer.parseInt(s.trim());
         } catch (NumberFormatException e) {
-            System.err.println("Valor numérico inválido: " + s);
+            System.err.println("Valor numerico invalido: " + s);
             return defaultValue;
         }
     }

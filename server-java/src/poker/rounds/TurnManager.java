@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TurnManager {
     boolean isRoundOver();
-
+    boolean isGameOver();
     Optional<Player> nextTurn();
 
     void setStartingPlayer();

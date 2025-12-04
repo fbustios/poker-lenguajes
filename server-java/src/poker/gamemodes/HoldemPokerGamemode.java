@@ -57,7 +57,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public boolean isOver() {
-        return currentRound == (rounds.size() - 1);
+        return turnManager.isGameOver();
     }
 
     @Override
@@ -87,7 +87,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
             if (j < (community.size() - 1)) {
                 hand.append(community.get(j).toString() + ",");
             } else {
-                hand.append(community.get(j).toString() + "\n");
+                hand.append(community.get(j).toString());
             }
 
         }

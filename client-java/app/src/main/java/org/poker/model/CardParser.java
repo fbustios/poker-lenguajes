@@ -42,8 +42,8 @@ public final class CardParser {
                 char suitChar = token.charAt(0);
                 String valueStr = token.substring(1);
 
-                String suit = CardParser.parseSuit(suitChar);
-                String value = CardParser.parseValue(valueStr);
+                String suit = parseSuit(suitChar);
+                String value = parseValue(valueStr);
 
                 communityCardList.add(new Card(suit, value, false));
             }
