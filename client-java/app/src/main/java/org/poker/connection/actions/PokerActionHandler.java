@@ -106,6 +106,7 @@ public final class PokerActionHandler {
         gameState.setDealer(data.get(DEALER));
         gameState.setSmallBlind(data.get(SMALL_BLIND));
         gameState.setBigBlind(data.get(BIG_BLIND));
+
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
 
         gameState.playersClear();
