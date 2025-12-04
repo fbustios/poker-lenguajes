@@ -18,13 +18,19 @@ public final class LineScannerRequestParser implements RequestParser {
         final String action = parts[0];
         final String author = parts[1];
         final String details = parts[2];
+        System.out.println(parts[2]);
         final Optional<ClientEvent> parsedEvent = parseEvent(action);
+        System.out.println("llegue1");
         final Optional<Map<String, String>> parsedDetails = parseDetails(details);
+        System.out.println("llegue2");
         final Optional<String> parsedAuthor = parseAuthor(author);
+        System.out.println("llegue3");
         if (parsedEvent.isEmpty() || parsedDetails.isEmpty() || parsedAuthor.isEmpty()) {
             return Optional.empty();
         }
+        System.out.println("llegue4");
         ClientMessage parsedMessage = new ClientMessage(parsedEvent.get(), parsedAuthor.get() ,parsedDetails.get()); //corregir creo que ya
+        System.out.println("llegue5");
         return Optional.of(parsedMessage);
     }
     private Optional<String> parseAuthor(final String line){
