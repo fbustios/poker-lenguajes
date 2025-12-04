@@ -104,6 +104,11 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         dealingMethod.deal(turnManager.getTable(),deck);
     }
 
+    @Override
+    public void setStartingPlayer() {
+        turnManager.setStartingPlayer();
+    }
+
     private boolean checkAction() {
         return true;
     }

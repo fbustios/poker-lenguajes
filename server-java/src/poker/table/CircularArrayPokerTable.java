@@ -33,7 +33,7 @@ public class CircularArrayPokerTable implements PokerTable {
     @Override
     public void resetTable() {
         for (Player player : players) {
-            if (player.isActive()) {
+            if (player.isConnected()) {
                 player.setFolded(false);
                 player.setActive(true);
                 player.setAllIn(false);

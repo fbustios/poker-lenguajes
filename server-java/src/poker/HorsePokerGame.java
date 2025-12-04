@@ -62,8 +62,7 @@ public class HorsePokerGame implements PokerGame, GameState{
         if(currentGame.isOver()) {
             System.out.println("termino el modo, pasando al siguiente");
             currentGame.distributePot();
-            table.resetTable();
-            setNextMode();
+            //table.resetTable();
         }
     }
 
@@ -102,13 +101,16 @@ public class HorsePokerGame implements PokerGame, GameState{
         final Player player = pokerAction.player();
         final int playerMoney = player.getMoney();
         final int actionBet = pokerAction.bet();
+
         return player.isActive() && !player.isAllIn() && (playerMoney >= actionBet);
     }
-
-    private void setNextMode() {
+    @Override
+    public void setNextMode() {
         if (currentGameIndex < (modes.size()-1)) {
             this.currentGameIndex +=1;
             this.currentGame = modes.get(currentGameIndex);
+            table.resetTable();
+            this.currentGame.setStartingPlayer();
         }
     }
 

@@ -14,4 +14,5 @@ public interface PokerGamemode {
     String getDetails();
     boolean isRoundOver();
     void deal();
+    void setStartingPlayer();
 }
