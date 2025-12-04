@@ -33,7 +33,8 @@ public final class PokerActionHandler {
     private static final String COMMUNITY_CARDS = "community_cards";
     private static final String MODE_CHANGED = "mode_changed";
 
-    private
+    private static final String MSG_WITHOUT_EVENT = "Mensaje sin evento";
+    private static final String MSG_UNKNOWN_EVENT = "Evento desconocido: ";
     
     private PokerActionHandler() {
 
@@ -44,7 +45,7 @@ public final class PokerActionHandler {
         final Optional<String> event = Optional.ofNullable(data.get(EVENT));
 
         if (event.isEmpty()) {
-            System.err.println("Mensaje sin evento");
+            System.err.println(MSG_WITHOUT_EVENT);
             return;
         }
         switch (event.get()) {
@@ -66,7 +67,7 @@ public final class PokerActionHandler {
             case MODE_CHANGED:
                 handleModeChange(data, gameState);
             default:
-                System.out.println("Evento desconocido: " + event);
+                System.out.println(MSG_UNKNOWN_EVENT + event);
         }
         if (messageListener != null) {
             messageListener.onMessageReceived(event.get(), data);

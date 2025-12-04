@@ -74,7 +74,7 @@ public class GameDisplayController {
                         refreshCurrentDisplay(message);
                         break;
 
-                    case "mode_change":
+                    case "mode_changed":
                         handleModeChange(message.get("game_mode"));
                         refreshCurrentDisplay(message);
                         break;
