@@ -158,6 +158,7 @@ public class LoginDisplay extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        performJoinGame();
     }
 
     private JButton createTexturedButton(String text) {

@@ -7,19 +7,17 @@ import org.poker.connection.messages.MessageListener;
 import org.poker.model.GameState;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public final class PokerClientTCP implements PokerClient {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private DataInputStream in;
+    private OutputStream out;
     private final String playerName;
     private final GameState gameState;
     private boolean connected = false;
@@ -35,13 +33,12 @@ public final class PokerClientTCP implements PokerClient {
 
     @Override
     public void joinGame(String gameMode, int bet) {
-        final Map<String, String> message = new HashMap<>();
-        message.put("event", "JOIN_GAME");
+        final Map<String, String> message = new LinkedHashMap<>();
+        message.put("event", "join_game");
         message.put("player_name", playerName);
         message.put("bet", String.valueOf(bet));
 
         if (connected) {
-            System.err.println("miau");
             messageHandler.sendMessage(message);
             System.out.println("Solicitando unirse al juego: " + gameMode);
         } else {
@@ -52,8 +49,8 @@ public final class PokerClientTCP implements PokerClient {
 
     @Override
     public void leaveGame() {
-        final Map<String, String> message = new HashMap<>();
-        message.put("event", "LEAVE_GAME");
+        final Map<String, String> message = new LinkedHashMap<>();
+        message.put("event", "leave_game");
         message.put("player_name", playerName);
 
         messageHandler.sendMessage(message);
@@ -62,10 +59,9 @@ public final class PokerClientTCP implements PokerClient {
 
     @Override
     public void placeBet(String gameMode, int currentPlayer, String action, int bet) {
-        final Map<String, String> message = new HashMap<>();
-        message.put("event", "PLACE_BET");
+        final Map<String, String> message = new LinkedHashMap<>();
+        message.put("event", "action");
         message.put("game_mode", gameMode);
-        message.put("current_player", String.valueOf(currentPlayer));
         message.put("player_action", action);
         message.put("bet", String.valueOf(bet));
 
@@ -134,8 +130,8 @@ public final class PokerClientTCP implements PokerClient {
     private void connect(String host, int port) {
         try {
             socket = new Socket(host, port);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new DataInputStream(socket.getInputStream());
+            out = socket.getOutputStream();
             this.messageHandler = new MessageHandlerText(in, out);
 
             connected = true;

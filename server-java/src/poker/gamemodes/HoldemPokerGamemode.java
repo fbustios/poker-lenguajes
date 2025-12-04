@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class HoldemPokerGamemode implements PokerGamemode {
-    private final Gamemode name = Gamemode.HOLD_EM;
+    private final Gamemode name = Gamemode.holdem;
     private final DealingMethod dealingMethod;
     private HoldemRound currentRound;
     private final TurnManager turnManager;
@@ -42,7 +42,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         }
 
         PlayerAction action = lastPokerAction.action();
-        switch (action) {  //aceptable porque es inmutable estos cambios o por lo menos nunca los voy a tocar
+        switch (action) {
             case RAISE -> handleRaise(lastPokerAction.player(),lastPokerAction.bet());
             case CALL -> handleCall(lastPokerAction.player(), lastPokerAction.bet());
             case CHECK -> handleCheck(lastPokerAction.player());
@@ -77,8 +77,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public String getDetails() {
-        turnManager.getDetails();
-        return "";
+        return turnManager.getDetails();
     }
 
     private boolean checkAction() {

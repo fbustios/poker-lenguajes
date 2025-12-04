@@ -167,7 +167,10 @@ public final class BlockingQueueController implements Controller{
         String playerName = playerOptional.get().getName();
         StringBuilder sb = new StringBuilder();
         sb.append("event: game_started\n");
-        sb.append("next-player: " + playerName + "\n");
+        sb.append("game_mode: " + game.getGameState().getCurrentGamemode() + "\n");
+        sb.append(game.getGameState().getDetails());
+        sb.append("pot: " + game.getGameState().getPot() + "\n");
+        sb.append("next_player: " + playerName + "\n");
         sb.append("players_left: " + players.size() + "\n");
         for(int i = 0; i < connections.size(); i++) {
             Player currentPlayer = players.get(i);
@@ -183,7 +186,7 @@ public final class BlockingQueueController implements Controller{
             sb.append(currentPlayer.getName() + ": " + hand);
         }
 
-        pokerEventEmitter.emit(connections, sb.toString());
+        pokerEventEmitter.emit(connections, sb.length() + "\n" + sb.toString());
     }
 
 }

@@ -11,6 +11,7 @@ public final class GameState {
     private String smallBlind;
     private String bigBlind;
     private int pot;
+    private int players_left;
     private List<PlayerModel> players;
     private List<Card> communityCards;
     public GameState() {
@@ -30,6 +31,12 @@ public final class GameState {
         if (this.communityCards != null) {
             this.communityCards.add(card);
         }
+    }
+    public int getPlayers_left() {
+        return players_left;
+    }
+    public void setPlayers_left(int players_left) {
+        this.players_left = players_left;
     }
 
     public void setGameMode(String mode) {

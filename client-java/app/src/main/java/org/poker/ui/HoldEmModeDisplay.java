@@ -97,13 +97,13 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         btnGameState.setBackground(new Color(0, 102, 204));
 
         btnCall.addActionListener(e -> {
-            if (isMyTurn()) client.placeBet("HOLDEM", 0, "CALL", 0);
+            if (isMyTurn()) client.placeBet("holdem", 0, "call", 0);
         });
         btnCheck.addActionListener(e -> {
-            if (isMyTurn()) client.placeBet("HOLDEM", 0, "CHECK", 0);
+            if (isMyTurn()) client.placeBet("holdem", 0, "check", 0);
         });
         btnFold.addActionListener(e -> {
-            if (isMyTurn()) client.placeBet("HOLDEM", 0, "FOLD", 0);
+            if (isMyTurn()) client.placeBet("holdem", 0, "fold", 0);
         });
         btnRaise.addActionListener(e -> openRaiseDialog());
 
@@ -315,7 +315,7 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         for (int i = 0; i < numCards; i++) {
             Image img = cardLoader.getCardImage(cards.get(i));
 
-            // Fallback si la imagen falla
+
             if (img == null) img = backCardImage;
 
             if (img != null) {
@@ -352,7 +352,7 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         try {
             if (input != null && !input.isEmpty()) {
                 int amount = Integer.parseInt(input);
-                client.placeBet("HOLDEM", 0, "RAISE", amount);
+                client.placeBet("holdem", 0, "raise", amount);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Número inválido");

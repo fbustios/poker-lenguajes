@@ -11,7 +11,7 @@ import poker.rounds.TurnManager;
 import java.util.Optional;
 
 public class OmahaPokerGamemode implements PokerGamemode {
-    private final Gamemode name = Gamemode.HOLD_EM;
+    private final Gamemode name = Gamemode.omaha;
     private final DealingMethod dealingMethod;
     private HoldemRound currentRound;
     private final TurnManager turnManager;

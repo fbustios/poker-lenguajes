@@ -38,19 +38,19 @@ public final class PokerActionHandler {
             return;
         }
         switch (event.get()) {
-            case "GAME_STARTED":
+            case "game_started":
                 handleGameStarted(data, gameState);
                 break;
-            case "PLAYER_ACTION":
+            case "player_action":
                 handlePlayerAction(data, gameState);
                 break;
-            case "ROUND_OVER":
+            case "round_over":
                 handleRoundOver(data, gameState);
                 break;
-            case "GAME_ENDED":
+            case "game_ended":
                 handleGameEnded(data);
                 break;
-            case "UPDATE_ROUND":
+            case "update_round":
                 handleUpdateRound(data, gameState);
                 break;
             default:
@@ -63,6 +63,8 @@ public final class PokerActionHandler {
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
         gameState.setNextPlayer(data.get(NEXT_PLAYER));
+        gameState.setPlayers_left(Integer.parseInt(data.get(PLAYERS_LEFT)));
+        gameState.setPot(Integer.parseInt(data.get(POT)));
         gameState.setDealer(data.get(DEALER));
         gameState.setSmallBlind(data.get(SMALL_BLIND));
         gameState.setBigBlind(data.get(BIG_BLIND));
