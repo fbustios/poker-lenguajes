@@ -93,15 +93,19 @@ public final class BlockingQueueController implements Controller{
                 case "check" -> action = new PokerAction(playerModel.get(), PlayerAction.CHECK, 0);
                 case "all_in" -> action = new PokerAction(playerModel.get(), PlayerAction.ALL_IN, 0);
                 case "fold" -> action = new PokerAction(playerModel.get(), PlayerAction.FOLD, 0);
+                case "raise" -> action = new PokerAction(playerModel.get(), PlayerAction.RAISE, 0);
                 default -> throw new IllegalStateException("no existe tal accion");
             }
             game.play(action);
             System.out.println("Player is here, not skipped");
         }
+        System.out.println("antes del switch");
         sendMessage(ServerEvent.ROUND_UPDATE);
     }
     //same aqui
     private void sendMessage(ServerEvent event) {
+        System.out.println("estoy en el switch");
+        System.out.println(event.toString());
         switch (event) {
             case GAME_STARTED -> buidGameStartedMessage();
             case ROUND_UPDATE -> buildRoundUpdateMessage();
@@ -129,13 +133,14 @@ public final class BlockingQueueController implements Controller{
         sb.append("event: update_round\n");
         GameState pokerGameState = game.getGameState();
         List<Player> activePlayers = pokerGameState.getPlayers();
+        System.out.println("round update");
         Optional<Player> playerOptional = game.nextTurn();
+        
         if (playerOptional.isEmpty()) throw new IllegalStateException();
         String playerName = playerOptional.get().getName();
         //length(mensaje)
         sb.append("gamemode: " + pokerGameState.getCurrentGamemode() + "\n");
         sb.append("pot:" + pokerGameState.getPot() + "\n");
-        sb.append("last_raise: " + "\n");
         List<Connection> connections = connectionMap.getConnections();
         List<Player> players = connectionMap.getPlayers();
         String details = pokerGameState.getDetails();

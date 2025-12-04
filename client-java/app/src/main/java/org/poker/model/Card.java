@@ -23,13 +23,14 @@ public record Card(String suit, String value, boolean hidden) {
                 try {
                     yield Integer.parseInt(value);
                 } catch (NumberFormatException e) {
-                    yield 0; // Valor inválido
+                    yield 0;
                 }
             }
         };
 
         return normalizedSuit + "_" + imageIndex;
     }
+
     public String toCompactString() {
         if (hidden) return "?";
 

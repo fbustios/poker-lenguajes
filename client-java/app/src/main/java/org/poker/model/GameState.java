@@ -14,8 +14,11 @@ public final class GameState {
     private int players_left;
     private List<PlayerModel> players;
     private List<Card> communityCards;
+    private int last_raise;
+
     public GameState() {
         this.players = new ArrayList<>();
+        this.communityCards = new ArrayList<>();
         this.pot = 0;
     }
 
@@ -23,18 +26,10 @@ public final class GameState {
         return communityCards;
     }
 
-    public void setCommunityCards(List<Card> cards) {
-        this.communityCards = cards;
+    public void setLast_raise(int last_raise) {
+        this.last_raise = last_raise;
     }
 
-    public void addCommunityCard(Card card) {
-        if (this.communityCards != null) {
-            this.communityCards.add(card);
-        }
-    }
-    public int getPlayers_left() {
-        return players_left;
-    }
     public void setPlayers_left(int players_left) {
         this.players_left = players_left;
     }
@@ -67,14 +62,6 @@ public final class GameState {
         this.pot = money;
     }
 
-    public void setPlayers(List<PlayerModel> gamers) {
-        this.players = gamers;
-    }
-
-    public String getGameMode() {
-        return gameMode;
-    }
-
     public String getGameModeRound() {
         return gameModeRound;
     }
@@ -85,14 +72,6 @@ public final class GameState {
 
     public String getDealer() {
         return dealer;
-    }
-
-    public String getSmallBlind() {
-        return smallBlind;
-    }
-
-    public String getBigBlind() {
-        return bigBlind;
     }
 
     public int getPot() {
@@ -109,5 +88,9 @@ public final class GameState {
 
     public void playersAdd(PlayerModel player) {
         this.players.add(player);
+    }
+
+    public void setCommunityCardsFromString(String cardsString) {
+        communityCards = CardParser.communityCardsFromString(cardsString);
     }
 }

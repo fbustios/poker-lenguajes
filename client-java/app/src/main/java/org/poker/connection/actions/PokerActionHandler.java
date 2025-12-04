@@ -18,7 +18,6 @@ public final class PokerActionHandler {
     private static final String SMALL_BLIND = "small_blind";
     private static final String BIG_BLIND = "big_blind";
     private static final String POT = "pot";
-    private static final String PLAYER_PREFIX = "player_";
     private static final String WINNER_PREFIX = "winner_";
     private static final String PRIZE_PREFIX = "prize_";
     private static final String PLAYERS_LEFT = "players_left";
@@ -30,8 +29,9 @@ public final class PokerActionHandler {
     private static final String EVENT_GAME_STARTED = "game_started";
     private static final String EVENT_PLAYER_ACTION = "player_action";
     private static final String EVENT_ROUND_OVER = "round_over";
-    private static final String EVENT_GAME_OVER = "game_over";
-    private static final String EVENT_ROUND_UPDATE = "round_update";
+    private static final String EVENT_GAME_ENDED = "game_ended";
+    private static final String EVENT_ROUND_UPDATE = "update_round";
+    private static final String COMMUNITY_CARDS = "community_cards";
 
     private PokerActionHandler() {
 
@@ -46,19 +46,19 @@ public final class PokerActionHandler {
             return;
         }
         switch (event.get()) {
-            case "game_started":
+            case EVENT_GAME_STARTED:
                 handleGameStarted(data, gameState);
                 break;
-            case "player_action":
+            case EVENT_PLAYER_ACTION:
                 handlePlayerAction(data, gameState);
                 break;
-            case "round_over":
+            case EVENT_ROUND_OVER:
                 handleRoundOver(data, gameState);
                 break;
-            case "game_ended":
+            case EVENT_GAME_ENDED:
                 handleGameEnded(data);
                 break;
-            case "update_round":
+            case EVENT_ROUND_UPDATE:
                 handleUpdateRound(data, gameState);
                 break;
             default:
@@ -86,7 +86,6 @@ public final class PokerActionHandler {
 
             PlayerModel pm = new PlayerModel();
             pm.setName(playerName);
-            pm.setIndex(i);
             pm.setMoney(getInt(money));
             pm.setCardsFromString(cards);
 
@@ -151,8 +150,13 @@ public final class PokerActionHandler {
         gameState.setDealer(data.get(DEALER));
         gameState.setSmallBlind(data.get(SMALL_BLIND));
         gameState.setBigBlind(data.get(BIG_BLIND));
+        gameState.setNextPlayer(data.get(NEXT_PLAYER));
+        gameState.setLast_raise(getInt(data, LAST_RAISE, 0));
 
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
+        final String communityCards = data.get(COMMUNITY_CARDS);
+
+        gameState.setCommunityCardsFromString(communityCards);
 
         gameState.playersClear();
         for (int i = 0; i < playersLeft; i++) {
@@ -162,7 +166,6 @@ public final class PokerActionHandler {
 
             PlayerModel pm = new PlayerModel();
             pm.setName(playerName);
-            pm.setIndex(i);
             pm.setMoney(getInt(money));
             pm.setCardsFromString(cards);
 

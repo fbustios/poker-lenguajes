@@ -29,6 +29,15 @@ public class MapPot implements Pot{
     public int getAmount() {
         return totalAmount;
     }
+    @Override
+    public int getLastRaise() {
+        return lastBet;
+    }
+
+    @Override
+    public void setLastBet(int value) {
+        this.lastBet = value;
+    }
 
     @Override
     public int takeAll() {

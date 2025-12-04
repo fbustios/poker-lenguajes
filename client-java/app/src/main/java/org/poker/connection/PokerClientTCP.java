@@ -7,14 +7,29 @@ import org.poker.connection.messages.MessageListener;
 import org.poker.model.GameState;
 
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public final class PokerClientTCP implements PokerClient {
+    private static final String MSG_JOIN_REQUEST = "Solicitando unirse al juego: ";
+    private static final String MSG_EXIT_GAME = "Saliendo del juego...";
+    private static final String MSG_ERROR_NOT_CONNECTED = "No conectado al servidor";
+    private static final String MSG_ERROR_DISCONNECT = "Error al desconectar: ";
+
+    private static final String EVENT_KEY = "event";
+    private static final String PLAYER_NAME_KEY = "player_name";
+    private static final String AUTHOR_KEY = "author";
+    private static final String PLAYER_ACTION_KEY = "player_action";
+    private static final String BET_KEY = "bet";
+    private static final String EVENT_JOIN_GAME_VALUE = "join_game";
+    private static final String EVENT_LEAVE_GAME_VALUE = "leave_game";
+    private static final String EVENT_ACTION = "action";
+
     private Socket socket;
     private DataInputStream in;
     private OutputStream out;
@@ -34,15 +49,15 @@ public final class PokerClientTCP implements PokerClient {
     @Override
     public void joinGame(String gameMode, int bet) {
         final Map<String, String> message = new LinkedHashMap<>();
-        message.put("event", "join_game");
-        message.put("player_name", playerName);
-        message.put("bet", String.valueOf(bet));
+        message.put(EVENT_KEY, EVENT_JOIN_GAME_VALUE);
+        message.put(PLAYER_NAME_KEY, playerName);
+        message.put(BET_KEY, String.valueOf(bet));
 
         if (connected) {
             messageHandler.sendMessage(message);
-            System.out.println("Solicitando unirse al juego: " + gameMode);
+            System.out.println(MSG_JOIN_REQUEST + gameMode);
         } else {
-            System.err.println("No conectado al servidor");
+            System.err.println(MSG_ERROR_NOT_CONNECTED);
         }
 
     }
@@ -50,26 +65,26 @@ public final class PokerClientTCP implements PokerClient {
     @Override
     public void leaveGame() {
         final Map<String, String> message = new LinkedHashMap<>();
-        message.put("event", "leave_game");
-        message.put("player_name", playerName);
+        message.put(EVENT_KEY, EVENT_LEAVE_GAME_VALUE);
+        message.put(PLAYER_NAME_KEY, playerName);
 
         messageHandler.sendMessage(message);
-        System.out.println("Saliendo del juego...");
+        System.out.println(MSG_EXIT_GAME);
     }
 
     @Override
     public void placeBet(String gameMode, int currentPlayer, String action, int bet) {
         final Map<String, String> message = new LinkedHashMap<>();
-        message.put("event", "action");
-        message.put("author", playerName);
-        message.put("player_action", action);
-        message.put("bet", String.valueOf(bet));
+        message.put(EVENT_KEY, EVENT_ACTION);
+        message.put(AUTHOR_KEY, playerName);
+        message.put(PLAYER_ACTION_KEY, action);
+        message.put(BET_KEY, String.valueOf(bet));
 
         if (connected) {
             messageHandler.sendMessage(message);
             System.out.println("Apuesta realizada: " + action + " " + bet);
         } else {
-            System.err.println("No conectado al servidor");
+            System.err.println(MSG_ERROR_NOT_CONNECTED);
         }
     }
 
@@ -123,7 +138,7 @@ public final class PokerClientTCP implements PokerClient {
             }
             System.out.println("Desconectado del servidor");
         } catch (IOException e) {
-            System.err.println("Error al desconectar: " + e.getMessage());
+            System.err.println(MSG_ERROR_DISCONNECT + e.getMessage());
         }
     }
 

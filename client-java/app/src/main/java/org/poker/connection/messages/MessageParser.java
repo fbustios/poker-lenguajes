@@ -65,12 +65,22 @@ public final class MessageParser {
         }
     }
 
-    public static int getPlayerCount(Map<String, String> data) {
-        int count = 0;
-        while (data.containsKey("player_" + count)) {
-            count++;
+    public static void parseCommunityCards(Map<String, String> data, String key, String value) {
+        String[] parts = value.split(",");
+        if (parts.length == 0) {
+            return;
         }
-        return count;
+
+        StringBuilder cardsBuilder = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            String card = parts[i].trim();
+            if (i > 0) cardsBuilder.append(", ");
+            cardsBuilder.append(card);
+
+            data.put("community_card_" + i, card);
+        }
+
+        data.put(key, cardsBuilder.toString());
     }
 
     public static String getPlayerName(Map<String, String> data, int index) {

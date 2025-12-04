@@ -31,6 +31,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         this.pot = pot;
         this.rounds = rounds;
         currentRound = 0;
+        pot.setLastBet(100);
         this.turnManager = turnManager;
         this.potDistributer = pt;
         this.dealingMethod = dealingMethod;
@@ -80,8 +81,17 @@ public final class HoldemPokerGamemode implements PokerGamemode {
 
     @Override
     public String getDetails() {
-        //aqui deberia agregar las cartas comunitarias
-        return turnManager.getDetails() + rounds.get(currentRound) + "\n";
+        List<Card> community = dealingMethod.getCommunityCards();
+        StringBuilder hand = new StringBuilder();
+        for(int j = 0; j < community.size(); j++) {
+            if (j < (community.size() - 1)) {
+                hand.append(community.get(j).toString() + ",");
+            } else {
+                hand.append(community.get(j).toString() + "\n");
+            }
+
+        }
+        return turnManager.getDetails() + rounds.get(currentRound) +"\n" + "community_cards: " + hand + "\n" + "last_raise: " + pot.getLastRaise() + "\n";
     }
 
     @Override
@@ -101,6 +111,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
     private void handleRaise(Player player, int bet) {
         player.addMoney(-bet);
         pot.add(bet);
+        pot.setLastBet(bet);
         turnManager.resetTurnsLeft();
         turnManager.setPendingAction(false);
     }

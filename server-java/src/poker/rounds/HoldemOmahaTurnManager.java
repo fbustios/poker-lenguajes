@@ -39,7 +39,6 @@ public class HoldemOmahaTurnManager implements TurnManager {
             this.currentRound+=1;
             table.resetTable();
             setStartingPlayer();
-
         }
 
         if (currentRound == rounds.size() - 1) {

@@ -3,63 +3,41 @@ package org.poker.ui;
 import org.poker.model.Card;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class CardImageLoader {
+    private String path="textures/textures/cartas/";
 
-    private BufferedImage spriteSheet;
-    private final int CARD_WIDTH = 72;
-    private final int CARD_HEIGHT = 97;
-
-    private Map<String, BufferedImage> cardImages = new HashMap<>();
+    private Map<String, Image> cardImages = new HashMap<>();
 
     public CardImageLoader() {
-        try {
-            var resource = getClass().getResource("/textures/cartas.png");
-
-            if (resource == null) {
-                System.err.println("¡ERROR CRÍTICO! No se encontró el archivo: /textures/cartas.png");
-                System.err.println("Asegúrate de que la carpeta 'textures' esté dentro de 'src/main/resources/'");
-                return;
-            }
-
-            spriteSheet = ImageIO.read(resource);
-            loadAllCards();
-
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("Error cargando el sprite sheet de cartas: " + e.getMessage());
-            e.printStackTrace();
-        }
+        loadAllCards();
     }
 
     private void loadAllCards() {
-        if (spriteSheet == null) return;
 
         String[] suits = {"CLUBS", "HEARTS", "SPADES", "DIAMONDS"};
+        String[] entrada = {"C","H","S","D"};
 
         for (int suitRow = 0; suitRow < 4; suitRow++) {
-            for (int valueCol = 0; valueCol < 13; valueCol++) {
+            for (int valueCol = 1; valueCol < 14; valueCol++) {
+                Image cardImg = new ImageIcon(path + entrada[suitRow] + valueCol + ".png").getImage();
+                String key = suits[suitRow] + "_" + valueCol;
+                cardImages.put(key, cardImg);
 
-                int x = valueCol * CARD_WIDTH;
-                int y = suitRow * CARD_HEIGHT;
-
-                if (x + CARD_WIDTH <= spriteSheet.getWidth() && y + CARD_HEIGHT <= spriteSheet.getHeight()) {
-                    BufferedImage cardImg = spriteSheet.getSubimage(x, y, CARD_WIDTH, CARD_HEIGHT);
-                    int cardValue = valueCol + 1;
-                    String key = suits[suitRow] + "_" + cardValue;
-                    cardImages.put(key, cardImg);
-                }
             }
         }
     }
 
-    public BufferedImage getCardImage(Card card) {
+    public Image getCardImage(Card card) {
         if (card == null) return null;
-        String key = card.getImageKey();
-        return cardImages.get(key);
+        return cardImages.get(card.getImageKey());
     }
 }

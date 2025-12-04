@@ -8,4 +8,6 @@ public interface Pot {
     void setSidePots(Player player, int amount);
     void add(int amount);
     int getAmount();
+    int getLastRaise();
+    void setLastBet(int value);
 }
