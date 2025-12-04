@@ -21,6 +21,8 @@ public record MessageHandlerText(DataInputStream in, OutputStream out) implement
             final int messageLength = messageBody.length();
 
             DataOutputStream outputStream = new DataOutputStream(out);
+            System.out.println(messageLength);
+            System.out.println(messageBody);
             outputStream.writeInt(messageLength);
 
             outputStream.writeBytes(messageBody);

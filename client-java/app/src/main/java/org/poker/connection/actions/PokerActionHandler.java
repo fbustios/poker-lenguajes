@@ -24,6 +24,14 @@ public final class PokerActionHandler {
     private static final String PLAYERS_LEFT = "players_left";
     private static final String GAME_MODE_ROUND = "game_mode_round";
     private static final String NEXT_ROUND = "next_round";
+    private static final String TURN = "turn";
+    private static final String LAST_RAISE = "last_raise";
+    private static final String WINNER = "winner";
+    private static final String EVENT_GAME_STARTED = "game_started";
+    private static final String EVENT_PLAYER_ACTION = "player_action";
+    private static final String EVENT_ROUND_OVER = "round_over";
+    private static final String EVENT_GAME_OVER = "game_over";
+    private static final String EVENT_ROUND_UPDATE = "round_update";
 
     private PokerActionHandler() {
 
@@ -62,7 +70,12 @@ public final class PokerActionHandler {
     }
     private static void handleGameStarted(Map<String, String> data, GameState gameState) {
         gameState.setGameMode(data.get(GAME_MODE));
-        gameState.setPot(getInt(data, POT, 0));
+        gameState.setNextPlayer(data.get(NEXT_PLAYER));
+        gameState.setPlayers_left(Integer.parseInt(data.get(PLAYERS_LEFT)));
+        gameState.setPot(Integer.parseInt(data.get(POT)));
+        gameState.setDealer(data.get(DEALER));
+        gameState.setSmallBlind(data.get(SMALL_BLIND));
+        gameState.setBigBlind(data.get(BIG_BLIND));
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
 
         gameState.playersClear();
@@ -140,7 +153,6 @@ public final class PokerActionHandler {
         gameState.setBigBlind(data.get(BIG_BLIND));
 
         final int playersLeft = getInt(data, PLAYERS_LEFT, 0);
-        final int lastRaise = getInt(data, LAST_RAISE, 0);
 
         gameState.playersClear();
         for (int i = 0; i < playersLeft; i++) {
@@ -157,17 +169,24 @@ public final class PokerActionHandler {
             gameState.playersAdd(pm);
         }
     }
-
     private static int getInt(Map<String, String> data, String key, int defaultValue) {
         final String s = data.get(key);
-        if (s == null) {
+        return getInt(s, defaultValue);
+    }
+
+    private static int getInt(String s) {
+        return getInt(s, 0);
+    }
+
+    private static int getInt(String s, int defaultValue) {
+        if (s == null || s.isEmpty()) {
             return defaultValue;
         }
 
         try {
             return Integer.parseInt(s.trim());
         } catch (NumberFormatException e) {
-            System.err.println("Valor numérico inválido para clave '" + key + "': " + s);
+            System.err.println("Valor numérico inválido: " + s);
             return defaultValue;
         }
     }
