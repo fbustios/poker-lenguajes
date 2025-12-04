@@ -30,12 +30,11 @@ public final class PlayerConnection implements Connection{
     @Override
     public void run() {
         System.out.println("Connection running");
-
         try {
             while (this.alive) {
                 Optional<ClientMessage> message = read();
                 if (message.isPresent()) {
-                    System.out.println("aloooo");
+
                     clientEventQueue.add(message.get());
                     System.out.println(message.get().event());
                     System.out.println(outputQueue.size());
@@ -72,11 +71,9 @@ public final class PlayerConnection implements Connection{
                 System.out.println("habia algo en el inputstream");
                 DataInputStream dis = new DataInputStream(inputStream);
                 int len = dis.readInt();
-                System.out.println(len);
                 byte[] data = new byte[len];
                 dis.readFully(data);
                 String event = new String(data);
-                System.out.println(event);
                 return requestParser.parse(event);
             }
             return Optional.empty();
