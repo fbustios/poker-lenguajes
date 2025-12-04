@@ -8,7 +8,6 @@ import org.poker.model.PlayerModel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +70,7 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         };
         setContentPane(mainPanel);
 
+        // Etiqueta de estado (Es tu turno / Esperando)
         infoLabel = new JLabel("Esperando inicio de partida...", SwingConstants.CENTER);
         infoLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         infoLabel.setForeground(Color.YELLOW);
@@ -184,6 +184,7 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         return client != null && client.isMyTurn();
     }
 
+
     private void drawGame(Graphics g) {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
@@ -195,107 +196,51 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         GameState state = (client != null) ? client.getGameState() : null;
         if (state == null) return;
 
-        drawTableInfo(g, state);
-
-        drawCommunityCards(g, state);
-
-        drawPlayers(g, state.getPlayers());
+        drawLocalPlayerOnly(g, state.getPlayers());
     }
-
-    private void drawTableInfo(Graphics g, GameState state) {
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-
-        String potText = "Pot: $" + state.getPot();
-        FontMetrics fm = g.getFontMetrics();
-        int cx = getWidth() / 2 - fm.stringWidth(potText) / 2;
-        int cy = getHeight() / 2 + 120;
-        g.drawString(potText, cx, cy);
-
-        g.setFont(new Font("Arial", Font.PLAIN, 18));
-        String round = state.getGameModeRound();
-        if (round != null) {
-            g.drawString("Ronda: " + round, 160, 45);
-        }
-    }
-
-    private void drawCommunityCards(Graphics g, GameState state) {
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
-
-        List<Card> communityCards = state.getCommunityCards();
-        if (communityCards == null) communityCards = new ArrayList<>();
-
-        int cardW = 60;
-        int cardH = 90;
-        int spacing = 10;
-        int maxCards = 5;
-
-        int totalWidth = (maxCards * cardW) + ((maxCards - 1) * spacing);
-        int startX = centerX - (totalWidth / 2);
-        int startY = centerY - (cardH / 2);
-
-        for (int i = 0; i < maxCards; i++) {
-            int x = startX + (i * (cardW + spacing));
-
-            if (i < communityCards.size()) {
-                Image img = cardLoader.getCardImage(communityCards.get(i));
-                if (img != null) {
-                    g.drawImage(img, x, startY, cardW, cardH, this);
-                } else {
-                    g.setColor(Color.WHITE);
-                    g.fillRect(x, startY, cardW, cardH);
-                    g.setColor(Color.BLACK);
-                    g.drawString(communityCards.get(i).toString(), x+5, startY+20);
-                }
-            } else {
-                g.setColor(new Color(0, 0, 0, 50));
-                g.drawRect(x, startY, cardW, cardH);
-            }
-        }
-    }
-
-    private void drawPlayers(Graphics g, List<PlayerModel> players) {
+    private void drawLocalPlayerOnly(Graphics g, List<PlayerModel> players) {
         if (players == null || players.isEmpty()) return;
 
-        List<PlayerModel> visualOrder = rotatePlayersToLocal(players);
+        PlayerModel me = null;
+        for (PlayerModel p : players) {
+            if (p.getName().equals(localPlayerName)) {
+                me = p;
+                break;
+            }
+        }
 
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
-        int radiusX = 420;
-        int radiusY = 240;
+        if (me != null) {
+            int centerX = getWidth() / 2;
 
-        for (int i = 0; i < visualOrder.size(); i++) {
-            PlayerModel p = visualOrder.get(i);
-            double angle = Math.PI / 2 + (i * (2 * Math.PI / visualOrder.size()));
-            int x = (int) (centerX + radiusX * Math.cos(angle));
-            int y = (int) (centerY + radiusY * Math.sin(angle));
-            drawOnePlayer(g, p, x, y);
+            int centerY = getHeight() - 140;
+
+            drawOnePlayer(g, me, centerX, centerY);
         }
     }
-
     private void drawOnePlayer(Graphics g, PlayerModel p, int x, int y) {
         boolean isMe = p.getName().equals(localPlayerName);
-        boolean isActive = client.getGameState().getNextPlayer() != null
-                && client.getGameState().getNextPlayer().equals(p.getName());
 
-        if (isActive) {
-            g.setColor(Color.YELLOW);
-            g.fillOval(x - 45, y - 45, 90, 90);
-        }
-        g.setColor(isMe ? new Color(100, 149, 237) : Color.DARK_GRAY);
+        g.setColor(new Color(100, 149, 237));
         g.fillOval(x - 40, y - 40, 80, 80);
 
+        boolean isActive = client.getGameState().getNextPlayer() != null
+                && client.getGameState().getNextPlayer().equals(p.getName());
+        if (isActive) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(Color.YELLOW);
+            g2.drawOval(x - 40, y - 40, 80, 80);
+        }
+
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        drawCenteredString(g, p.getName(), x, y - 50);
+        g.setFont(new Font("Arial", Font.BOLD, 16));
+        drawCenteredString(g, p.getName(), x, y - 55);
 
         g.setColor(new Color(144, 238, 144));
-        drawCenteredString(g, "$" + p.getMoney(), x, y + 55);
+        drawCenteredString(g, "$" + p.getMoney(), x, y + 60);
 
         drawPlayerCards(g, p, x, y, isMe);
     }
-
     private void drawPlayerCards(Graphics g, PlayerModel p, int x, int y, boolean isMe) {
         if (!isMe) return;
 
@@ -303,18 +248,17 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         if (cards == null || cards.isEmpty()) return;
 
         int numCards = cards.size();
+        int cardW = 60;
+        int cardH = 90;
+        int spacing = 10;
 
-        int cardW = 50;
-        int cardH = 75;
-        int spacing = 15;
         int totalW = (numCards * cardW) + ((numCards - 1) * spacing);
-
         int startX = x - (totalW / 2);
-        int startY = y - 10;
+
+        int startY = y - 160;
 
         for (int i = 0; i < numCards; i++) {
             Image img = cardLoader.getCardImage(cards.get(i));
-
 
             if (img == null) img = backCardImage;
 
@@ -328,7 +272,6 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
             }
         }
     }
-
     private JButton createGameButton(String text, int x, int y, int w, int h) {
         JButton btn = new JButton(text);
         btn.setBounds(x, y, w, h);
@@ -357,22 +300,6 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Número inválido");
         }
-    }
-
-    private List<PlayerModel> rotatePlayersToLocal(List<PlayerModel> original) {
-        if (original == null) return new ArrayList<>();
-        List<PlayerModel> list = new ArrayList<>(original);
-        int myIndex = -1;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getName().equals(localPlayerName)) {
-                myIndex = i;
-                break;
-            }
-        }
-        if (myIndex > 0) {
-            Collections.rotate(list, -myIndex);
-        }
-        return list;
     }
 
     private void drawCenteredString(Graphics g, String text, int x, int y) {
