@@ -186,7 +186,6 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         return client != null && client.isMyTurn();
     }
 
-
     private void drawGame(Graphics g) {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
@@ -199,6 +198,7 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         if (state == null) return;
 
         drawLocalPlayerOnly(g, state.getPlayers());
+        drawCommunityCardsOnly(g, state);
     }
     private void drawLocalPlayerOnly(Graphics g, List<PlayerModel> players) {
         if (players == null || players.isEmpty()) return;
@@ -283,24 +283,74 @@ public class HoldEmModeDisplay extends JFrame implements ModeDisplay {
         btn.setFocusPainted(false);
         return btn;
     }
+    private void drawCommunityCardsOnly(Graphics g, GameState state) {
+        List<Card> communityCards = state.getCommunityCards();
 
-    private void openRaiseDialog() {
-        if (!isMyTurn()) return;
-        int maxMoney = 0;
-        for(PlayerModel p : client.getGameState().getPlayers()) {
-            if (p.getName().equals(localPlayerName)) {
-                maxMoney = p.getMoney();
-                break;
+        if (communityCards == null || communityCards.isEmpty()) return;
+
+        int cardW = 60;
+        int cardH = 90;
+        int spacing = 10;
+        int numCards = communityCards.size();
+
+        int totalW = (numCards * cardW) + ((numCards - 1) * spacing);
+        int startX = (getWidth() / 2) - (totalW / 2);
+
+        int startY = (getHeight() / 2) - 120;
+
+        for (int i = 0; i < numCards; i++) {
+            Image img = cardLoader.getCardImage(communityCards.get(i));
+
+            int drawX = startX + (i * (cardW + spacing));
+
+            if (img != null) {
+                g.drawImage(img, drawX, startY, cardW, cardH, this);
+            } else {
+                g.setColor(Color.WHITE);
+                g.fillRect(drawX, startY, cardW, cardH);
+                g.setColor(Color.BLACK);
+                g.drawRect(drawX, startY, cardW, cardH);
             }
         }
-        String input = JOptionPane.showInputDialog(this, "Cantidad a apostar (Máx: " + maxMoney + "):");
-        try {
-            if (input != null && !input.isEmpty()) {
-                int amount = Integer.parseInt(input);
+    }
+    private void openRaiseDialog() {
+        if (!isMyTurn()) return;
+
+        int maxMoney = 0;
+        if (client.getGameState() != null && client.getGameState().getPlayers() != null) {
+            for (PlayerModel p : client.getGameState().getPlayers()) {
+                if (p.getName().equals(localPlayerName)) {
+                    maxMoney = p.getMoney();
+                    break;
+                }
+            }
+        }
+
+        int sliderMax = (maxMoney > 0) ? maxMoney : 1;
+
+        JSlider slider = new JSlider(0, sliderMax, 0);
+        JLabel valueLabel = new JLabel("Apostar: $0");
+        valueLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        valueLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        slider.setMajorTickSpacing(sliderMax / 5 > 0 ? sliderMax / 5 : 1);
+        slider.setPaintTicks(true);
+
+        slider.addChangeListener(e -> valueLabel.setText("Apostar: $" + slider.getValue()));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel("Selecciona la cantidad:"), BorderLayout.NORTH);
+        panel.add(slider, BorderLayout.CENTER);
+        panel.add(valueLabel, BorderLayout.SOUTH);
+        panel.setPreferredSize(new Dimension(300, 100));
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Realizar Apuesta (Raise)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            int amount = slider.getValue();
+            if (amount > 0) {
                 client.placeBet("holdem", 0, "raise", amount);
             }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Número inválido");
         }
     }
 

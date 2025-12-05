@@ -18,7 +18,7 @@ public class CProgramRankingSystem implements RankingSystem {
     @Override
     public List<Player> rank(List<Player> players, char gameMode) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("src/poker/handranking/main");
+            ProcessBuilder processBuilder = new ProcessBuilder("C:/Users/faken/Desktop/code/java/lenguajes/proyecto/pokerlenguajes/server-java/src/poker/handranking/main.exe");
             Process process = processBuilder.start();
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
@@ -31,11 +31,16 @@ public class CProgramRankingSystem implements RankingSystem {
                 StringBuilder sb = new StringBuilder();
                 List<Card> cards = players.get(i).getCards();
                 for (int j = 0; j < cards.size(); j++) {
-                    sb.append(cards.get(j).toString() + " ");
+                    if (j < (cards.size() - 1)) {
+                        sb.append(cards.get(j).toString() + " ");
+                    } else {
+                        sb.append(cards.get(j).toString());
+                    }
+
                 }
                 writer.write(sb + "\n");
             }
-
+            System.out.println("udhfhnwiej");
             writer.flush();
             writer.close();
 
@@ -56,11 +61,12 @@ public class CProgramRankingSystem implements RankingSystem {
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                throw new RuntimeException();
+                throw new RuntimeException("se cae el C program");
             }
             return roundWinners;
 
         } catch (Exception e) {
+            System.out.println("daerawd");
             throw new RuntimeException(e);
         }
     }

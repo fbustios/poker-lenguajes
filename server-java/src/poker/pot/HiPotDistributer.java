@@ -25,7 +25,9 @@ public class HiPotDistributer implements PotDistributer{
 
         final List<Player> activePlayers = table.getActivePlayers();
 
-        if (activePlayers.isEmpty() || pot.isEmpty()) {return List.of();}
+        if (activePlayers.isEmpty() || pot.isEmpty()) {
+            return List.of();
+        }
 
         final List<Player> ranked = rankingSystem.rank(activePlayers, gamemode);
         final Player winner = ranked.getFirst();

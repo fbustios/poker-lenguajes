@@ -82,20 +82,17 @@ public final class PokerActionHandler {
         gameState.playersClear();
         for (int i = 0; i < playersLeft; i++) {
             String playerName = MessageParser.getPlayerName(data, i);
-            String cards = MessageParser.getPlayerCards(data, playerName);
             String money = MessageParser.getPlayerMoney(data, playerName);
 
             PlayerModel pm = new PlayerModel();
             pm.setName(playerName);
             pm.setMoney(getInt(money));
-            pm.setCardsFromString(cards);
 
             gameState.playersAdd(pm);
         }
 
         for (PlayerModel player : gameState.getPlayers()) {
-            System.out.println("  • " + player.getName() + " - $" + player.getMoney() +
-                    " - Cartas: " + player.getCardsString());
+            System.out.println("  • " + player.getName() + " - $" + player.getMoney());
         }
     }
 

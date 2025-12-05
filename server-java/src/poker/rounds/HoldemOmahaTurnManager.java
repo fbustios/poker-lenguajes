@@ -42,7 +42,6 @@ public class HoldemOmahaTurnManager implements TurnManager {
         if (isRoundOver()) {
             System.out.println("Round Ended");
             this.currentRound+=1;
-            //table.resetTable();
             setStartingPlayer();
         }
 

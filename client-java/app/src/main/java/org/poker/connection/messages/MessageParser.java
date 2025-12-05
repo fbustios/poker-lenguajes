@@ -29,7 +29,11 @@ public final class MessageParser {
             String value = line.substring(colonIndex + 1).trim();
 
             if (isPlayerData(key, value)) {
-                parsePlayerData(data, key, value, playerIndex);
+                if (hasCards(key, value)) {
+                    parsePlayerData(data, key, value, playerIndex);
+                } else {
+                    data.put(key, value);
+                }
                 playerIndex++;
             }
             else if (isCommunityCardsData(key, value)) {
@@ -99,7 +103,11 @@ public final class MessageParser {
     }
 
     private static boolean isPlayerData(String key, String value) {
-        return key.length() == 4 && value.contains(",");
+        return key.length() == 4;
+    }
+
+    private static boolean hasCards(String key, String value) {
+        return value.contains(",");
     }
 
     private static boolean isCommunityCardsData(String key, String value) {

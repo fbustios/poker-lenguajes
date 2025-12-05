@@ -80,6 +80,7 @@ public final class HoldemPokerGamemode implements PokerGamemode {
         PokerTable table = turnManager.getTable();
         if (!communityCards.isEmpty()) {
             List<Player> players = table.getActivePlayers();
+            System.out.println(players.size());
             for(Player p: players) {
                 p.setCards(Stream.concat(p.getCards().stream(), communityCards.stream())
                         .collect(Collectors.toCollection(ArrayList::new)));

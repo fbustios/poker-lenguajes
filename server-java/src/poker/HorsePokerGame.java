@@ -65,6 +65,11 @@ public class HorsePokerGame implements PokerGame, GameState{
             //table.resetTable();
         }
     }
+    
+    @Override
+    public void deal() {
+        currentGame.deal();
+    }
 
     @Override
     public boolean isGameFinished() {
@@ -110,7 +115,7 @@ public class HorsePokerGame implements PokerGame, GameState{
             this.currentGameIndex +=1;
             this.currentGame = modes.get(currentGameIndex);
             table.resetTable();
-            //this.currentGame.setStartingPlayer();
+            this.currentGame.setStartingPlayer();
         }
     }
 
