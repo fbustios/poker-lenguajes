@@ -122,6 +122,7 @@ public class HorsePokerGame implements PokerGame, GameState{
 
     @Override
     public List<Player> getPlayers() {
+
         return table.getActivePlayers();
     }
 
